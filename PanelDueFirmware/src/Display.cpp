@@ -503,6 +503,20 @@ void ColourGradientField::Refresh(bool full, PixelNumber xOffset, PixelNumber yO
 	}
 }
 
+void StaticColourField::Refresh(bool full, PixelNumber xOffset, PixelNumber yOffset)
+{
+	if (full)
+	{
+		xOffset += x;
+		yOffset += y;
+		lcd.setColor(bcolour);
+		lcd.fillRect(xOffset, yOffset, xOffset + width - 1, yOffset + GetHeight() - 1);
+		lcd.setColor(fcolour);
+		lcd.drawRect(xOffset, yOffset, xOffset + width - 1, yOffset + GetHeight() - 1);
+	}
+}
+
+
 PixelNumber FieldWithText::GetHeight() const
 {
 	PixelNumber height = UTFT::GetFontHeight(font) * textRows;

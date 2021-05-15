@@ -13,9 +13,62 @@
 
 const ColourScheme colourSchemes[NumColourSchemes] =
 {
-	// Light colour schema. As this one comes first, it is the default.
+	// Default CNC One
 	{
 		.index = 0,
+		.pal = IconPaletteDefault,
+
+		.titleBarTextColour = white,
+		.titleBarBackColour = UTFT::fromRGB(29, 29, 29),
+		.labelTextColour = white,
+		.infoTextColour = white,
+		.infoBackColour = black,
+		.defaultBackColour = black,
+		.activeBackColour = black,
+		.standbyBackColour = black,
+		.tuningBackColour = black,
+		.errorTextColour = white,
+		.errorBackColour = veryDarkGrey,
+
+
+
+		.popupBorderColour = midGrey,
+		.popupBackColour = darkGrey,
+		.popupTextColour = white,
+		.popupButtonTextColour = white,
+		.popupButtonBackColour = veryDarkGrey,
+		.popupInfoTextColour = white,
+		.popupInfoBackColour = darkGrey,
+
+		.alertPopupBackColour = darkGrey,
+		.alertPopupTextColour = white,
+
+		.buttonTextColour = white,
+		.buttonPressedTextColour = white,
+		.buttonTextBackColour = UTFT::fromRGB(28, 28, 31),
+		.buttonImageBackColour = UTFT::fromRGB(28, 28, 31),
+		.buttonGradColour = 0,	//UTFT::fromRGB(8, 4, 8),
+		.buttonPressedBackColour = UTFT::fromRGB(99, 99, 102),
+		.buttonPressedGradColour = 0,	//UTFT::fromRGB(8, 8, 8),
+		.buttonBorderColour = UTFT::fromRGB(28, 28, 31),
+		.homedButtonBackColour = UTFT::fromRGB(28, 28, 31),
+		.notHomedButtonBackColour = darkOrange,
+		.pauseButtonBackColour = darkOrange,
+		.resumeButtonBackColour = darkYellow,
+		.resetButtonBackColour = darkRed,
+
+		.progressBarColour = midGrey,
+		.progressBarBackColour = veryDarkGrey,
+		.stopButtonTextColour = white,
+		.stopButtonBackColour = red,
+		.coordBoxTextColour = UTFT::fromRGB(108, 108, 108),
+		.coordBoxValueColour = white,
+		.coordBoxBackColour = UTFT::fromRGB(28, 28, 31)
+	},
+
+	// Light colour schema.
+	{
+		.index = 1,
 		.pal = IconPaletteLight,
 
 		.titleBarTextColour = white,
@@ -59,60 +112,13 @@ const ColourScheme colourSchemes[NumColourSchemes] =
 		.progressBarBackColour = white,
 
 		.stopButtonTextColour = white,
-		.stopButtonBackColour = UTFT::fromRGB(255, 24, 32)			// need enough G and B to allow for the gradient
+		.stopButtonBackColour = UTFT::fromRGB(255, 24, 32),			// need enough G and B to allow for the gradient
+		.coordBoxTextColour = UTFT::fromRGB(108, 108, 108),
+		.coordBoxValueColour = white,
+		.coordBoxBackColour = UTFT::fromRGB(28, 28, 31)
 	},
 
-	// Dark colour scheme #1
-
-	{
-		.index = 1,
-		.pal = IconPaletteDark,
-
-		.titleBarTextColour = white,
-		.titleBarBackColour = darkRed,
-		.labelTextColour = white,
-		.infoTextColour = white,
-		.infoBackColour = darkBlue,
-		.defaultBackColour = black,
-		.activeBackColour = darkRed,
-		.standbyBackColour = yellow,
-		.tuningBackColour = darkGreen,
-		.errorTextColour = white,
-		.errorBackColour = byzantine,
-
-		.popupBorderColour = white,
-		.popupBackColour = darkBlue,
-		.popupTextColour = white,
-		.popupButtonTextColour = white,
-		.popupButtonBackColour = black,
-		.popupInfoTextColour = white,
-		.popupInfoBackColour = black,
-
-		.alertPopupBackColour = darkGreen,
-		.alertPopupTextColour = white,
-
-		.buttonTextColour = white,
-		.buttonPressedTextColour = white,
-		.buttonTextBackColour = black,
-		.buttonImageBackColour = grey,
-		.buttonGradColour = UTFT::fromRGB(8, 4, 8),
-		.buttonPressedBackColour = darkGreen,
-		.buttonPressedGradColour = UTFT::fromRGB(8, 8, 8),
-		.buttonBorderColour = white,
-		.homedButtonBackColour = UTFT::fromRGB(0,0,255-16), // blue needs to reduce to allow for gradient
-		.notHomedButtonBackColour = darkOrange,
-		.pauseButtonBackColour = darkOrange,
-		.resumeButtonBackColour = darkYellow,
-		.resetButtonBackColour = darkRed,
-
-		.progressBarColour = midGreen,
-		.progressBarBackColour = black,
-
-		.stopButtonTextColour = white,
-		.stopButtonBackColour = UTFT::fromRGB(255-16, 0, 0)			// need reduce R to allow for the gradient
-	},
-
-	// Dark colour scheme #2
+	// Dark colour scheme
 
 	{
 		.index = 2,
@@ -158,7 +164,10 @@ const ColourScheme colourSchemes[NumColourSchemes] =
 		.progressBarColour = midGrey,
 		.progressBarBackColour = veryDarkGrey,
 		.stopButtonTextColour = white,
-		.stopButtonBackColour = red
+		.stopButtonBackColour = red,
+		.coordBoxTextColour = UTFT::fromRGB(108, 108, 108),
+		.coordBoxValueColour = white,
+		.coordBoxBackColour = UTFT::fromRGB(28, 28, 31)
 	}
 };
 

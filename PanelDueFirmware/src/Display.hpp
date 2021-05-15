@@ -196,6 +196,22 @@ public:
 	bool Contains(PixelNumber xmin, PixelNumber ymin, PixelNumber xmax, PixelNumber ymax) const override;
 };
 
+class StaticColourField : public DisplayField
+{
+	PixelNumber height;
+
+protected:
+	PixelNumber GetHeight() const override { return height; }
+
+public:
+	StaticColourField(PixelNumber py, PixelNumber px, PixelNumber pw, PixelNumber ph)
+		: DisplayField(py, px, pw), height(ph)
+	{
+	}
+
+	void Refresh(bool full, PixelNumber xOffset, PixelNumber yOffset) override;
+};
+
 class ColourGradientField : public DisplayField
 {
 	PixelNumber height;

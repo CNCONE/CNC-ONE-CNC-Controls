@@ -60,9 +60,15 @@ static PopupWindow *setTempPopup, *setRPMPopup, *movePopup, *extrudePopup, *file
 		*volumePopup, *infoTimeoutPopup, *screensaverTimeoutPopup, *babystepAmountPopup, *feedrateAmountPopup, *areYouSurePopup, *keyboardPopup, *languagePopup, *coloursPopup, *screensaverPopup;
 static StaticTextField *areYouSureTextField, *areYouSureQueryField;
 static DisplayField *emptyRoot, *baseRoot, *commonRoot, *controlRoot, *printRoot, *messageRoot, *setupRoot;
-static SingleButton *homeAllButton, *bedCompButton;
-static IconButtonWithText *homeButtons[MaxDisplayableAxes], *toolButtons[MaxSlots];
-static FloatField *controlTabAxisPos[MaxDisplayableAxes];
+static SingleButton *tabControl, *tabPrint, *tabMsg, *tabSetup;
+
+/* Control Tab */
+static SingleButton *homeAllButton;
+static IconButtonWithText *homeButtons[3];
+static FloatField *coordBoxAxisPos[3];
+static TextButton *ctrlManualStep[3];
+static TextButton *ctrlXYup,*ctrlXYdown,*ctrlXYleft,*ctrlXYright,*ctrlZup,*ctrlZdown;
+
 static FloatField *printTabAxisPos[MaxDisplayableAxes];
 static FloatField *movePopupAxisPos[MaxDisplayableAxes];
 static FloatField *currentTemps[MaxSlots];
@@ -70,7 +76,6 @@ static FloatField *fpHeightField, *fpLayerHeightField, *babystepOffsetField;
 static TextButtonWithLabel *babystepMinusButton, *babystepPlusButton;
 static IntegerField *fpSizeField, *fpFilamentField, *filePopupTitleField;
 static ProgressBar *printProgressBar;
-static SingleButton *tabControl, *tabPrint, *tabMsg, *tabSetup;
 static ButtonBase *filesButton, *pauseButton, *resumeButton, *cancelButton, *babystepButton, *reprintButton;
 static TextField *timeLeftField, *zProbe;
 static TextField *fpNameField, *fpGeneratedByField, *fpLastModifiedField, *fpPrintTimeField;
@@ -130,6 +135,7 @@ static PixelNumber screensaverTextWidth = 0;
 static uint32_t lastScreensaverMoved = 0;
 
 static int8_t currentTool = -2;							// Initialized to a value never returned by RRF to have the logic for "no tool" applied at startup
+static uint8_t currentMoveSteps = 0;
 static bool allAxesHomed = false;
 
 #ifdef SUPPORT_ENCODER
@@ -830,57 +836,41 @@ void CreateBabystepPopup(const ColourScheme& colours)
 	babystepPopup->AddField(babystepPlusButton = new TextButtonWithLabel(ypos, CalcXPos(1, width, popupSideMargin), width, babystepAmounts[GetBabystepAmountIndex()], evBabyStepPlus, nullptr, MORE_ARROW " "));
 }
 
-// Create the grid of heater icons and temperatures
-void CreateTemperatureGrid(const ColourScheme& colours)
+// Create the grid of axis coordinates
+void CreateCoordinateGrid(const ColourScheme& colours)
 {
-	// Add the emergency stop button
-	DisplayField::SetDefaultColours(colours.stopButtonTextColour, colours.stopButtonBackColour);
-	mgr.AddField(new TextButton(row2, margin, bedColumn - fieldSpacing - margin - 16, strings->stop, evEmergencyStop));
+	PixelNumber px = margin;
 
-	// Add the labels and the debug field
 	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
-	mgr.AddField(debugField = new StaticTextField(row1 + labelRowAdjust, margin, bedColumn - fieldSpacing - margin, TextAlignment::Left, "debug"));
-	mgr.AddField(new StaticTextField(row3 + labelRowAdjust, margin, bedColumn - fieldSpacing - margin, TextAlignment::Right, strings->current));
-	mgr.AddField(new StaticTextField(row4 + labelRowAdjust, margin, bedColumn - fieldSpacing - margin, TextAlignment::Right, strings->active));
-	mgr.AddField(new StaticTextField(row5 + labelRowAdjust, margin, bedColumn - fieldSpacing - margin, TextAlignment::Right, strings->standby));
+	mgr.AddField(new StaticTextField(row2 + labelRowAdjust, px, coordBoxWidth, TextAlignment::Left, strings->coordinates));
 
-	// Add the grid
-	for (unsigned int i = 0; i < MaxSlots; ++i)
-	{
-		const PixelNumber column = ((tempButtonWidth + fieldSpacing) * i) + bedColumn;
+	px+= margin;
+	DisplayField::SetDefaultColours(colours.coordBoxTextColour, colours.coordBoxBackColour);
+	mgr.AddField(new StaticTextField(row3 + labelRowAdjust, px, coordBoxLabelWidth, TextAlignment::Left, axisNames[0]));
+	mgr.AddField(new StaticTextField(row4 + labelRowAdjust, px, coordBoxLabelWidth, TextAlignment::Left, axisNames[1]));
+	mgr.AddField(new StaticTextField(row5 + labelRowAdjust, px, coordBoxLabelWidth, TextAlignment::Left, axisNames[2]));
 
-		// Add the icon button
-		DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonImageBackColour);
-		IconButtonWithText * const b = new IconButtonWithText(row2, column, tempButtonWidth, i == 0 ? IconBed : IconNozzle, evSelectHead, i, i);
-		b->Show(false);
-		toolButtons[i] = b;
-		mgr.AddField(b);
+	px += coordBoxLabelWidth;
+	DisplayField::SetDefaultColours(colours.coordBoxValueColour, colours.coordBoxBackColour);
+	coordBoxAxisPos[0] = new FloatField(row3 + labelRowAdjust, px, coordBoxValueWidth, TextAlignment::Right, 2);
+	coordBoxAxisPos[1] = new FloatField(row4 + labelRowAdjust, px, coordBoxValueWidth, TextAlignment::Right, 2);
+	coordBoxAxisPos[2] = new FloatField(row5 + labelRowAdjust, px, coordBoxValueWidth, TextAlignment::Right, 2);
+	coordBoxAxisPos[0]->SetValue(0.0);
+	coordBoxAxisPos[1]->SetValue(999.99);
+	coordBoxAxisPos[2]->SetValue(11.11);
+	mgr.AddField(coordBoxAxisPos[0]);
+	mgr.AddField(coordBoxAxisPos[1]);
+	mgr.AddField(coordBoxAxisPos[2]);
 
-		// Add the current temperature field
-		DisplayField::SetDefaultColours(colours.infoTextColour, colours.defaultBackColour);
-		FloatField * const f = new FloatField(row3 + labelRowAdjust, column, tempButtonWidth, TextAlignment::Centre, 1);
-		f->SetValue(0.0);
-		f->Show(false);
-		currentTemps[i] = f;
-		mgr.AddField(f);
+	px += coordBoxValueWidth+margin;
+	DisplayField::SetDefaultColours(colours.coordBoxTextColour, colours.coordBoxBackColour);
+	mgr.AddField(new StaticTextField(row3 + labelRowAdjust, px, coordBoxUnitWidth, TextAlignment::Right, "mm"));
+	mgr.AddField(new StaticTextField(row4 + labelRowAdjust, px, coordBoxUnitWidth, TextAlignment::Right, "mm"));
+	mgr.AddField(new StaticTextField(row5 + labelRowAdjust, px, coordBoxUnitWidth, TextAlignment::Right, "mm"));
 
-		// Add the active temperature button
-		DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
-		IntegerButton *ib = new IntegerButton(row4, column, tempButtonWidth);
-		ib->SetEvent(evAdjustToolActiveTemp, i);
-		ib->SetValue(0);
-		ib->Show(false);
-		activeTemps[i] = ib;
-		mgr.AddField(ib);
-
-		// Add the standby temperature button
-		ib = new IntegerButton(row5, column, tempButtonWidth);
-		ib->SetEvent(evAdjustToolStandbyTemp, i);
-		ib->SetValue(0);
-		ib->Show(false);
-		standbyTemps[i] = ib;
-		mgr.AddField(ib);
-	}
+	// Reversed Paint order, Background has to be added last
+	DisplayField::SetDefaultColours(colours.coordBoxBackColour, colours.coordBoxBackColour);
+	mgr.AddField(new StaticColourField(row3-2, margin, coordBoxWidth, rowHeight*3-6));
 }
 
 // Create the extra fields for the Control tab
@@ -888,55 +878,53 @@ void CreateControlTabFields(const ColourScheme& colours)
 {
 	mgr.SetRoot(commonRoot);
 
-	DisplayField::SetDefaultColours(colours.infoTextColour, colours.infoBackColour);
-	PixelNumber column = margin;
-	PixelNumber xyFieldWidth = (DISPLAY_X - (2 * margin) - (MaxDisplayableAxes * fieldSpacing))/(MaxDisplayableAxes + 1);
-	for (size_t i = 0; i < MaxDisplayableAxes; ++i)
-	{
-		FloatField * const f = new FloatField(row6p3 + labelRowAdjust, column, xyFieldWidth, TextAlignment::Left, (i == 2) ? 2 : 1, axisNames[i]);
-		controlTabAxisPos[i] = f;
-		f->SetValue(0.0);
-		mgr.AddField(f);
-		f->Show(i < MIN_AXES);
-		column += xyFieldWidth + fieldSpacing;
-	}
-	zprobeBuf[0] = 0;
-	mgr.AddField(zProbe = new TextField(row6p3 + labelRowAdjust, column, DISPLAY_X - column - margin, TextAlignment::Left, "P", zprobeBuf.c_str()));
+	PixelNumber px = margin+coordBoxWidth+5*fieldSpacing;
+	// Add the labels
+	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
+	mgr.AddField(new StaticTextField(row2 + labelRowAdjust, px, ctrlManualWidth, TextAlignment::Left, strings->manualctrl));
+
+	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
+	ctrlManualStep[0] = new TextButton(row3, px, ctrlStepButtonWidth, moveSteps[0], evCtrlStepSize, 0);
+	mgr.AddField(ctrlManualStep[0]);
+	ctrlManualStep[1] = new TextButton(row4, px, ctrlStepButtonWidth, moveSteps[1], evCtrlStepSize, 1);
+	mgr.AddField(ctrlManualStep[1]);
+	ctrlManualStep[2] = new TextButton(row5, px, ctrlStepButtonWidth, moveSteps[2], evCtrlStepSize, 2);
+	mgr.AddField(ctrlManualStep[2]);
+	ctrlManualStep[currentMoveSteps]->Press(true, 0);
+
+	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
+	px += ctrlStepButtonWidth + 2*fieldSpacing;
+	ctrlXYleft = new TextButton(row4, px, buttonHeight, LEFT_ARROW, evCtrlMove, 0);
+	mgr.AddField(ctrlXYleft);
+	px += fieldSpacing+buttonHeight;
+	ctrlXYup = new TextButton(row3, px, buttonHeight, UP_ARROW, evCtrlMove, 1);
+	mgr.AddField(ctrlXYup);
+	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
+	mgr.AddField(new StaticTextField(row4 + labelRowAdjust, px, buttonHeight, TextAlignment::Centre, "XY"));
+	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
+	ctrlXYdown = new TextButton(row5, px, buttonHeight, DOWN_ARROW, evCtrlMove, 2);
+	mgr.AddField(ctrlXYdown);
+	px += fieldSpacing+buttonHeight;
+	ctrlXYright = new TextButton(row4, px, buttonHeight, RIGHT_ARROW, evCtrlMove, 3);
+	mgr.AddField(ctrlXYright);
+
+	px += 2*fieldSpacing+buttonHeight;
+	ctrlZup = new TextButton(row3, px, buttonHeight, UP_ARROW, evCtrlMove, 4);
+	mgr.AddField(ctrlZup);
+	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
+	mgr.AddField(new StaticTextField(row4 + labelRowAdjust, px, buttonHeight, TextAlignment::Centre, "Z"));
+	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
+	ctrlZdown = new TextButton(row5, px, buttonHeight, DOWN_ARROW, evCtrlMove, 5);
+	mgr.AddField(ctrlZdown);
+
+	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
+	mgr.AddField(new StaticTextField(row7 + labelRowAdjust, margin, 396, TextAlignment::Left, strings->home));
 
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.notHomedButtonBackColour);
-	homeAllButton = AddIconButton(row7p7, 0, MaxDisplayableAxes + 2, IconHomeAll, evSendCommand, "G28");
-	homeButtons[0] = AddIconButtonWithText(row7p7, 1, MaxDisplayableAxes + 2, IconHomeAll, evHomeAxis, axisNames[0], axisNames[0]);
-	homeButtons[1] = AddIconButtonWithText(row7p7, 2, MaxDisplayableAxes + 2, IconHomeAll, evHomeAxis, axisNames[1], axisNames[1]);
-	homeButtons[2] = AddIconButtonWithText(row7p7, 3, MaxDisplayableAxes + 2, IconHomeAll, evHomeAxis, axisNames[2], axisNames[2]);
-#if MaxDisplayableAxes > 3
-	homeButtons[3] = AddIconButtonWithText(row7p7, 4, MaxDisplayableAxes + 2, IconHomeAll, evHomeAxis, axisNames[3], axisNames[3]);
-	homeButtons[3]->Show(false);
-#endif
-#if MaxDisplayableAxes > 4
-	homeButtons[4] = AddIconButtonWithText(row7p7, 5, MaxDisplayableAxes + 2, IconHomeAll, evHomeAxis, axisNames[4], axisNames[4]);
-	homeButtons[4]->Show(false);
-#endif
-#if MaxDisplayableAxes > 5
-	homeButtons[5] = AddIconButtonWithText(row7p7, 6, MaxDisplayableAxes + 2, IconHomeAll, evHomeAxis, axisNames[5], axisNames[5]);
-	homeButtons[5]->Show(false);
-#endif
-	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonImageBackColour);
-	bedCompButton = AddIconButton(row7p7, MaxDisplayableAxes + 1, MaxDisplayableAxes + 2, IconBedComp, evSendCommand, "G32");
-
-	filesButton = AddIconButton(row8p7, 0, 4, IconFiles, evListFiles, nullptr);
-	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
-	moveButton = AddTextButton(row8p7, 1, 4, strings->move, evMovePopup, nullptr);
-	extrudeButton = AddTextButton(row8p7, 2, 4, strings->extrusion, evExtrudePopup, nullptr);
-	macroButton = AddTextButton(row8p7, 3, 4, strings->macro, evListMacros, nullptr);
-
-	// When there is room, we also display a few macro buttons on the right hand side
-	for (size_t i = 0; i < NumControlPageMacroButtons; ++i)
-	{
-		// The position and width of the buttons will get corrected when we know how many tools we have
-		TextButton * const b = controlPageMacroButtons[i] = new TextButton(row2 + i * rowHeight, 999, 99, nullptr, evNull);
-		b->Show(false);			// hide them until we have loaded the macros
-		mgr.AddField(b);
-	}
+	homeAllButton = AddIconButton(row8, 0, 8, IconHomeAll, evSendCommand, "G28");
+	homeButtons[0] = AddIconButtonWithText(row8, 1, 8, IconHomeAll, evHomeAxis, axisNames[0], axisNames[0]);
+	homeButtons[1] = AddIconButtonWithText(row8, 2, 8, IconHomeAll, evHomeAxis, axisNames[1], axisNames[1]);
+	homeButtons[2] = AddIconButtonWithText(row8, 3, 8, IconHomeAll, evHomeAxis, axisNames[2], axisNames[2]);
 
 	controlRoot = mgr.GetRoot();
 }
@@ -948,13 +936,13 @@ void CreatePrintingTabFields(const ColourScheme& colours)
 
 	// Labels
 	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
-	mgr.AddField(new StaticTextField(row6 + labelRowAdjust, margin, bedColumn - fieldSpacing - margin, TextAlignment::Right, strings->extruderPercent));
+	//mgr.AddField(new StaticTextField(row6 + labelRowAdjust, margin, bedColumn - fieldSpacing - margin, TextAlignment::Right, strings->extruderPercent));
 
 	// Extrusion factor buttons
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
 	for (unsigned int i = 0; i < MaxSlots; ++i)
 	{
-		const PixelNumber column = ((tempButtonWidth + fieldSpacing) * i) + bedColumn;
+		const PixelNumber column = ((tempButtonWidth + fieldSpacing) * i) + 160;
 
 		IntegerButton * const ib = new IntegerButton(row6, column, tempButtonWidth);
 		ib->SetValue(100);
@@ -1120,7 +1108,7 @@ void CreateMainPages(uint32_t language, const ColourScheme& colours)
 	DisplayField::SetDefaultColours(colours.titleBarTextColour, colours.titleBarBackColour);
 	mgr.AddField(nameField = new StaticTextField(row1, 0, DisplayX - statusFieldWidth, TextAlignment::Centre, machineName.c_str()));
 	mgr.AddField(statusField = new StaticTextField(row1, DisplayX - statusFieldWidth, statusFieldWidth, TextAlignment::Right, nullptr));
-	CreateTemperatureGrid(colours);
+	CreateCoordinateGrid(colours);
 	commonRoot = mgr.GetRoot();		// save the root of fields that we display on more than one page
 
 	// Create the pages
@@ -1261,7 +1249,7 @@ namespace UI
 	// Show or hide an axis on the move button grid and on the axis display
 	void ShowAxis(size_t slot, bool b, char axisLetter)
 	{
-		if (slot >= MaxDisplayableAxes)
+		/*if (slot >= MaxDisplayableAxes)
 		{
 			return;
 		}
@@ -1290,7 +1278,7 @@ namespace UI
 			{
 				mgr.Show(movePopupAxisPos[i], false);
 			}
-		}
+		}*/
 	}
 
 	void UpdateAxisPosition(size_t axisIndex, float fval)
@@ -1305,7 +1293,7 @@ namespace UI
 			size_t slot = axis->slot;
 			if (slot < MaxDisplayableAxes)
 			{
-				controlTabAxisPos[slot]->SetValue(fval);
+				coordBoxAxisPos[slot]->SetValue(fval);
 				printTabAxisPos[slot]->SetValue(fval);
 				movePopupAxisPos[slot]->SetValue(fval);
 			}
@@ -1358,14 +1346,14 @@ namespace UI
 				if (bed->heater == (int)heaterIndex)
 				{
 					bed->heaterStatus = status;
-					toolButtons[slot]->SetColours(foregroundColour, bOCBgColor);
+					//toolButtons[slot]->SetColours(foregroundColour, bOCBgColor);
 				}
 			});
 			OM::IterateChambers([&heaterIndex, &status, &foregroundColour, &bOCBgColor, &slot](OM::Chamber* chamber) {
 				if (chamber->heater == (int)heaterIndex)
 				{
 					chamber->heaterStatus = status;
-					toolButtons[slot]->SetColours(foregroundColour, bOCBgColor);
+					//toolButtons[slot]->SetColours(foregroundColour, bOCBgColor);
 				}
 			});
 		}
@@ -1711,7 +1699,7 @@ namespace UI
 
 					// Update axis letter everywhere we display it
 					const uint8_t slot = axis->slot;
-					controlTabAxisPos	[slot]->SetLabel(letter);
+					//controlTabAxisPos	[slot]->SetLabel(letter);
 					moveAxisRows		[slot]->SetValue(letter);
 					printTabAxisPos		[slot]->SetLabel(letter);
 					movePopupAxisPos	[slot]->SetLabel(letter);
@@ -2554,6 +2542,45 @@ namespace UI
 
 			case evHomeAxis:
 				SerialIo::Sendf("G28 %s0\n", bp.GetSParam());
+				// DEBUG
+				bp.GetButton()->SetColours(colours->buttonTextColour, colours->homedButtonBackColour);
+				// DEBUG
+
+				break;
+
+			case evCtrlStepSize:
+				currentButton.Clear();
+				{
+					for(uint8_t i=0; i<3; i++)
+					{
+						if(bp.GetIParam()==i) continue;
+						ctrlManualStep[i]->Press(false, 0);
+					}
+				}
+				break;
+
+			case evCtrlMove:
+				switch(bp.GetIParam())
+				{
+				case 0:	// XY left
+					SerialIo::Sendf("G91 G1 X-%s G90\n", moveSteps[currentMoveSteps]);
+					break;
+				case 1:	// XY up
+					SerialIo::Sendf("G91 G1 Y%s G90\n", moveSteps[currentMoveSteps]);
+					break;
+				case 2:	// XY down
+					SerialIo::Sendf("G91 G1 Y-%s G90\n", moveSteps[currentMoveSteps]);
+					break;
+				case 3:	// XY right
+					SerialIo::Sendf("G91 G1 X%s G90\n", moveSteps[currentMoveSteps]);
+					break;
+				case 4:	// Z up
+					SerialIo::Sendf("G91 G1 Z%s G90\n", moveSteps[currentMoveSteps]);
+					break;
+				case 5:	// Z down
+					SerialIo::Sendf("G91 G1 Z-%s G90\n", moveSteps[currentMoveSteps]);
+					break;
+				}
 				break;
 
 			case evScrollFiles:
@@ -3021,7 +3048,7 @@ namespace UI
 			numHeaterAndToolColumns = n;
 
 			// Adjust the width of the control page macro buttons, or hide them completely if insufficient room
-			PixelNumber controlPageMacroButtonsColumn = (PixelNumber)(((tempButtonWidth + fieldSpacing) * n) + bedColumn + fieldSpacing);
+			PixelNumber controlPageMacroButtonsColumn = (PixelNumber)(((tempButtonWidth + fieldSpacing) * n) + 160 + fieldSpacing);
 			PixelNumber controlPageMacroButtonsWidth = (PixelNumber)((controlPageMacroButtonsColumn >= DisplayX - margin) ? 0 : DisplayX - margin - controlPageMacroButtonsColumn);
 			if (controlPageMacroButtonsWidth > maxControlPageMacroButtonsWidth)
 			{
@@ -3051,8 +3078,8 @@ namespace UI
 	{
 		for (size_t i = 0; i < numToolColsUsed; ++i)
 		{
-			toolButtons[i]->SetColours(colours->buttonTextColour, colours->buttonImageBackColour);
-			currentTemps[i]->SetColours(colours->infoTextColour, colours->defaultBackColour);
+			//toolButtons[i]->SetColours(colours->buttonTextColour, colours->buttonImageBackColour);
+			//currentTemps[i]->SetColours(colours->infoTextColour, colours->defaultBackColour);
 		}
 	}
 
@@ -3080,7 +3107,7 @@ namespace UI
 		bedOrChamber->slot = MaxSlots;
 		if (slot < MaxSlots && bedOrChamber->heater > -1) {
 			bedOrChamber->slot = slot;
-			mgr.Show(toolButtons[slot], true);
+			//mgr.Show(toolButtons[slot], true);
 			ManageCurrentActiveStandbyFields(
 					slot,
 					true,
@@ -3090,10 +3117,10 @@ namespace UI
 					bedOrChamber->heater
 					);
 			mgr.Show(extrusionFactors[slot], false);
-			toolButtons[slot]->SetEvent(isBed ? evSelectBed : evSelectChamber, bedOrChamber->index);
-			toolButtons[slot]->SetIcon(isBed ? IconBed : IconChamber);
-			toolButtons[slot]->SetIntVal(bedOrChamber->index);
-			toolButtons[slot]->SetPrintText(count > 1);
+			//toolButtons[slot]->SetEvent(isBed ? evSelectBed : evSelectChamber, bedOrChamber->index);
+			//toolButtons[slot]->SetIcon(isBed ? IconBed : IconChamber);
+			//toolButtons[slot]->SetIntVal(bedOrChamber->index);
+			//toolButtons[slot]->SetPrintText(count > 1);
 
 			++slot;
 		}
@@ -3118,11 +3145,11 @@ namespace UI
 				const bool hasHeater = tool->heaters[0] != nullptr;
 				const bool hasSpindle = tool->spindle != nullptr;
 				const bool hasExtruder = tool->extruder > -1;
-				toolButtons[slot]->SetEvent(evSelectHead, tool->index);
-				toolButtons[slot]->SetIntVal(tool->index);
-				toolButtons[slot]->SetPrintText(true);
-				toolButtons[slot]->SetIcon(hasSpindle ? IconSpindle : IconNozzle);
-				mgr.Show(toolButtons[slot], true);
+				//toolButtons[slot]->SetEvent(evSelectHead, tool->index);
+				//toolButtons[slot]->SetIntVal(tool->index);
+				//toolButtons[slot]->SetPrintText(true);
+				//toolButtons[slot]->SetIcon(hasSpindle ? IconSpindle : IconNozzle);
+				//mgr.Show(toolButtons[slot], true);
 
 				mgr.Show(extrusionFactors[slot], hasExtruder);
 				extrusionFactors[slot]->SetEvent(extrusionFactors[slot]->GetEvent(), tool->extruder);
@@ -3143,7 +3170,7 @@ namespace UI
 							{
 								if (index > 0)
 								{
-									mgr.Show(toolButtons[slot], false);
+									//mgr.Show(toolButtons[slot], false);
 								}
 								ManageCurrentActiveStandbyFields(
 										slot,
@@ -3193,7 +3220,7 @@ namespace UI
 		numToolColsUsed = slot;
 		for (size_t i = slot; i < MaxSlots; ++i)
 		{
-			mgr.Show(toolButtons[i], false);
+			//mgr.Show(toolButtons[i], false);
 			mgr.Show(currentTemps[i], false);
 			mgr.Show(activeTemps[i], false);
 			mgr.Show(standbyTemps[i], false);
@@ -3266,7 +3293,7 @@ namespace UI
 			Colour c = /*(status == ToolStatus::standby) ? colours->standbyBackColour : */
 						(status == ToolStatus::active) ? colours->activeBackColour
 						: colours->buttonImageBackColour;
-			toolButtons[tool->slot]->SetColours(colours->buttonTextColour, c);
+			//toolButtons[tool->slot]->SetColours(colours->buttonTextColour, c);
 		}
 	}
 

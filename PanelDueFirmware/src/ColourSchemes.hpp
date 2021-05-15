@@ -85,6 +85,10 @@ struct ColourScheme
 
 	Colour stopButtonTextColour;
 	Colour stopButtonBackColour;
+
+	Colour coordBoxTextColour;
+	Colour coordBoxValueColour;
+	Colour coordBoxBackColour;
 };
 
 extern const ColourScheme colourSchemes[];

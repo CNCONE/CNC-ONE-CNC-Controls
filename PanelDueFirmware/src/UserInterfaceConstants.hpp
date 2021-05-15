@@ -26,6 +26,8 @@ constexpr size_t MaxHeatersPerTool = 8;
 static const char* _ecv_array const babystepAmounts[] = { "0.01", "0.02", "0.05", "0.1" };
 static const float _ecv_array babystepAmountsF[] = { 0.01, 0.02, 0.05, 0.1 };
 constexpr int8_t NoTool = -1;
+static const char * _ecv_array const moveSteps[] = { "0.01", "1.00", "10.00" };
+
 
 #if DISPLAY_X == 480
 
@@ -76,7 +78,7 @@ extern uint8_t glcd19x21[];				// declare which fonts we will be using
 
 #elif DISPLAY_X == 800
 const unsigned int MaxSlots = 7;
-#define MaxDisplayableAxes (6)
+#define MaxDisplayableAxes (3)
 
 const PixelNumber margin = 4;
 const PixelNumber textButtonMargin = 1;
@@ -84,7 +86,12 @@ const PixelNumber iconButtonMargin = 2;
 const PixelNumber outlinePixels = 3;
 const PixelNumber fieldSpacing = 12;
 const PixelNumber statusFieldWidth = 228;
-const PixelNumber bedColumn = 160;
+const PixelNumber coordBoxLabelWidth = 30;
+const PixelNumber coordBoxValueWidth = 100;
+const PixelNumber coordBoxUnitWidth = 50;
+const PixelNumber coordBoxWidth = margin + coordBoxLabelWidth + coordBoxValueWidth + margin + coordBoxUnitWidth + margin;
+const PixelNumber ctrlStepButtonWidth = 75;
+const PixelNumber ctrlManualWidth = 300;
 
 const PixelNumber rowTextHeight = 32;	// height of the font we use
 const PixelNumber rowHeight = 48;
@@ -126,7 +133,7 @@ extern uint8_t glcd28x32[];				// declare which fonts we will be using
 #endif
 
 const PixelNumber buttonHeight = rowTextHeight + 4;
-const PixelNumber tempButtonWidth = (DISPLAY_X + fieldSpacing - bedColumn)/MaxSlots - fieldSpacing;
+const PixelNumber tempButtonWidth = (DISPLAY_X + fieldSpacing - 160)/MaxSlots - fieldSpacing;
 
 const PixelNumber row1 = 0;										// we don't need a top margin
 const PixelNumber row2 = row1 + rowHeight - 2;					// the top row never has buttons so it can be shorter

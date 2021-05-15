@@ -20,7 +20,7 @@
 #define Newline			"\n"
 #define DegreeSymbol	"\u00B0"
 
-constexpr unsigned int NumLanguages = 6 + USE_CYRILLIC_CHARACTERS;
+constexpr unsigned int NumLanguages = 5 + USE_CYRILLIC_CHARACTERS;
 constexpr unsigned int NumStatusStrings = 14;
 
 struct StringTable
@@ -40,6 +40,9 @@ struct StringTable
 	CSTRING extrusion;
 	CSTRING macro;
 	CSTRING stop;
+	CSTRING coordinates;
+	CSTRING manualctrl;
+	CSTRING home;
 
 	// Print page
 	CSTRING extruderPercent;
@@ -129,7 +132,7 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Main page strings
 		"Control",
-		"Print",
+		"Job",
 		"Console",
 		"Setup",
 		"Current" THIN_SPACE DEGREE_SYMBOL "C",
@@ -139,6 +142,9 @@ const StringTable LanguageTables[NumLanguages] =
 		"Extrusion",
 		"Macro",
 		"STOP",
+		"Coordinates",
+		"Manual Control",
+		"Send to Home",
 
 		// Print page
 		"Extruder" THIN_SPACE "%",
@@ -226,9 +232,9 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Theme names
 		{
+			"CNC One Default",
 			"Light theme",
-			"Dark theme 1",
-			"Dark theme 2"
+			"Dark theme"
 		},
 
 		// Display dimming types
@@ -252,7 +258,7 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Main page strings
 		"Steuerung",
-		"Druck",
+		"Auftrag",
 		"Konsole",
 		"Setup",
 		"Istwert" THIN_SPACE DEGREE_SYMBOL "C",
@@ -262,6 +268,9 @@ const StringTable LanguageTables[NumLanguages] =
 		"Extrusion",
 		"Makro",
 		"STOP",
+		"Koordinaten",
+		"Manual Control",	//TODO:TRANSLATE
+		"Send to Home",		//TODO:TRANSLATE
 
 		// Print page
 		"Extruder" THIN_SPACE "%",
@@ -348,9 +357,9 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Theme names
 		{
+			"CNC One Standard",
 			"Anzeige hell",
-			"Anzeige inv. 1",
-			"Anzeige inv. 2"
+			"Anzeige dunkel"
 		},
 
 		// Display dimming types
@@ -374,7 +383,7 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Main page strings
 		"Contrôle",
-		"Imprimer",
+		"Job",	//TODO:TRANSLATE
 		"Console",
 		"Installation",
 		"Actuel" THIN_SPACE DEGREE_SYMBOL "C",
@@ -384,6 +393,9 @@ const StringTable LanguageTables[NumLanguages] =
 		"Extrusion",
 		"Macro",
 		"ARRÊT",
+		"Coordonnées",
+		"Manual Control",	//TODO:TRANSLATE
+		"Send to Home",		//TODO:TRANSLATE
 
 		// Print page
 		"Extrudeuse" THIN_SPACE "%",
@@ -470,8 +482,8 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Theme names
 		{
+			"CNC One défaut",
 			"Fond Blanc",
-			"Fond Noir 1",
 			"Fond Noir 2"
 		},
 
@@ -496,7 +508,7 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Main page strings
 		"Control",
-		"Imprimir",
+		"Job",	//TODO:TRANSLATE
 		"Consola",
 		"Configuración",
 		"Actual" THIN_SPACE DEGREE_SYMBOL "C",
@@ -506,6 +518,9 @@ const StringTable LanguageTables[NumLanguages] =
 		"Extrusión",
 		"Macro",
 		"PARADA",							// It could also be STOP, both are OK
+		"Coordenadas",
+		"Manual Control",	//TODO:TRANSLATE
+		"Send to Home",		//TODO:TRANSLATE
 
 		// Print page
 		"Extrusor" THIN_SPACE "%",
@@ -592,9 +607,9 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Theme names
 		{
+			"CNC One defecto",
 			"Claro",
-			"Oscuro 1",
-			"Oscuro 2"
+			"Oscuro"
 		},
 
 		// Display dimming types
@@ -611,128 +626,6 @@ const StringTable LanguageTables[NumLanguages] =
 		}
 	},
 
-	// Czech
-	{
-		// ISO-639.1 language code
-		"cs",
-
-		// Main page strings
-		"Ovládání",
-		"Tisk",
-		"Konzole",
-		"Nastavení",
-		"Aktuální" THIN_SPACE DEGREE_SYMBOL "C",
-		"Aktivní" THIN_SPACE DEGREE_SYMBOL "C",
-		"Nečinná" THIN_SPACE DEGREE_SYMBOL "C",
-		"Pohyb",
-		"Extruder",
-		"Makra",
-		"STOP",
-
-		// Print page
-		"Extruder" THIN_SPACE "%",
-		"Rychl. ",							// note space at end
-		"Vent. ",							// note space at end
-		"Čas do konce: ",
-		"soubor ",							// note space at end
-		", materiál ",						// note space at end
-		", vrstva ",						// note space at end
-		"n/a",
-		"Pozastavit",
-		"Baby step",
-		"Pokračovat",
-		"Zrušit",
-		"Print again",
-		"Simulate again",
-		"OK",
-
-		// Setup page
-		"Hlasitost ",						// note space at end
-		"Kalibrace dotyku",
-		"Zrcadlit displej",
-		"Obrátit displej",
-		"Motiv",
-		"Podsvícení -",
-		"Podsvícení +",
-		"Uložit nastavení",
-		"Smazat nastavení",
-		"Uložit a Restart",
-		"Info timeout ",					// note space at end
-		"Screensaver ",						// note space at end
-		"Babystep ",						// note space at end
-		"Feedrate ",						// note space at end
-
-		// Misc
-		"Skutečně obnovit tovární nastavení?",
-		"Skutečně smazat?",
-		"Určitě?",
-		"Dotkněte se bodu",
-		"Posun hlavy",
-		"Množství (mm)",
-		"Rychlost (mm/s)",
-		"Vytlačit (extr.)",
-		"Zatlačit (retr.)",
-		"Baby stepping",
-		"Aktuální Z offset: ",
-		"Zpráva",
-		"Zprávy",
-		"Verze firmware Panel Due ",	// note space at end
-		"Odpověď",
-
-		// File popup
-		"Soubory na kartě ",			// note the space on the end
-		"Makra",
-		"Chyba ",						// note the space at the end
-		" přístupu ke kartě",			// note the space at the start
-		"Název: ",
-		"Velikost: ",
-		"Výška vrstvy: ",
-		"Výška objektu: ",
-		"Spotřeba (mat.): ",
-		"Slicer: ",
-		"Poslední úprava: ",
-		"Zbývající čas tisku: ",
-		"Simulovaný čas tisku: ",
-		"Simulace",
-
-		// Printer status strings
-		{
-			"Připojování",
-			"Nečinný",
-			"Tiskne",
-			"Zastaven",
-			"Startuje",
-			"Pozastaven",
-			"Zaneprázdněný",
-			"Pozastavuje se",
-			"Pokračuje",
-			"Nahrává firmware",
-			"Výměna nástroje",
-			"Simulace",
-			"Pohotovostní"
-		},
-
-		// Theme names
-		{
-			"Světlý",
-			"Tmavý 1",
-			"Tmavý 2"
-		},
-
-		// Display dimming types
-		{
-			"Nikdy neztlumit jas",
-			"Pohasnout při nečinnosti",
-			"Pohasnout vždy"
-		},
-
-		// Heater combine types
-		{
-			"Heat's not comb.",
-			"Heaters comb.",
-		}
-	},
-
 	// Italian
 	{
 		// ISO-639.1 language code
@@ -740,7 +633,7 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Main page strings
 		"Controlla",
-		"Stampa",
+		"Job",	//TODO:TRANSLATE
 		"Console",
 		"Configura",
 		"Corrente" THIN_SPACE DEGREE_SYMBOL "C",
@@ -750,6 +643,9 @@ const StringTable LanguageTables[NumLanguages] =
 		"Estrusione",
 		"Macro",
 		"FERMA",
+		"Coordinate",
+		"Manual Control",	//TODO:TRANSLATE
+		"Send to Home",		//TODO:TRANSLATE
 
 		// Print page
 		"Estrusore" THIN_SPACE "%",
@@ -837,9 +733,9 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Theme names
 		{
+			"CNC One predefinito",
 			"Tema chiaro",
-			"Tema scuro 1",
-			"Tema scuro 2"
+			"Tema scuro"
 		},
 
 		// Display dimming types
