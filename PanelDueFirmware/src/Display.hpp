@@ -432,11 +432,59 @@ public:
 	static void SetIconMargin(PixelNumber p) { iconMargin = p; }
 };
 
-class ButtonWithText : public SingleButton
+class ArrowButton : public ButtonBase
 {
-	static LcdFont font;
+public:
+	enum Orientations
+	{
+		left,
+		up,
+		right,
+		down
+	};
+
+private:
+	union EventParameter
+	{
+		const char* null sParam;
+		int iParam;
+		//float fParam;
+	};
+	EventParameter param;
+	PixelNumber height;
+	Orientations myOrientation;
 
 protected:
+	PixelNumber GetHeight() const override { return height; }
+
+	void DrawOutline(PixelNumber xOffset, PixelNumber yOffset) const;
+
+public:
+	ArrowButton(PixelNumber py, PixelNumber px, PixelNumber pw, PixelNumber ph, Orientations orientation, event_t e, int iParam);
+	bool IsButton() const override final { return true; }
+
+	void SetEvent(event_t e, EventParameter p) { evt = e; param = p; }
+	void SetEvent(event_t e, const char* null sp) { evt = e; param.sParam = sp; }
+	void SetEvent(event_t e, int ip) { evt = e; param.iParam = ip; }
+	//void SetEvent(event_t e, float fp) { evt = e; param.fParam = fp; }
+
+	EventParameter GetUParam() const { return param; }
+	const char* null GetSParam(unsigned int index) const override { UNUSED(index); return param.sParam; }
+	int GetIParam(unsigned int index) const override { UNUSED(index); return param.iParam; }
+	//float GetFParam() const { return param.fParam; }
+
+	void Press(bool p, int index) override;
+
+	static void SetTextMargin(PixelNumber p) { textMargin = p; }
+	static void SetIconMargin(PixelNumber p) { iconMargin = p; }
+	void Refresh(bool full, PixelNumber xOffset, PixelNumber yOffset) override final;
+};
+
+class ButtonWithText : public SingleButton
+{
+
+protected:
+	static LcdFont font;
 	PixelNumber GetHeight() const override;
 
 	virtual size_t PrintText(size_t offset) const = 0;
@@ -445,7 +493,7 @@ public:
 	ButtonWithText(PixelNumber py, PixelNumber px, PixelNumber pw)
 		: SingleButton(py, px, pw) {}
 
-	void Refresh(bool full, PixelNumber xOffset, PixelNumber yOffset) override final;
+	void Refresh(bool full, PixelNumber xOffset, PixelNumber yOffset) override;
 
 	static void SetFont(LcdFont f) { font = f; }
 };
@@ -530,6 +578,20 @@ public:
 		text = pt;
 		changed = true;
 	}
+};
+
+class StopButton : public TextButton
+{
+protected:
+	void DrawOutline(PixelNumber xOffset, PixelNumber yOffset) const;
+	PixelNumber GetHeight() const override { return width; }
+
+public:
+	StopButton(PixelNumber py, PixelNumber px, PixelNumber pw, const char * _ecv_array null pt, event_t e, int param = 0)
+		: TextButton(py, px, pw, pt, e, param) {}
+	StopButton(PixelNumber py, PixelNumber px, PixelNumber pw, const char * _ecv_array null pt, event_t e, const char * _ecv_array param)
+		: TextButton(py, px, pw, pt, e, param) {}
+	void Refresh(bool full, PixelNumber xOffset, PixelNumber yOffset) override;
 };
 
 class TextButtonWithLabel : public TextButton

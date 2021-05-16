@@ -63,7 +63,10 @@ const ColourScheme colourSchemes[NumColourSchemes] =
 		.stopButtonBackColour = red,
 		.coordBoxTextColour = UTFT::fromRGB(108, 108, 108),
 		.coordBoxValueColour = white,
-		.coordBoxBackColour = UTFT::fromRGB(28, 28, 31)
+		.coordBoxBackColour = UTFT::fromRGB(28, 28, 31),
+		.ctrlMoveArrowBackColour = black,
+		.ctrlMoveArrowPressedBorderColour = UTFT::fromRGB(0, 138, 252),
+		.ctrlMoveArrowBorderColour = UTFT::fromRGB(80, 80, 80)
 	},
 
 	// Light colour schema.
@@ -115,7 +118,10 @@ const ColourScheme colourSchemes[NumColourSchemes] =
 		.stopButtonBackColour = UTFT::fromRGB(255, 24, 32),			// need enough G and B to allow for the gradient
 		.coordBoxTextColour = UTFT::fromRGB(108, 108, 108),
 		.coordBoxValueColour = white,
-		.coordBoxBackColour = UTFT::fromRGB(28, 28, 31)
+		.coordBoxBackColour = UTFT::fromRGB(28, 28, 31),
+		.ctrlMoveArrowBackColour = white,
+		.ctrlMoveArrowPressedBorderColour = UTFT::fromRGB(0, 138, 252),
+		.ctrlMoveArrowBorderColour = UTFT::fromRGB(43, 43, 43)
 	},
 
 	// Dark colour scheme
@@ -167,7 +173,10 @@ const ColourScheme colourSchemes[NumColourSchemes] =
 		.stopButtonBackColour = red,
 		.coordBoxTextColour = UTFT::fromRGB(108, 108, 108),
 		.coordBoxValueColour = white,
-		.coordBoxBackColour = UTFT::fromRGB(28, 28, 31)
+		.coordBoxBackColour = UTFT::fromRGB(28, 28, 31),
+		.ctrlMoveArrowBackColour = black,
+		.ctrlMoveArrowPressedBorderColour = UTFT::fromRGB(0, 138, 252),
+		.ctrlMoveArrowBorderColour = UTFT::fromRGB(43, 43, 43)
 	}
 };
 

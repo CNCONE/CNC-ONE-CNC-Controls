@@ -724,6 +724,223 @@ void SingleButton::Press(bool p, int index) /*override*/
 	}
 }
 
+ArrowButton::ArrowButton(PixelNumber py, PixelNumber px, PixelNumber pw, PixelNumber ph, Orientations orientation, event_t e, int iParam)
+	: ButtonBase(py, px, pw), height(ph), myOrientation(orientation)
+{
+	param.sParam = nullptr;
+	SetEvent(e, iParam);
+}
+
+void ArrowButton::DrawOutline(PixelNumber xOffset, PixelNumber yOffset) const
+{
+	PixelNumber thickness, height, leg;
+	PixelNumber x0, y0, x1, y1, x2, y2, x3, y3, x4, y4 ,x5, y5, x6, y6;
+
+	height = GetHeight();
+	x0 = x + xOffset;
+	y0 = y + xOffset;
+
+	switch (myOrientation)
+	{
+	case left:
+		thickness = width/4;
+		leg = sqrt((thickness*thickness)/2);
+
+		x1 = x0 + width - leg;
+		y1 = y0;
+
+		x2 = x0;
+		y2 = y0 + height / 2;
+
+		x3 = x1;
+		y3 = y1 + height;
+
+		x4 = x0 + width;
+		y4 = y3 - leg;
+
+		x5 = x0 + 2 * leg;
+		y5 = y2;
+
+		x6 = x4;
+		y6 = y1 + leg;
+		break;
+	case up:
+		thickness = height/4;
+		leg = sqrt((thickness*thickness)/2);
+
+		x1 = x0;
+		y1 = y0 + height - leg;
+
+		x2 = x0 + width / 2;
+		y2 = y0;
+
+		x3 = x1 + width;
+		y3 = y1;
+
+		x4 = x3 - leg;
+		y4 = y0 + height;
+
+		x5 = x2;
+		y5 = y2 + 2 * leg;
+
+		x6 = x1 + leg;
+		y6 = y4;
+		break;
+	case right:
+		thickness = width/4;
+		leg = sqrt((thickness*thickness)/2);
+
+		x1 = x0 + leg;
+		y1 = y0;
+
+		x2 = x0 + width;
+		y2 = y0 + height / 2;
+
+		x3 = x1;
+		y3 = y1 + height;
+
+		x4 = x0;
+		y4 = y3 - leg;
+
+		x5 = x2 - 2 * leg;
+		y5 = y2;
+
+		x6 = x4;
+		y6 = y1 + leg;
+		break;
+	case down:
+		thickness = height/4;
+		leg = sqrt((thickness*thickness)/2);
+
+		x1 = x0;
+		y1 = y0 + leg;
+
+		x2 = x0 + width / 2;
+		y2 = y0 + height;
+
+		x3 = x1 + width;
+		y3 = y1;
+
+		x4 = x3 - leg;
+		y4 = y0;
+
+		x5 = x2;
+		y5 = y2 - 2 * leg;
+
+		x6 = x1 + leg;
+		y6 = y4;
+		break;
+	default:
+		x1 = x2 = x3 = x4 = x5 = x6 = x0;
+		y1 = y2 = y3 = y4 = y5 = y6 = y0;
+	}
+	//		lcd.setColor(borderColour);
+	lcd.setColor((pressed) ? pressedBackColour : borderColour);
+	lcd.drawLine(x1,y1,x2,y2);
+	lcd.drawLine(x2,y2,x3,y3);
+	lcd.drawLine(x3,y3,x4,y4);
+	lcd.drawLine(x4,y4,x5,y5);
+	lcd.drawLine(x5,y5,x6,y6);
+	lcd.drawLine(x6,y6,x1,y1);
+
+	// Note that we draw the filled rounded rectangle with the full width but 2 pixels less height than the border.
+	// This means that we start with the requested colour inside the border.
+	//lcd.fillRoundRect(x + xOffset, y + yOffset + 1, x + xOffset + width - 1, y + yOffset + GetHeight() - 2, (isPressed) ? pressedGradColour : gradColour, buttonGradStep);
+	//lcd.setColor(borderColour);
+	//lcd.drawRoundRect(x + xOffset, y + yOffset, x + xOffset + width - 1, y + yOffset + GetHeight() - 1);
+}
+
+void ArrowButton::Press(bool p, int index) /*override*/
+{
+	UNUSED(index);
+	if (p != pressed)
+	{
+		pressed = p;
+		changed = true;
+	}
+}
+
+void ArrowButton::Refresh(bool full, PixelNumber xOffset, PixelNumber yOffset)
+{
+	if (full || changed)
+	{
+		DrawOutline(xOffset, yOffset);
+/*		lcd.setTransparentBackground(true);
+		lcd.setColor(fcolour);
+		lcd.setFont(font);
+		unsigned int rowsLeft = textRows;
+		size_t offset = 0;
+		PixelNumber rowY = y + yOffset + textMargin + 1;
+		do
+		{
+			lcd.setTextPos(0, 9999, width - 6);
+			PrintText(offset);							// dummy print to get text width
+			PixelNumber spare = width - 6 - lcd.getTextX();
+			lcd.setTextPos(x + xOffset + 3 + spare/2, rowY, x + xOffset + width - 3);	// text is always centre-aligned
+			offset += PrintText(offset) + 1;
+			rowY += UTFT::GetFontHeight(font) + 2;
+		} while (--rowsLeft != 0);
+		lcd.setTransparentBackground(false);*/
+		changed = false;
+	}
+}
+
+void StopButton::DrawOutline(PixelNumber xOffset, PixelNumber yOffset) const
+{
+	PixelNumber thickness, height, leg;
+	PixelNumber x0, y0, x1, y1, r1, r2;
+
+	x0 = x + xOffset;
+	y0 = y + xOffset;
+
+	x1 = x0 + width/2;
+	y1 = y0 + width/2;
+
+	r1 = width/2;
+	r2 = (r1>3) ? r1-3 : 0;
+
+	//	lcd.setColor(borderColour);
+	lcd.setColor(borderColour);
+	lcd.fillCircle(x1, y1, r1);
+
+	if(!pressed)
+	{
+		lcd.setColor(bcolour);
+		lcd.fillCircle(x1, y1, r2);
+	}
+
+	// Note that we draw the filled rounded rectangle with the full width but 2 pixels less height than the border.
+	// This means that we start with the requested colour inside the border.
+	//lcd.fillRoundRect(x + xOffset, y + yOffset + 1, x + xOffset + width - 1, y + yOffset + GetHeight() - 2, (isPressed) ? pressedGradColour : gradColour, buttonGradStep);
+	//lcd.setColor(borderColour);
+	//lcd.drawRoundRect(x + xOffset, y + yOffset, x + xOffset + width - 1, y + yOffset + GetHeight() - 1);
+}
+
+void StopButton::Refresh(bool full, PixelNumber xOffset, PixelNumber yOffset)
+{
+	if (full || changed)
+	{
+		DrawOutline(xOffset, yOffset);
+		lcd.setTransparentBackground(true);
+		lcd.setColor(fcolour);
+		lcd.setFont(font);
+		unsigned int rowsLeft = textRows;
+		size_t offset = 0;
+		PixelNumber rowY = y + yOffset + width/2 - UTFT::GetFontHeight(font)/2;
+		do
+		{
+			lcd.setTextPos(0, 9999, width - 6);
+			PrintText(offset);							// dummy print to get text width
+			PixelNumber spare = width - 6 - lcd.getTextX();
+			lcd.setTextPos(x + xOffset + 3 + spare/2, rowY, x + xOffset + width - 3);	// text is always centre-aligned
+			offset += PrintText(offset) + 1;
+			rowY += UTFT::GetFontHeight(font) + 2;
+		} while (--rowsLeft != 0);
+		lcd.setTransparentBackground(false);
+		changed = false;
+	}
+}
+
 /*static*/ LcdFont ButtonWithText::font;
 
 PixelNumber ButtonWithText::GetHeight() const

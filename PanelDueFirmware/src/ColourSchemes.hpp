@@ -89,6 +89,10 @@ struct ColourScheme
 	Colour coordBoxTextColour;
 	Colour coordBoxValueColour;
 	Colour coordBoxBackColour;
+
+	Colour ctrlMoveArrowBackColour;
+	Colour ctrlMoveArrowPressedBorderColour;
+	Colour ctrlMoveArrowBorderColour;
 };
 
 extern const ColourScheme colourSchemes[];

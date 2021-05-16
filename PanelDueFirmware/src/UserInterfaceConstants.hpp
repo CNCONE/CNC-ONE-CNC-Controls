@@ -26,7 +26,7 @@ constexpr size_t MaxHeatersPerTool = 8;
 static const char* _ecv_array const babystepAmounts[] = { "0.01", "0.02", "0.05", "0.1" };
 static const float _ecv_array babystepAmountsF[] = { 0.01, 0.02, 0.05, 0.1 };
 constexpr int8_t NoTool = -1;
-static const char * _ecv_array const moveSteps[] = { "0.01", "1.00", "10.00" };
+static const char * _ecv_array const moveSteps[] = { "0.01", "0.10", "1.00", "10.00" };
 
 
 #if DISPLAY_X == 480
@@ -86,12 +86,15 @@ const PixelNumber iconButtonMargin = 2;
 const PixelNumber outlinePixels = 3;
 const PixelNumber fieldSpacing = 12;
 const PixelNumber statusFieldWidth = 228;
-const PixelNumber coordBoxLabelWidth = 30;
+const PixelNumber coordBoxLabelWidth = 27;
 const PixelNumber coordBoxValueWidth = 100;
 const PixelNumber coordBoxUnitWidth = 50;
 const PixelNumber coordBoxWidth = margin + coordBoxLabelWidth + coordBoxValueWidth + margin + coordBoxUnitWidth + margin;
 const PixelNumber ctrlStepButtonWidth = 75;
-const PixelNumber ctrlManualWidth = 300;
+const PixelNumber ctrlManualWidth = 200;
+const PixelNumber ctrlArrowWidth = 130;
+const PixelNumber ctrlArrowHeight = 80;
+const PixelNumber ctrlStopBtnWidth = 130;
 
 const PixelNumber rowTextHeight = 32;	// height of the font we use
 const PixelNumber rowHeight = 48;

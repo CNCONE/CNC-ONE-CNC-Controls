@@ -35,6 +35,7 @@ enum Event : uint8_t
 	evHomeAxis,
 	evCtrlStepSize,
 	evCtrlMove,
+	evCtrlStop,
 
 	// Print functions
 	evExtrusionFactor,

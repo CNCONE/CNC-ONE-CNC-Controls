@@ -66,8 +66,9 @@ static SingleButton *tabControl, *tabPrint, *tabMsg, *tabSetup;
 static SingleButton *homeAllButton;
 static IconButtonWithText *homeButtons[3];
 static FloatField *coordBoxAxisPos[3];
-static TextButton *ctrlManualStep[3];
-static TextButton *ctrlXYup,*ctrlXYdown,*ctrlXYleft,*ctrlXYright,*ctrlZup,*ctrlZdown;
+static TextButton *ctrlManualStep[4];
+static ArrowButton *ctrlXYup,*ctrlXYdown,*ctrlXYleft,*ctrlXYright,*ctrlZup,*ctrlZdown;
+static StopButton *ctrlManualStop;
 
 static FloatField *printTabAxisPos[MaxDisplayableAxes];
 static FloatField *movePopupAxisPos[MaxDisplayableAxes];
@@ -878,53 +879,63 @@ void CreateControlTabFields(const ColourScheme& colours)
 {
 	mgr.SetRoot(commonRoot);
 
-	PixelNumber px = margin+coordBoxWidth+5*fieldSpacing;
-	// Add the labels
 	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
-	mgr.AddField(new StaticTextField(row2 + labelRowAdjust, px, ctrlManualWidth, TextAlignment::Left, strings->manualctrl));
-
-	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
-	ctrlManualStep[0] = new TextButton(row3, px, ctrlStepButtonWidth, moveSteps[0], evCtrlStepSize, 0);
-	mgr.AddField(ctrlManualStep[0]);
-	ctrlManualStep[1] = new TextButton(row4, px, ctrlStepButtonWidth, moveSteps[1], evCtrlStepSize, 1);
-	mgr.AddField(ctrlManualStep[1]);
-	ctrlManualStep[2] = new TextButton(row5, px, ctrlStepButtonWidth, moveSteps[2], evCtrlStepSize, 2);
-	mgr.AddField(ctrlManualStep[2]);
-	ctrlManualStep[currentMoveSteps]->Press(true, 0);
-
-	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
-	px += ctrlStepButtonWidth + 2*fieldSpacing;
-	ctrlXYleft = new TextButton(row4, px, buttonHeight, LEFT_ARROW, evCtrlMove, 0);
-	mgr.AddField(ctrlXYleft);
-	px += fieldSpacing+buttonHeight;
-	ctrlXYup = new TextButton(row3, px, buttonHeight, UP_ARROW, evCtrlMove, 1);
-	mgr.AddField(ctrlXYup);
-	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
-	mgr.AddField(new StaticTextField(row4 + labelRowAdjust, px, buttonHeight, TextAlignment::Centre, "XY"));
-	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
-	ctrlXYdown = new TextButton(row5, px, buttonHeight, DOWN_ARROW, evCtrlMove, 2);
-	mgr.AddField(ctrlXYdown);
-	px += fieldSpacing+buttonHeight;
-	ctrlXYright = new TextButton(row4, px, buttonHeight, RIGHT_ARROW, evCtrlMove, 3);
-	mgr.AddField(ctrlXYright);
-
-	px += 2*fieldSpacing+buttonHeight;
-	ctrlZup = new TextButton(row3, px, buttonHeight, UP_ARROW, evCtrlMove, 4);
-	mgr.AddField(ctrlZup);
-	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
-	mgr.AddField(new StaticTextField(row4 + labelRowAdjust, px, buttonHeight, TextAlignment::Centre, "Z"));
-	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
-	ctrlZdown = new TextButton(row5, px, buttonHeight, DOWN_ARROW, evCtrlMove, 5);
-	mgr.AddField(ctrlZdown);
-
-	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
-	mgr.AddField(new StaticTextField(row7 + labelRowAdjust, margin, 396, TextAlignment::Left, strings->home));
+	mgr.AddField(new StaticTextField(row7 + labelRowAdjust, margin, coordBoxWidth+20, TextAlignment::Left, strings->home));
 
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.notHomedButtonBackColour);
 	homeAllButton = AddIconButton(row8, 0, 8, IconHomeAll, evSendCommand, "G28");
 	homeButtons[0] = AddIconButtonWithText(row8, 1, 8, IconHomeAll, evHomeAxis, axisNames[0], axisNames[0]);
-	homeButtons[1] = AddIconButtonWithText(row8, 2, 8, IconHomeAll, evHomeAxis, axisNames[1], axisNames[1]);
-	homeButtons[2] = AddIconButtonWithText(row8, 3, 8, IconHomeAll, evHomeAxis, axisNames[2], axisNames[2]);
+	homeButtons[1] = AddIconButtonWithText(row9, 0, 8, IconHomeAll, evHomeAxis, axisNames[1], axisNames[1]);
+	homeButtons[2] = AddIconButtonWithText(row9, 1, 8, IconHomeAll, evHomeAxis, axisNames[2], axisNames[2]);
+
+	PixelNumber px = margin+coordBoxWidth+fieldSpacing;
+	// Add the labels
+	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
+	mgr.AddField(new StaticTextField(row2 + labelRowAdjust, px, ctrlManualWidth, TextAlignment::Left, strings->manualctrl));
+
+	px += ctrlManualWidth + fieldSpacing;
+	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
+	ctrlManualStep[0] = new TextButton(row2, px, ctrlStepButtonWidth, moveSteps[0], evCtrlStepSize, 0);
+	mgr.AddField(ctrlManualStep[0]);
+	px += ctrlStepButtonWidth + fieldSpacing;
+	ctrlManualStep[1] = new TextButton(row2, px, ctrlStepButtonWidth, moveSteps[1], evCtrlStepSize, 1);
+	mgr.AddField(ctrlManualStep[1]);
+	px += ctrlStepButtonWidth + fieldSpacing;
+	ctrlManualStep[2] = new TextButton(row2, px, ctrlStepButtonWidth, moveSteps[2], evCtrlStepSize, 2);
+	mgr.AddField(ctrlManualStep[2]);
+	px += ctrlStepButtonWidth + fieldSpacing;
+	ctrlManualStep[3] = new TextButton(row2, px, ctrlStepButtonWidth, moveSteps[3], evCtrlStepSize, 3);
+	mgr.AddField(ctrlManualStep[3]);
+	ctrlManualStep[currentMoveSteps]->Press(true, 0);
+
+	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.ctrlMoveArrowBackColour, colours.ctrlMoveArrowBorderColour, colours.buttonGradColour,
+									colours.ctrlMoveArrowPressedBorderColour, colours.buttonPressedGradColour, colours.pal);
+	px = margin + coordBoxWidth + fieldSpacing;
+	ctrlXYleft = new ArrowButton(row3 + ctrlArrowHeight, px, ctrlArrowHeight, ctrlArrowWidth, ArrowButton::Orientations::left, evCtrlMove, 0);
+	mgr.AddField(ctrlXYleft);
+	ctrlXYup = new ArrowButton(row3, px + ctrlArrowHeight, ctrlArrowWidth, ctrlArrowHeight, ArrowButton::Orientations::up, evCtrlMove, 1);
+	mgr.AddField(ctrlXYup);
+	ctrlXYdown = new ArrowButton(row3 + ctrlArrowHeight + ctrlArrowWidth, px + ctrlArrowHeight, ctrlArrowWidth, ctrlArrowHeight, ArrowButton::Orientations::down, evCtrlMove, 2);
+	mgr.AddField(ctrlXYdown);
+	ctrlXYright = new ArrowButton(row3 + ctrlArrowHeight, px + ctrlArrowHeight + ctrlArrowWidth, ctrlArrowHeight, ctrlArrowWidth, ArrowButton::Orientations::right, evCtrlMove, 3);
+	mgr.AddField(ctrlXYright);
+	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
+	mgr.AddField(new StaticTextField(row3 + ctrlArrowHeight + ctrlArrowWidth / 2 - buttonHeight / 2 + labelRowAdjust, px + ctrlArrowHeight, ctrlArrowWidth, TextAlignment::Centre, "X | Y"));
+
+	px += 2 * ctrlArrowHeight + ctrlArrowWidth + fieldSpacing;
+	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.ctrlMoveArrowBackColour);
+	ctrlZup = new ArrowButton(row3, px, ctrlArrowWidth, ctrlArrowHeight, ArrowButton::Orientations::up, evCtrlMove, 4);
+	mgr.AddField(ctrlZup);
+	ctrlZdown = new ArrowButton(row3 + ctrlArrowHeight + ctrlArrowWidth, px, ctrlArrowWidth, ctrlArrowHeight, ArrowButton::Orientations::down, evCtrlMove, 5);
+	mgr.AddField(ctrlZdown);
+	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
+	mgr.AddField(new StaticTextField(row3 + ctrlArrowHeight + ctrlArrowWidth / 2 - buttonHeight / 2, px, ctrlArrowWidth, TextAlignment::Centre, "Z"));
+
+	DisplayField::SetDefaultColours(colours.stopButtonTextColour, colours.defaultBackColour, colours.stopButtonBackColour, colours.buttonGradColour,
+									colours.ctrlMoveArrowPressedBorderColour, colours.buttonPressedGradColour, colours.pal);
+	px += ctrlArrowWidth + 2*fieldSpacing;
+	ctrlManualStop = new StopButton(row3, px, ctrlStopBtnWidth, strings->stop, evCtrlStop, 0);
+	mgr.AddField(ctrlManualStop);
 
 	controlRoot = mgr.GetRoot();
 }
@@ -2551,7 +2562,7 @@ namespace UI
 			case evCtrlStepSize:
 				currentButton.Clear();
 				{
-					for(uint8_t i=0; i<3; i++)
+					for(uint8_t i=0; i<4; i++)
 					{
 						if(bp.GetIParam()==i) continue;
 						ctrlManualStep[i]->Press(false, 0);
