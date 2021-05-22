@@ -22,11 +22,11 @@ constexpr size_t NumFirmwareUpdateModules = 5;		// 0 = mainboard, 4 = PanelDue, 
 
 #else
 
-#define FIRMWARE_NAME			"RepRapFirmware for Duet 2 WiFi/Ethernet"
+#define FIRMWARE_NAME			"RepRapFirmware for CNC One WiFi"
 #define DEFAULT_BOARD_TYPE	 	BoardType::DuetWiFi_10
-#define IAP_FIRMWARE_FILE		"Duet2CombinedFirmware.bin"
-#define IAP_UPDATE_FILE			"Duet2_SDiap32_WiFiEth.bin"	// using the same IAP file for both Duet WiFi and Duet Ethernet
-#define WIFI_FIRMWARE_FILE		"DuetWiFiServer.bin"
+#define IAP_FIRMWARE_FILE		"CNCONECombinedFirmware.bin"
+#define IAP_UPDATE_FILE			"iap4e.bin"	// using the same IAP file for both Duet WiFi and Duet Ethernet
+#define WIFI_FIRMWARE_FILE		"CNCONE_WiFiServer.bin"
 
 constexpr size_t NumFirmwareUpdateModules = 5;		// 4 modules, plus one for manual upload to WiFi module (module 2 is now unused)
 
@@ -54,8 +54,8 @@ constexpr uint32_t IAP_IMAGE_START = 0x20018000;	// IAP is loaded into the last 
 #else
 # define HAS_HIGH_SPEED_SD		1
 #endif
-#define SUPPORT_TMC2660			1
-#define TMC2660_USES_USART		1
+#define SUPPORT_TMC2660			0
+#define TMC2660_USES_USART		0
 #define HAS_VOLTAGE_MONITOR		1
 #define ENFORCE_MAX_VIN			1
 #define HAS_VREF_MONITOR		0
@@ -66,13 +66,13 @@ constexpr uint32_t IAP_IMAGE_START = 0x20018000;	// IAP is loaded into the last 
 #if defined(USE_SBC)
 # define SUPPORT_SCANNER		0
 #else
-# define SUPPORT_SCANNER		1					// set zero to disable support for FreeLSS scanners
+# define SUPPORT_SCANNER		0					// set zero to disable support for FreeLSS scanners
 #endif
 #define SUPPORT_LASER			1					// support laser cutters and engravers using G1 S parameter
 #define SUPPORT_IOBITS			1					// set to support P parameter in G0/G1 commands
 #define SUPPORT_DHT_SENSOR		1					// set nonzero to support DHT temperature/humidity sensors
 #define SUPPORT_WORKPLACE_COORDINATES	1			// set nonzero to support G10 L2 and G53..59
-#define SUPPORT_12864_LCD		1					// set nonzero to support 12864 LCD and rotary encoder
+#define SUPPORT_12864_LCD		0					// set nonzero to support 12864 LCD and rotary encoder
 #define SUPPORT_OBJECT_MODEL	1
 
 #define VARIABLE_NUM_DRIVERS	SUPPORT_12864_LCD	// nonzero means that some pins may only support drivers if not used for other purposes e.g. LCD
@@ -96,20 +96,20 @@ constexpr uint32_t IAP_IMAGE_START = 0x20018000;	// IAP is loaded into the last 
 
 // The physical capabilities of the machine
 
-constexpr size_t NumDirectDrivers = 12;				// The maximum number of drives supported directly by the electronics
-constexpr size_t MaxSmartDrivers = 10;				// The maximum number of smart drivers
+constexpr size_t NumDirectDrivers = 6;				// The maximum number of drives supported directly by the electronics
+constexpr size_t MaxSmartDrivers = 5;				// The maximum number of smart drivers
 
 constexpr size_t MaxSensors = 32;
 
-constexpr size_t MaxHeaters = 10;					// The maximum number of heaters in the machine
-constexpr size_t MaxMonitorsPerHeater = 3;			// The maximum number of monitors per heater
+constexpr size_t MaxHeaters = 2;					// The maximum number of heaters in the machine
+constexpr size_t MaxMonitorsPerHeater = 1;			// The maximum number of monitors per heater
 
-constexpr size_t MaxBedHeaters = 4;
-constexpr size_t MaxChamberHeaters = 4;
+constexpr size_t MaxBedHeaters = 0;
+constexpr size_t MaxChamberHeaters = 0;
 constexpr int8_t DefaultBedHeater = 0;
-constexpr int8_t DefaultE0Heater = 1;				// Index of the default first extruder heater, used only for the legacy status response
+constexpr int8_t DefaultE0Heater = 0;				// Index of the default first extruder heater, used only for the legacy status response
 
-constexpr size_t NumThermistorInputs = 8;
+constexpr size_t NumThermistorInputs = 2;
 constexpr size_t NumTmcDriversSenseChannels = 2;
 
 constexpr size_t MaxZProbes = 4;
@@ -117,16 +117,16 @@ constexpr size_t MaxGpInPorts = 10;
 constexpr size_t MaxGpOutPorts = 10;
 
 constexpr size_t MinAxes = 3;						// The minimum and default number of axes
-constexpr size_t MaxAxes = 10;						// The maximum number of movement axes in the machine, usually just X, Y and Z
-constexpr size_t MaxDriversPerAxis = 5;				// The maximum number of stepper drivers assigned to one axis
+constexpr size_t MaxAxes = 6;						// The maximum number of movement axes in the machine, usually just X, Y and Z
+constexpr size_t MaxDriversPerAxis = 2;				// The maximum number of stepper drivers assigned to one axis
 
-constexpr size_t MaxExtruders = 7;					// The maximum number of extruders
-constexpr size_t NumDefaultExtruders = 1;			// The number of drivers that we configure as extruders by default
+constexpr size_t MaxExtruders = 0;					// The maximum number of extruders
+constexpr size_t NumDefaultExtruders = 0;			// The number of drivers that we configure as extruders by default
 
-constexpr size_t MaxAxesPlusExtruders = 12;
+constexpr size_t MaxAxesPlusExtruders = 6;
 
-constexpr size_t MaxHeatersPerTool = 8;
-constexpr size_t MaxExtrudersPerTool = 8;
+constexpr size_t MaxHeatersPerTool = 1;
+constexpr size_t MaxExtrudersPerTool = 1;
 
 constexpr size_t MaxFans = 12;
 
@@ -153,29 +153,17 @@ constexpr Pin AdditionalIoExpansionStart = 220;		// Pin numbers 220-235 are on t
 constexpr Pin GlobalTmc2660EnablePin = PortCPin(6);	// The pin that drives ENN of all TMC2660 drivers on production boards (on pre-production boards they are grounded)
 constexpr Pin ENABLE_PINS[NumDirectDrivers] =
 {
-	PortDPin(14), PortCPin(9), PortCPin(10), PortCPin(17), PortCPin(25),	// Duet
-	PortDPin(23), PortDPin(24), PortDPin(25), PortDPin(26), PortBPin(14),	// DueX5
-	PortDPin(18),															// CONN_LCD
-#if !SUPPORT_12864_LCD
-	PortCPin(28)
-#endif
+	PortDPin(14), PortCPin(9), PortCPin(10), PortCPin(17), PortCPin(25),
+	PortDPin(23),
 };
 constexpr Pin STEP_PINS[NumDirectDrivers] =
 {
-	PortDPin(6), PortDPin(7), PortDPin(8), PortDPin(5), PortDPin(4),		// Duet
-	PortDPin(2), PortDPin(1), PortDPin(0), PortDPin(3), PortDPin(27),		// DueX5
-	PortDPin(20),															// CONN_LCD
-#if !SUPPORT_12864_LCD
-	PortDPin(21)
-#endif
+	PortDPin(6), PortDPin(7), PortDPin(8), PortDPin(5), PortDPin(4),
+	PortDPin(2),
 };
 constexpr Pin DIRECTION_PINS[NumDirectDrivers] =
-{	PortDPin(11), PortDPin(12), PortDPin(13), PortAPin(1), PortDPin(9),		// Duet
-	PortDPin(28), PortDPin(22), PortDPin(16), PortDPin(17), PortCPin(0),	// DueX5
-	PortDPin(19),															// CONN_LCD
-#if !SUPPORT_12864_LCD
-	PortAPin(25)
-#endif
+{	PortDPin(11), PortDPin(12), PortDPin(13), PortAPin(1), PortDPin(9),
+	PortDPin(28),
 };
 
 // Pin assignments etc. using USART1 in SPI mode
@@ -196,8 +184,7 @@ constexpr Pin DueX_INT = PortAPin(17);										// DueX interrupt pin (was E6_ST
 // Thermistors
 constexpr Pin TEMP_SENSE_PINS[NumThermistorInputs] =
 {
-	PortCPin(13), PortCPin(15), PortCPin(12),								// Duet
-	PortCPin(29), PortCPin(30), PortCPin(31), PortCPin(27), PortAPin(18)	// DueX5
+	NoPin, NoPin,
 };
 
 // Thermistor series resistor value in Ohms
@@ -205,10 +192,10 @@ constexpr float DefaultThermistorSeriesR = 4700.0;
 
 // Digital pins the 31855s have their select lines tied to
 constexpr Pin SpiTempSensorCsPins[] =
-	{ PortBPin(2), PortCPin(18), PortCPin(19), PortCPin(20), PortAPin(24), PortEPin(1), PortEPin(2), PortEPin(3) };	// SPI0_CS1, SPI0_CS2, CS3, CS4, CS5, CS6, CS7, CS8
+	{ NoPin };
 
 // Pin that controls the ATX power on/off
-constexpr Pin ATX_POWER_PIN = PortDPin(15);
+constexpr Pin ATX_POWER_PIN = NoPin; // not supported
 
 // Analogue pin numbers
 constexpr Pin PowerMonitorVinDetectPin = PortCPin(4);						// AFE1_AD7/PC4 Vin monitor
@@ -223,7 +210,7 @@ constexpr Pin VssaSensePin = PortBPin(7);
 // Z probes
 constexpr Pin Z_PROBE_PIN = PortCPin(1);									// AFE1_AD4/PC1 Z probe analog input
 constexpr Pin Z_PROBE_MOD_PIN = PortCPin(2);
-constexpr Pin DiagPin = Z_PROBE_MOD_PIN;
+constexpr Pin DiagPin = PortCPin(12); // error LED Pin 44
 constexpr bool DiagOnPolarity = true;
 
 // SD cards
@@ -311,25 +298,25 @@ struct PinEntry
 constexpr PinEntry PinTable[] =
 {
 	// Duet 2 and DueX heater outputs
-	{ PortAPin(19),	PinCapability::wpwm,	"!bedheat" },
-	{ PortAPin(20), PinCapability::wpwm,	"!e0heat" },
-	{ PortAPin(16), PinCapability::wpwm,	"!e1heat" },
-	{ PortCPin(3),	PinCapability::wpwm,	"exp.heater3,exp.8,!duex.e2heat,!duex.pwm1" },
-	{ PortCPin(5),	PinCapability::wpwm,	"exp.heater4,exp.13,!duex.e3heat,!duex.pwm2" },
-	{ PortCPin(8),	PinCapability::wpwm,	"exp.heater5,exp.18,!duex.e4heat,!duex.pwm3" },
-	{ PortCPin(11),	PinCapability::wpwm,	"exp.heater6,exp.23,!duex.e5heat,!duex.pwm4" },
-	{ PortAPin(15),	PinCapability::wpwm,	"exp.heater7,exp.31,!duex.e6heat,!duex.pwm5" },
+	{ NoPin,		PinCapability::wpwm,	"!bedheat" },
+	{ NoPin,		PinCapability::wpwm,	"!e0heat" },
+	{ NoPin,		PinCapability::wpwm,	"!e1heat" },
+	{ NoPin,		PinCapability::wpwm,	"exp.heater3,exp.8,!duex.e2heat,!duex.pwm1" },
+	{ NoPin,		PinCapability::wpwm,	"exp.heater4,exp.13,!duex.e3heat,!duex.pwm2" },
+	{ NoPin,		PinCapability::wpwm,	"exp.heater5,exp.18,!duex.e4heat,!duex.pwm3" },
+	{ NoPin,		PinCapability::wpwm,	"exp.heater6,exp.23,!duex.e5heat,!duex.pwm4" },
+	{ NoPin,		PinCapability::wpwm,	"exp.heater7,exp.31,!duex.e6heat,!duex.pwm5" },
 
 	// Duet 2 and DueX fan outputs
 	{ PortCPin(23),	PinCapability::wpwm,	"fan0" },
 	{ PortCPin(26),	PinCapability::wpwm,	"fan1" },
 	{ PortAPin(0),	PinCapability::wpwm,	"fan2" },
-	{ 212,			PinCapability::wpwm,	"duex.fan3" },
-	{ 207,			PinCapability::wpwm,	"duex.fan4" },
-	{ 206,			PinCapability::wpwm,	"duex.fan5" },
-	{ 205,			PinCapability::wpwm,	"duex.fan6" },
-	{ 204,			PinCapability::wpwm,	"duex.fan7" },
-	{ 215,			PinCapability::wpwm,	"duex.fan8" },
+	{ PortAPin(20),	PinCapability::wpwm,	"duex.fan3" },
+	{ PortAPin(16),	PinCapability::wpwm,	"duex.fan4" },
+	{ NoPin,		PinCapability::wpwm,	"duex.fan5" },
+	{ NoPin,		PinCapability::wpwm,	"duex.fan6" },
+	{ NoPin,		PinCapability::wpwm,	"duex.fan7" },
+	{ NoPin,		PinCapability::wpwm,	"duex.fan8" },
 
 	// Endstop inputs
 	{ PortCPin(14),	PinCapability::read,	"xstop" },
@@ -338,10 +325,10 @@ constexpr PinEntry PinTable[] =
 	{ PortDPin(10),	PinCapability::read,	"e0stop" },
 	{ PortCPin(16),	PinCapability::read,	"e1stop" },
 	{ PortEPin(0),	PinCapability::rw,		"exp.e2stop,exp.4" },
-	{ PortEPin(1),	PinCapability::rw,		"exp.e3stop,exp.9,spi.cs6,duex.cs6" },
-	{ PortEPin(2),	PinCapability::rw,		"exp.e4stop,exp.14,spi.cs7,duex.cs7" },
-	{ PortEPin(3),	PinCapability::rw,		"exp.e5stop,exp.19,spi.cs8,duex.cs8" },
-	{ PortAPin(17),	PinCapability::rw,		"exp.e6stop,exp.24" },
+	{ NoPin,		PinCapability::rw,		"exp.e3stop,exp.9,spi.cs6,duex.cs6" },
+	{ NoPin,		PinCapability::rw,		"exp.e4stop,exp.14,spi.cs7,duex.cs7" },
+	{ NoPin,		PinCapability::rw,		"exp.e5stop,exp.19,spi.cs8,duex.cs8" },
+	{ NoPin,		PinCapability::rw,		"exp.e6stop,exp.24" },
 	{ 200,			PinCapability::read,	"duex.e2stop" },
 	{ 203,			PinCapability::read,	"duex.e3stop" },
 	{ 202,			PinCapability::read,	"duex.e4stop" },
@@ -349,21 +336,21 @@ constexpr PinEntry PinTable[] =
 	{ 213,			PinCapability::read,	"duex.e6stop" },
 
 	// Thermistor inputs
-	{ PortCPin(13),	PinCapability::ainr,	"bedtemp" },
-	{ PortCPin(15),	PinCapability::ainr,	"e0temp" },
-	{ PortCPin(12),	PinCapability::ainr,	"e1temp" },
-	{ PortCPin(29),	PinCapability::ainr,	"e2temp,duex.e2temp,exp.thermistor3,exp.35" },
-	{ PortCPin(30),	PinCapability::ainr,	"e3temp,duex.e3temp,exp.thermistor4,exp.36" },
-	{ PortCPin(31),	PinCapability::ainr,	"e4temp,duex.e4temp,exp.thermistor5,exp.37" },
-	{ PortCPin(27),	PinCapability::ainr,	"e5temp,duex.e5temp,exp.thermistor6,exp.38" },
-	{ PortAPin(18),	PinCapability::ainr,	"e6temp,duex.e6temp,exp.thermistor7,exp.39" },
+	{ NoPin,		PinCapability::ainr,	"bedtemp" },
+	{ NoPin,		PinCapability::ainr,	"e0temp" },
+	{ NoPin,		PinCapability::ainr,	"e1temp" },
+	{ NoPin,		PinCapability::ainr,	"e2temp,duex.e2temp,exp.thermistor3,exp.35" },
+	{ NoPin,		PinCapability::ainr,	"e3temp,duex.e3temp,exp.thermistor4,exp.36" },
+	{ NoPin,		PinCapability::ainr,	"e4temp,duex.e4temp,exp.thermistor5,exp.37" },
+	{ NoPin,		PinCapability::ainr,	"e5temp,duex.e5temp,exp.thermistor6,exp.38" },
+	{ NoPin,		PinCapability::ainr,	"e6temp,duex.e6temp,exp.thermistor7,exp.39" },
 
 	// SPI CS pins
-	{ PortBPin(2),	PinCapability::rw,		"spi.cs1" },
-	{ PortCPin(18),	PinCapability::rw,		"spi.cs2" },
-	{ PortCPin(19),	PinCapability::rw,		"spi.cs3" },
-	{ PortCPin(20),	PinCapability::rw,		"spi.cs4" },
-	{ PortAPin(24),	PinCapability::rw,		"spi.cs5,duex.cs5,exp.50" },
+	{ NoPin,		PinCapability::rw,		"spi.cs1" },
+	{ NoPin,		PinCapability::rw,		"spi.cs2" },
+	{ NoPin,		PinCapability::rw,		"spi.cs3" },
+	{ NoPin,		PinCapability::rw,		"spi.cs4" },
+	{ NoPin,		PinCapability::rw,		"spi.cs5,duex.cs5,exp.50" },
 
 	// Misc
 	{ Z_PROBE_PIN,	PinCapability::ainr,	"zprobe.in" },

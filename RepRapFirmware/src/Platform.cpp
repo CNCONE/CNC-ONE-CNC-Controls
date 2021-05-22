@@ -465,6 +465,7 @@ void Platform::Init() noexcept
     auxDevices[0].Init(&SERIAL_AUX_DEVICE);
 	baudRates[1] = AUX_BAUD_RATE;
 	commsParams[1] = 1;							// by default we require a checksum on data from the aux port, to guard against overrun errors
+	EnableAux(0);
 #endif
 
 #ifdef SERIAL_AUX2_DEVICE
@@ -3838,12 +3839,12 @@ const char* Platform::GetElectronicsString() const noexcept
 #elif defined(SAME70XPLD)
 	case BoardType::SAME70XPLD_0:			return "SAME70-XPLD";
 #elif defined(DUET_NG)
-	case BoardType::DuetWiFi_10:			return "Duet WiFi 1.0 or 1.01";
-	case BoardType::DuetWiFi_102:			return "Duet WiFi 1.02 or later";
-	case BoardType::DuetEthernet_10:		return "Duet Ethernet 1.0 or 1.01";
-	case BoardType::DuetEthernet_102:		return "Duet Ethernet 1.02 or later";
-	case BoardType::Duet2SBC_10:			return "Duet 2 1.0 or 1.01 + SBC";
-	case BoardType::Duet2SBC_102:			return "Duet 2 1.02 or later + SBC";
+//	case BoardType::DuetWiFi_10:			return "CNC One WiFi 1.0 or 1.01";
+	case BoardType::DuetWiFi_102:			return "CNC One 1.0";
+//	case BoardType::DuetEthernet_10:		return "Duet Ethernet 1.0 or 1.01";
+//	case BoardType::DuetEthernet_102:		return "Duet Ethernet 1.02 or later";
+//	case BoardType::Duet2SBC_10:			return "Duet 2 1.0 or 1.01 + SBC";
+//	case BoardType::Duet2SBC_102:			return "Duet 2 1.02 or later + SBC";
 #elif defined(DUET_M)
 	case BoardType::DuetM_10:				return "Duet Maestro 1.0";
 #elif defined(DUET_06_085)
@@ -3882,12 +3883,12 @@ const char* Platform::GetBoardString() const noexcept
 #elif defined(SAME70XPLD)
 	case BoardType::SAME70XPLD_0:			return "same70xpld";
 #elif defined(DUET_NG)
-	case BoardType::DuetWiFi_10:			return "duetwifi10";
-	case BoardType::DuetWiFi_102:			return "duetwifi102";
-	case BoardType::DuetEthernet_10:		return "duetethernet10";
-	case BoardType::DuetEthernet_102:		return "duetethernet102";
-	case BoardType::Duet2SBC_10:			return "duet2sbc10";
-	case BoardType::Duet2SBC_102:			return "duet2sbc102";
+//	case BoardType::DuetWiFi_10:			return "duetwifi10";
+	case BoardType::DuetWiFi_102:			return "CNCONE10";
+//	case BoardType::DuetEthernet_10:		return "duetethernet10";
+//	case BoardType::DuetEthernet_102:		return "duetethernet102";
+//	case BoardType::Duet2SBC_10:			return "duet2sbc10";
+//	case BoardType::Duet2SBC_102:			return "duet2sbc102";
 #elif defined(DUET_M)
 	case BoardType::DuetM_10:				return "duetmaestro100";
 #elif defined(DUET_06_085)

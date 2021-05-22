@@ -22,7 +22,7 @@
 
 // Static data
 ReadWriteLock FilamentMonitor::filamentMonitorsLock;
-FilamentMonitor *FilamentMonitor::filamentSensors[MaxExtruders] = { 0 };
+FilamentMonitor *FilamentMonitor::filamentSensors[MaxExtruders]; // = { 0 };
 
 #if SUPPORT_OBJECT_MODEL
 

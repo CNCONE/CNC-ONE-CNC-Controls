@@ -89,7 +89,7 @@ extern "C" [[noreturn]] void hardFaultDispatcher(const uint32_t *pulFaultStackAd
 }
 
 // The fault handler implementation calls a function called hardFaultDispatcher()
-extern "C" [[noreturn]] void HardFault_Handler() noexcept __attribute__((naked));
+extern "C" void HardFault_Handler() noexcept __attribute__((naked));
 void HardFault_Handler() noexcept
 {
 	__asm volatile
@@ -146,7 +146,7 @@ void WDT_IRQHandler() noexcept
 extern "C" [[noreturn]] void RSWDT_Handler() noexcept __attribute__((naked));
 void RSWDT_Handler() noexcept
 # else
-extern "C" [[noreturn]] void WDT_Handler() noexcept __attribute__((naked));
+extern "C" void WDT_Handler() noexcept __attribute__((naked));
 void WDT_Handler() noexcept
 # endif
 {
@@ -189,10 +189,10 @@ void OtherFault_Handler() noexcept
 
 // We could set up the following fault handlers to retrieve the program counter in the same way as for a Hard Fault,
 // however these exceptions are unlikely to occur, so for now we just report the exception type.
-extern "C" [[noreturn]] void NMI_Handler        () noexcept { SoftwareReset(SoftwareResetReason::NMI); }
-extern "C" [[noreturn]] void UsageFault_Handler () noexcept { SoftwareReset(SoftwareResetReason::usageFault); }
+extern "C" void NMI_Handler        () noexcept { SoftwareReset(SoftwareResetReason::NMI); }
+extern "C" void UsageFault_Handler () noexcept { SoftwareReset(SoftwareResetReason::usageFault); }
 
-extern "C" [[noreturn]] void DebugMon_Handler   () noexcept __attribute__ ((alias("OtherFault_Handler")));
+extern "C" void DebugMon_Handler   () noexcept __attribute__ ((alias("OtherFault_Handler")));
 
 // FreeRTOS hooks that we need to provide
 extern "C" [[noreturn]] void stackOverflowDispatcher(const uint32_t *pulFaultStackAddress, char* pcTaskName) noexcept

@@ -336,9 +336,9 @@ constexpr size_t MAX_FILES = 10;						// Must be large enough to handle the max 
 constexpr size_t FILE_BUFFER_SIZE = 128;
 
 // Webserver stuff
-#define DEFAULT_PASSWORD		"reprap"				// Default machine password
-#define DEFAULT_MACHINE_NAME	"My Duet"				// Default machine name
-#define DEFAULT_HOSTNAME 		"duet"					// Default netbios name
+#define DEFAULT_PASSWORD		"cncone"				// Default machine password
+#define DEFAULT_MACHINE_NAME	"My CNC ONE"			// Default machine name
+#define DEFAULT_HOSTNAME 		"cncone"				// Default netbios name
 
 #define INDEX_PAGE_FILE			"index.html"
 #define OLD_INDEX_PAGE_FILE		"reprap.htm"
