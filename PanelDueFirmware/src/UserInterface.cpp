@@ -2687,6 +2687,18 @@ namespace UI
 				break;
 
 			case evWpSetZero:
+				switch(bp.GetIParam())
+				{
+				case 0:	// X-axis
+					SerialIo::Sendf("G10 L20 X0\n");
+					break;
+				case 1:	// Y-axis
+					SerialIo::Sendf("G10 L20 Y0\n");
+					break;
+				case 2:	// Z-axis
+					SerialIo::Sendf("G10 L20 Z0\n");
+					break;
+				}
 				break;
 
 			case evCtrlMove:
