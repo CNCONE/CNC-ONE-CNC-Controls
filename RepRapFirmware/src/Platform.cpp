@@ -465,7 +465,6 @@ void Platform::Init() noexcept
     auxDevices[0].Init(&SERIAL_AUX_DEVICE);
 	baudRates[1] = AUX_BAUD_RATE;
 	commsParams[1] = 1;							// by default we require a checksum on data from the aux port, to guard against overrun errors
-	EnableAux(0);
 #endif
 
 #ifdef SERIAL_AUX2_DEVICE
