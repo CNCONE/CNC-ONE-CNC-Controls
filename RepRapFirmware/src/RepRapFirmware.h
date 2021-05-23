@@ -475,7 +475,7 @@ constexpr unsigned int MaxFloatDigitsDisplayedAfterPoint = 7;
 const char *GetFloatFormatString(unsigned int numDigitsAfterPoint) noexcept;
 
 #if SUPPORT_WORKPLACE_COORDINATES
-constexpr size_t NumCoordinateSystems = 9;							// G54 up to G59.3
+constexpr size_t NumCoordinateSystems = 4;							// G54 up to G57
 #else
 constexpr size_t NumCoordinateSystems = 1;
 #endif

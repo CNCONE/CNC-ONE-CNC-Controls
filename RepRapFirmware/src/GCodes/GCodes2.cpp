@@ -383,8 +383,8 @@ bool GCodes::HandleGcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 	case 55:	// Switch to coordinate system 2
 	case 56:	// Switch to coordinate system 3
 	case 57:	// Switch to coordinate system 4
-	case 58:	// Switch to coordinate system 5
-	case 59:	// Switch to coordinate system 6,7,8,9
+//	case 58:	// Switch to coordinate system 5
+//	case 59:	// Switch to coordinate system 6,7,8,9
 		{
 			unsigned int cs = code - 54;
 			if (code == 59)
