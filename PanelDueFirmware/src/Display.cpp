@@ -734,7 +734,8 @@ ArrowButton::ArrowButton(PixelNumber py, PixelNumber px, PixelNumber pw, PixelNu
 void ArrowButton::DrawOutline(PixelNumber xOffset, PixelNumber yOffset) const
 {
 	PixelNumber thickness, height, leg;
-	PixelNumber x0, y0, x1, y1, x2, y2, x3, y3, x4, y4 ,x5, y5, x6, y6;
+	PixelNumber x0, y0, x1, y1, x2, y2, x3, y3, x4, y4 ,x5, y5, x6, y6,
+				x1b, y1b, x2b, y2b, x3b, y3b, x4b, y4b, x5b, y5b, x6b, y6b;
 
 	height = GetHeight();
 	x0 = x + xOffset;
@@ -748,21 +749,33 @@ void ArrowButton::DrawOutline(PixelNumber xOffset, PixelNumber yOffset) const
 
 		x1 = x0 + width - leg;
 		y1 = y0;
+		x1b = x1;
+		y1b = y1 + 1;
 
 		x2 = x0;
 		y2 = y0 + height / 2;
+		x2b = x2+1;
+		y2b = y2;
 
 		x3 = x1;
 		y3 = y1 + height;
+		x3b = x3;
+		y3b = y3 - 1;
 
 		x4 = x0 + width;
 		y4 = y3 - leg;
+		x4b = x4 - 1;
+		y4b = y4;
 
 		x5 = x0 + 2 * leg;
 		y5 = y2;
+		x5b = x5 - 1;
+		y5b = y5;
 
 		x6 = x4;
 		y6 = y1 + leg;
+		x6b = x6 - 1;
+		y6b = y6;
 		break;
 	case up:
 		thickness = height/4;
@@ -770,21 +783,33 @@ void ArrowButton::DrawOutline(PixelNumber xOffset, PixelNumber yOffset) const
 
 		x1 = x0;
 		y1 = y0 + height - leg;
+		x1b = x1 + 1;
+		y1b = y1;
 
 		x2 = x0 + width / 2;
 		y2 = y0;
+		x2b = x2;
+		y2b = y2 + 1;
 
 		x3 = x1 + width;
 		y3 = y1;
+		x3b = x3 - 1;
+		y3b = y3;
 
 		x4 = x3 - leg;
 		y4 = y0 + height;
+		x4b = x4;
+		y4b = y4 + 1;
 
 		x5 = x2;
 		y5 = y2 + 2 * leg;
+		x5b = x5;
+		y5b = y5 + 1;
 
 		x6 = x1 + leg;
 		y6 = y4;
+		x6b = x6;
+		y6b = y6 + 1;
 		break;
 	case right:
 		thickness = width/4;
@@ -792,21 +817,33 @@ void ArrowButton::DrawOutline(PixelNumber xOffset, PixelNumber yOffset) const
 
 		x1 = x0 + leg;
 		y1 = y0;
+		x1b = x1;
+		y1b = y1 + 1;
 
 		x2 = x0 + width;
 		y2 = y0 + height / 2;
+		x2b = x2 - 1;
+		y2b = y2;
 
 		x3 = x1;
 		y3 = y1 + height;
+		x3b = x3;
+		y3b = y3 - 1;
 
 		x4 = x0;
 		y4 = y3 - leg;
+		x4b = x4 + 1;
+		y4b = y4;
 
 		x5 = x2 - 2 * leg;
 		y5 = y2;
+		x5b = x5 + 1;
+		y5b = y5;
 
 		x6 = x4;
 		y6 = y1 + leg;
+		x6b = x6 + 1;
+		y6b = y6;
 		break;
 	case down:
 		thickness = height/4;
@@ -814,21 +851,33 @@ void ArrowButton::DrawOutline(PixelNumber xOffset, PixelNumber yOffset) const
 
 		x1 = x0;
 		y1 = y0 + leg;
+		x1b = x1;
+		y1b = y1 + 1;
 
 		x2 = x0 + width / 2;
 		y2 = y0 + height;
+		x2b = x2;
+		y2b = y2 + 1;
 
 		x3 = x1 + width;
 		y3 = y1;
+		x3b = x3;
+		y3b = y3 + 1;
 
 		x4 = x3 - leg;
 		y4 = y0;
+		x4b = x4 - 1;
+		y4b = y4;
 
 		x5 = x2;
 		y5 = y2 - 2 * leg;
+		x5b = x5 ;
+		y5b = y5 - 1;
 
 		x6 = x1 + leg;
 		y6 = y4;
+		x6b = x6 + 1;
+		y6b = y6;
 		break;
 	default:
 		x1 = x2 = x3 = x4 = x5 = x6 = x0;
@@ -843,11 +892,12 @@ void ArrowButton::DrawOutline(PixelNumber xOffset, PixelNumber yOffset) const
 	lcd.drawLine(x5,y5,x6,y6);
 	lcd.drawLine(x6,y6,x1,y1);
 
-	// Note that we draw the filled rounded rectangle with the full width but 2 pixels less height than the border.
-	// This means that we start with the requested colour inside the border.
-	//lcd.fillRoundRect(x + xOffset, y + yOffset + 1, x + xOffset + width - 1, y + yOffset + GetHeight() - 2, (isPressed) ? pressedGradColour : gradColour, buttonGradStep);
-	//lcd.setColor(borderColour);
-	//lcd.drawRoundRect(x + xOffset, y + yOffset, x + xOffset + width - 1, y + yOffset + GetHeight() - 1);
+	lcd.drawLine(x1b,y1b,x2b,y2b);
+	lcd.drawLine(x2b,y2b,x3b,y3b);
+	lcd.drawLine(x3b,y3b,x4b,y4b);
+	lcd.drawLine(x4b,y4b,x5b,y5b);
+	lcd.drawLine(x5b,y5b,x6b,y6b);
+	lcd.drawLine(x6b,y6b,x1b,y1b);
 }
 
 void ArrowButton::Press(bool p, int index) /*override*/
@@ -865,22 +915,6 @@ void ArrowButton::Refresh(bool full, PixelNumber xOffset, PixelNumber yOffset)
 	if (full || changed)
 	{
 		DrawOutline(xOffset, yOffset);
-/*		lcd.setTransparentBackground(true);
-		lcd.setColor(fcolour);
-		lcd.setFont(font);
-		unsigned int rowsLeft = textRows;
-		size_t offset = 0;
-		PixelNumber rowY = y + yOffset + textMargin + 1;
-		do
-		{
-			lcd.setTextPos(0, 9999, width - 6);
-			PrintText(offset);							// dummy print to get text width
-			PixelNumber spare = width - 6 - lcd.getTextX();
-			lcd.setTextPos(x + xOffset + 3 + spare/2, rowY, x + xOffset + width - 3);	// text is always centre-aligned
-			offset += PrintText(offset) + 1;
-			rowY += UTFT::GetFontHeight(font) + 2;
-		} while (--rowsLeft != 0);
-		lcd.setTransparentBackground(false);*/
 		changed = false;
 	}
 }
