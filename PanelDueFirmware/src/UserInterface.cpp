@@ -59,17 +59,26 @@ static String<controlPageMacroTextLength> controlPageMacroText[NumControlPageMac
 static PopupWindow *setTempPopup, *setRPMPopup, *movePopup, *extrudePopup, *fileListPopup, *macrosPopup, *fileDetailPopup, *baudPopup,
 		*volumePopup, *infoTimeoutPopup, *screensaverTimeoutPopup, *babystepAmountPopup, *feedrateAmountPopup, *areYouSurePopup, *keyboardPopup, *languagePopup, *coloursPopup, *screensaverPopup;
 static StaticTextField *areYouSureTextField, *areYouSureQueryField;
-static DisplayField *emptyRoot, *baseRoot, *commonRoot, *controlRoot, *printRoot, *messageRoot, *setupRoot;
-static SingleButton *tabControl, *tabPrint, *tabMsg, *tabSetup;
+static DisplayField *emptyRoot, *baseRoot, *commonRoot, *controlRoot, *workplacesRoot, *printRoot, *messageRoot, *setupRoot;
+static SingleButton *tabControl, *tabWorkplaces, *tabPrint, *tabMsg, *tabSetup;
+
+/* General */
+static StaticTextField *nameField, *statusField;
+static FloatField *coordBoxAxisPos[3];
+static StaticTextField *screensaverText;
 
 /* Control Tab */
 static SingleButton *homeAllButton;
 static IconButtonWithText *homeButtons[3];
-static FloatField *coordBoxAxisPos[3];
 static TextButton *ctrlManualStep[4];
 static ArrowButton *ctrlXYup,*ctrlXYdown,*ctrlXYleft,*ctrlXYright,*ctrlZup,*ctrlZdown;
 static StopButton *ctrlManualStop;
 
+/* Workplaces Tab */
+static TextButton *wpSelect[4];
+static TextButton *wpSetZero[4];
+
+/* Job Tab */
 static FloatField *printTabAxisPos[MaxDisplayableAxes];
 static FloatField *movePopupAxisPos[MaxDisplayableAxes];
 static FloatField *currentTemps[MaxSlots];
@@ -81,14 +90,16 @@ static ButtonBase *filesButton, *pauseButton, *resumeButton, *cancelButton, *bab
 static TextField *timeLeftField, *zProbe;
 static TextField *fpNameField, *fpGeneratedByField, *fpLastModifiedField, *fpPrintTimeField;
 static StaticTextField *moveAxisRows[MaxDisplayableAxes];
-static StaticTextField *nameField, *statusField;
-static StaticTextField *screensaverText;
 static IntegerButton *activeTemps[MaxSlots], *standbyTemps[MaxSlots];
+
+/* Setup Tab */
 static IntegerButton *spd, *extrusionFactors[MaxSlots], *fanSpeed, *baudRateButton, *volumeButton, *infoTimeoutButton, *screensaverTimeoutButton, *feedrateAmountButton;
 static TextButton *languageButton, *coloursButton, *dimmingTypeButton, *heaterCombiningButton;
 static TextButtonWithLabel *babystepAmountButton;
+static TextButtonWithLabel *moveStepsButton;
 static SingleButton *moveButton, *extrudeButton, *macroButton;
 static PopupWindow *babystepPopup;
+static PopupWindow *moveStepsPopup;
 static AlertPopup *alertPopup;
 static CharButtonRow *keyboardRows[4];
 static const char* _ecv_array const * _ecv_array currentKeyboard;
@@ -709,6 +720,13 @@ void CreateBabystepAmountPopup(const ColourScheme& colours)
 	babystepAmountPopup = CreateIntPopupBar(colours, fullPopupWidth, ARRAY_SIZE(babystepAmounts), babystepAmounts, values, evAdjustBabystepAmount, evAdjustBabystepAmount);
 }
 
+// Create the default Move Steps adjustment popup
+void CreateMoveStepsPopup(const ColourScheme& colours)
+{
+	static const int values[] = { 0, 1, 2, 3 };
+	moveStepsPopup = CreateIntPopupBar(colours, fullPopupWidth, ARRAY_SIZE(moveSteps), moveSteps, values, evAdjustDefMoveSteps, evAdjustDefMoveSteps);
+}
+
 // Create the feedrate amount adjustment popup
 void CreateFeedrateAmountPopup(const ColourScheme& colours)
 {
@@ -857,8 +875,8 @@ void CreateCoordinateGrid(const ColourScheme& colours)
 	coordBoxAxisPos[1] = new FloatField(row4 + labelRowAdjust, px, coordBoxValueWidth, TextAlignment::Right, 2);
 	coordBoxAxisPos[2] = new FloatField(row5 + labelRowAdjust, px, coordBoxValueWidth, TextAlignment::Right, 2);
 	coordBoxAxisPos[0]->SetValue(0.0);
-	coordBoxAxisPos[1]->SetValue(999.99);
-	coordBoxAxisPos[2]->SetValue(11.11);
+	coordBoxAxisPos[1]->SetValue(0.0);
+	coordBoxAxisPos[2]->SetValue(0.0);
 	mgr.AddField(coordBoxAxisPos[0]);
 	mgr.AddField(coordBoxAxisPos[1]);
 	mgr.AddField(coordBoxAxisPos[2]);
@@ -906,6 +924,7 @@ void CreateControlTabFields(const ColourScheme& colours)
 	px += ctrlStepButtonWidth + fieldSpacing;
 	ctrlManualStep[3] = new TextButton(row2, px, ctrlStepButtonWidth, moveSteps[3], evCtrlStepSize, 3);
 	mgr.AddField(ctrlManualStep[3]);
+	currentMoveSteps=GetMoveStepsIndex();
 	ctrlManualStep[currentMoveSteps]->Press(true, 0);
 
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.ctrlMoveArrowBackColour, colours.ctrlMoveArrowBorderColour, colours.buttonGradColour,
@@ -937,7 +956,36 @@ void CreateControlTabFields(const ColourScheme& colours)
 	ctrlManualStop = new StopButton(row3, px, ctrlStopBtnWidth, strings->stop, evCtrlStop, 0);
 	mgr.AddField(ctrlManualStop);
 
+	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour, colours.buttonBorderColour, colours.buttonGradColour,
+									colours.buttonPressedBackColour, colours.buttonPressedGradColour, colours.pal);
+
 	controlRoot = mgr.GetRoot();
+}
+
+// Create the extra fields for the Workplaces tab
+void CreateWorkplacesTabFields(const ColourScheme& colours)
+{
+	PixelNumber px = margin+coordBoxWidth+fieldSpacing;
+
+	mgr.SetRoot(commonRoot);
+
+	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
+	mgr.AddField(new StaticTextField(row7 + labelRowAdjust, margin, coordBoxWidth+20, TextAlignment::Left, strings->workplaces));
+
+	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
+	wpSelect[0] = AddTextButton(row8, 0, 4, "1", evWpSelect, 0);
+	wpSelect[1] = AddTextButton(row8, 1, 4, "2", evWpSelect, 1);
+	wpSelect[2] = AddTextButton(row8, 2, 4, "3", evWpSelect, 2);
+	wpSelect[3] = AddTextButton(row8, 3, 4, "4", evWpSelect, 3);
+
+	wpSetZero[0] = new TextButton(row3, px, coordBoxWidth, strings->setZero, evWpSetZero, 0);
+	mgr.AddField(wpSetZero[0]);
+	wpSetZero[1] = new TextButton(row4, px, coordBoxWidth, strings->setZero, evWpSetZero, 1);
+	mgr.AddField(wpSetZero[1]);
+	wpSetZero[2] = new TextButton(row5, px, coordBoxWidth, strings->setZero, evWpSetZero, 2);
+	mgr.AddField(wpSetZero[2]);
+
+	workplacesRoot = mgr.GetRoot();
 }
 
 // Create the fields for the Printing tab
@@ -1089,6 +1137,7 @@ void CreateSetupTabFields(uint32_t language, const ColourScheme& colours)
 	feedrateAmountButton->SetValue(GetFeedrate());
 
 	heaterCombiningButton  = AddTextButton(row8, 0, 3, strings->heaterCombineTypeNames[(unsigned int)GetHeaterCombineType()], evSetHeaterCombineType, nullptr);
+	mgr.AddField(moveStepsButton = new TextButtonWithLabel(row8, CalcXPos(1, width), width, moveSteps[GetMoveStepsIndex()], evSetMoveStepsDefault, nullptr, strings->defMoveSteps));
 
 	setupRoot = mgr.GetRoot();
 }
@@ -1098,10 +1147,11 @@ void CreateCommonFields(const ColourScheme& colours)
 {
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour, colours.buttonBorderColour, colours.buttonGradColour,
 									colours.buttonPressedBackColour, colours.buttonPressedGradColour, colours.pal);
-	tabControl = AddTextButton(rowTabs, 0, 4, strings->control, evTabControl, nullptr);
-	tabPrint = AddTextButton(rowTabs, 1, 4, strings->print, evTabPrint, nullptr);
-	tabMsg = AddTextButton(rowTabs, 2, 4, strings->console, evTabMsg, nullptr);
-	tabSetup = AddTextButton(rowTabs, 3, 4, strings->setup, evTabSetup, nullptr);
+	tabControl = AddTextButton(rowTabs, 0, 5, strings->control, evTabControl, nullptr);
+	tabWorkplaces = AddTextButton(rowTabs, 1, 5, strings->workplaces, evTabWorkplaces, nullptr);
+	tabPrint = AddTextButton(rowTabs, 2, 5, strings->print, evTabPrint, nullptr);
+	tabMsg = AddTextButton(rowTabs, 3, 5, strings->console, evTabMsg, nullptr);
+	tabSetup = AddTextButton(rowTabs, 4, 5, strings->setup, evTabSetup, nullptr);
 }
 
 void CreateMainPages(uint32_t language, const ColourScheme& colours)
@@ -1124,6 +1174,7 @@ void CreateMainPages(uint32_t language, const ColourScheme& colours)
 
 	// Create the pages
 	CreateControlTabFields(colours);
+	CreateWorkplacesTabFields(colours);
 	CreatePrintingTabFields(colours);
 	CreateMessageTabFields(colours);
 	CreateSetupTabFields(language, colours);
@@ -1195,6 +1246,7 @@ namespace UI
 		CreateInfoTimeoutPopup(colours);
 		CreateScreensaverTimeoutPopup(colours);
 		CreateBabystepAmountPopup(colours);
+		CreateMoveStepsPopup(colours);
 		CreateFeedrateAmountPopup(colours);
 		CreateBaudRatePopup(colours);
 		CreateColoursPopup(colours);
@@ -1481,6 +1533,10 @@ namespace UI
 		switch (newTab->GetEvent()) {
 		case evTabControl:
 			mgr.SetRoot(controlRoot);
+			nameField->SetValue(machineName.c_str());
+			break;
+		case evTabWorkplaces:
+			mgr.SetRoot(workplacesRoot);
 			nameField->SetValue(machineName.c_str());
 			break;
 		case evTabPrint:
@@ -1873,6 +1929,19 @@ namespace UI
 		UpdateField(spd, ival);
 	}
 
+	void UpdateWorkplaceNumber(int ival)
+	{
+		for(uint8_t i=0; i<4; i++)
+		{
+			if(i == ival)
+			{
+				wpSelect[i]->Press(true, 0);
+				continue;
+			}
+			wpSelect[i]->Press(false, 0);
+		}
+	}
+
 	// Process a new message box alert, clearing any existing one
 	void ProcessAlert(const Alert& alert)
 	{
@@ -1932,7 +2001,7 @@ namespace UI
 	{
 		const bool isErrorMessage = stringStartsWith(text, "Error");
 		if (   alertMode < 2											// if the current alert doesn't require acknowledgement
-			&& (currentTab == tabControl || currentTab == tabPrint)
+			&& (currentTab == tabControl || currentTab == tabWorkplaces || currentTab == tabPrint)
 			&& (isErrorMessage || infoTimeout != 0)
 		   )
 		{
@@ -2085,6 +2154,7 @@ namespace UI
 				break;
 
 			case evTabControl:
+			case evTabWorkplaces:
 			case evTabPrint:
 			case evTabMsg:
 			case evTabSetup:
@@ -2564,32 +2634,81 @@ namespace UI
 				{
 					for(uint8_t i=0; i<4; i++)
 					{
-						if(bp.GetIParam()==i) continue;
+						if(bp.GetIParam()==i)
+						{
+							currentMoveSteps = i;
+							continue;
+						}
 						ctrlManualStep[i]->Press(false, 0);
 					}
 				}
+				break;
+
+			case evWpSelect:
+				currentButton.Clear();
+				{
+					for(uint8_t i=0; i<4; i++)
+					{
+						if(bp.GetIParam()==i)
+							continue;
+						wpSelect[i]->Press(false, 0);
+					}
+				}
+				switch(bp.GetIParam())
+				{
+				case 0:
+					SerialIo::Sendf("G54\n");
+					break;
+				case 1:
+					SerialIo::Sendf("G55\n");
+					break;
+				case 2:
+					SerialIo::Sendf("G56\n");
+					break;
+				case 3:
+					SerialIo::Sendf("G57\n");
+					break;
+/*								case 4:
+					SerialIo::Sendf("G58\n");
+					break;
+				case 5:
+					SerialIo::Sendf("G59\n");
+					break;
+				case 6:
+					SerialIo::Sendf("G59.1\n");
+					break;
+				case 7:
+					SerialIo::Sendf("G59.2\n");
+					break;
+				case 8:
+					SerialIo::Sendf("G59.3\n");
+					break;*/
+				}
+				break;
+
+			case evWpSetZero:
 				break;
 
 			case evCtrlMove:
 				switch(bp.GetIParam())
 				{
 				case 0:	// XY left
-					SerialIo::Sendf("G91 G1 X-%s G90\n", moveSteps[currentMoveSteps]);
+					SerialIo::Sendf("G91 G1 X-%s G90\n", moveSteps[GetMoveStepsIndex()]);
 					break;
 				case 1:	// XY up
-					SerialIo::Sendf("G91 G1 Y%s G90\n", moveSteps[currentMoveSteps]);
+					SerialIo::Sendf("G91 G1 Y%s G90\n", moveSteps[GetMoveStepsIndex()]);
 					break;
 				case 2:	// XY down
-					SerialIo::Sendf("G91 G1 Y-%s G90\n", moveSteps[currentMoveSteps]);
+					SerialIo::Sendf("G91 G1 Y-%s G90\n", moveSteps[GetMoveStepsIndex()]);
 					break;
 				case 3:	// XY right
-					SerialIo::Sendf("G91 G1 X%s G90\n", moveSteps[currentMoveSteps]);
+					SerialIo::Sendf("G91 G1 X%s G90\n", moveSteps[GetMoveStepsIndex()]);
 					break;
 				case 4:	// Z up
-					SerialIo::Sendf("G91 G1 Z%s G90\n", moveSteps[currentMoveSteps]);
+					SerialIo::Sendf("G91 G1 Z%s G90\n", moveSteps[GetMoveStepsIndex()]);
 					break;
 				case 5:	// Z down
-					SerialIo::Sendf("G91 G1 Z-%s G90\n", moveSteps[currentMoveSteps]);
+					SerialIo::Sendf("G91 G1 Z-%s G90\n", moveSteps[GetMoveStepsIndex()]);
 					break;
 				}
 				break;
@@ -2658,6 +2777,11 @@ namespace UI
 				mgr.SetPopup(babystepAmountPopup, AutoPlace, popupY);
 				break;
 
+			case evSetMoveStepsDefault:
+				Adjusting(bp);
+				mgr.SetPopup(moveStepsPopup, AutoPlace, popupY);
+				break;
+
 			case evSetFeedrate:
 				Adjusting(bp);
 				mgr.SetPopup(feedrateAmountPopup, AutoPlace, popupY);
@@ -2713,6 +2837,17 @@ namespace UI
 					babystepPlusButton->SetText(babystepAmounts[babystepAmountIndex]);
 				}
 				TouchBeep();									// give audible feedback of the touch at the new volume level
+				break;
+
+			case evAdjustDefMoveSteps:
+				{
+					uint32_t moveStepsIndex = bp.GetIParam();
+					SetMoveStepsIndex(moveStepsIndex);
+					moveStepsButton->SetText(moveSteps[moveStepsIndex]);
+				}
+				CurrentButtonReleased();
+				mgr.ClearPopup();
+				StopAdjusting();
 				break;
 
 			case evAdjustFeedrate:
@@ -2908,6 +3043,7 @@ namespace UI
 			case evSetScreensaverTimeout:
 			case evSetFeedrate:
 			case evSetBabystepAmount:
+			case evSetMoveStepsDefault:
 			case evSetColours:
 				mgr.ClearPopup();
 				StopAdjusting();
@@ -2930,6 +3066,7 @@ namespace UI
 				break;
 
 			case evTabControl:
+			case evTabWorkplaces:
 			case evTabPrint:
 			case evTabMsg:
 			case evTabSetup:
@@ -2951,6 +3088,7 @@ namespace UI
 			case evSetScreensaverTimeout:
 			case evSetFeedrate:
 			case evSetBabystepAmount:
+			case evSetMoveStepsDefault:
 			case evSetColours:
 			case evSetLanguage:
 			case evCalTouch:

@@ -178,6 +178,7 @@ struct FlashData
 	uint8_t babystepAmountIndex;
 	uint16_t feedrate;
 	HeaterCombineType heaterCombineType;
+	uint8_t moveStepsIndex;
 	alignas(4) char dummy;								// must be at a multiple of 4 bytes from the start because flash is read/written in whole dwords
 
 	FlashData() : magic(muggleVal) { SetDefaults(); }
@@ -209,7 +210,8 @@ bool FlashData::IsValid() const
 		&& displayDimmerType < DisplayDimmerType::NumTypes
 		&& babystepAmountIndex < ARRAY_SIZE(babystepAmounts)
 		&& feedrate > 0
-		&& heaterCombineType < HeaterCombineType::NumTypes;
+		&& heaterCombineType < HeaterCombineType::NumTypes
+		&& moveStepsIndex < ARRAY_SIZE(moveSteps);
 }
 
 bool FlashData::operator==(const FlashData& other)
@@ -231,7 +233,8 @@ bool FlashData::operator==(const FlashData& other)
 		&& screensaverTimeout == other.screensaverTimeout
 		&& babystepAmountIndex == other.babystepAmountIndex
 		&& feedrate == other.feedrate
-		&& heaterCombineType == other.heaterCombineType;
+		&& heaterCombineType == other.heaterCombineType
+		&& moveStepsIndex == other.moveStepsIndex;
 }
 
 void FlashData::SetDefaults()
@@ -253,6 +256,7 @@ void FlashData::SetDefaults()
 	babystepAmountIndex = DefaultBabystepAmountIndex;
 	feedrate = DefaultFeedrate;
 	heaterCombineType = HeaterCombineType::notCombined;
+	moveStepsIndex = DefaultMoveStepsIndex;
 	magic = magicVal;
 }
 
@@ -372,6 +376,7 @@ enum ReceivedDataEvent
 	rcvMoveExtrudersFactor,
 	rcvMoveKinematicsName,
 	rcvMoveSpeedFactor,
+	rcvMoveWorkplaceNumber,
 
 	// Keys for network response
 	rcvNetworkName,
@@ -477,6 +482,7 @@ static FieldTableEntry fieldTable[] =
 	{ rcvMoveExtrudersFactor, 			"move:extruders^:factor" },
 	{ rcvMoveKinematicsName, 			"move:kinematics:name" },
 	{ rcvMoveSpeedFactor, 				"move:speedFactor" },
+	{ rcvMoveWorkplaceNumber, 			"move:workplaceNumber" },
 
 	// M409 K"network" response
 	{ rcvNetworkName, 					"network:name" },
@@ -1052,6 +1058,16 @@ uint8_t GetBabystepAmountIndex()
 void SetBabystepAmountIndex(uint8_t babystepAmountIndex)
 {
 	nvData.babystepAmountIndex = babystepAmountIndex;
+}
+
+uint8_t GetMoveStepsIndex()
+{
+	return nvData.moveStepsIndex;
+}
+
+void SetMoveStepsIndex(uint8_t moveStepsIndex)
+{
+	nvData.moveStepsIndex = moveStepsIndex;
 }
 
 uint16_t GetFeedrate()
@@ -1835,6 +1851,17 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 			if (GetFloat(data, fval))
 			{
 				UI::UpdateSpeedPercent((int) ((fval * 100.0f) + 0.5f));
+			}
+		}
+		break;
+
+	case rcvMoveWorkplaceNumber:
+		ShowLine;
+		{
+			uint32_t ival;
+			if (GetUnsignedInteger(data, ival))
+			{
+				UI::UpdateWorkplaceNumber(ival);
 			}
 		}
 		break;

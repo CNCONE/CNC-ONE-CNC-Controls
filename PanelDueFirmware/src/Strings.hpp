@@ -30,6 +30,7 @@ struct StringTable
 
 	// Main page strings
 	CSTRING control;
+	CSTRING workplaces;
 	CSTRING print;
 	CSTRING console;
 	CSTRING setup;
@@ -41,8 +42,13 @@ struct StringTable
 	CSTRING macro;
 	CSTRING stop;
 	CSTRING coordinates;
+
+	// Control page
 	CSTRING manualctrl;
 	CSTRING home;
+
+	// Workplaces page
+	CSTRING setZero;
 
 	// Print page
 	CSTRING extruderPercent;
@@ -76,6 +82,7 @@ struct StringTable
 	CSTRING screensaverAfter;
 	CSTRING babystepAmount;
 	CSTRING feedrate;
+	CSTRING defMoveSteps;
 
 	// Misc
 	CSTRING confirmFactoryReset;
@@ -132,6 +139,7 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Main page strings
 		"Control",
+		"Workplaces",
 		"Job",
 		"Console",
 		"Setup",
@@ -143,8 +151,13 @@ const StringTable LanguageTables[NumLanguages] =
 		"Macro",
 		"STOP",
 		"Coordinates",
+
+		// Control page
 		"Manual Control",
 		"Send to Home",
+
+		// Workplaces page
+		"Set to 0",
 
 		// Print page
 		"Extruder" THIN_SPACE "%",
@@ -178,6 +191,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Screensaver ",						// note space at end
 		"Babystep ",						// note space at end
 		"Feedrate ",						// note space at end
+		"Def. Step ",						// note space at end
 
 		// Misc
 		"Confirm factory reset",
@@ -258,6 +272,7 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Main page strings
 		"Steuerung",
+		"Workplaces",		//TODO:TRANSLATE
 		"Auftrag",
 		"Konsole",
 		"Setup",
@@ -269,8 +284,13 @@ const StringTable LanguageTables[NumLanguages] =
 		"Makro",
 		"STOP",
 		"Koordinaten",
+
+		// Control page
 		"Manual Control",	//TODO:TRANSLATE
 		"Send to Home",		//TODO:TRANSLATE
+
+		// Workplaces page
+		"Set to 0",		//TODO:TRANSLATE
 
 		// Print page
 		"Extruder" THIN_SPACE "%",
@@ -304,6 +324,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Screensaver ",						// note space at end
 		"Babystep ",						// note space at end
 		"Feedrate ",						// note space at end
+		"Def. Step ", //TODO:TRANSLATE		// note space at end
 
 		// Misc
 		"Alle Einstellungen zurücksetzen",
@@ -383,6 +404,7 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Main page strings
 		"Contrôle",
+		"Workplaces",		//TODO:TRANSLATE
 		"Job",	//TODO:TRANSLATE
 		"Console",
 		"Installation",
@@ -394,8 +416,13 @@ const StringTable LanguageTables[NumLanguages] =
 		"Macro",
 		"ARRÊT",
 		"Coordonnées",
+
+		// Control page
 		"Manual Control",	//TODO:TRANSLATE
 		"Send to Home",		//TODO:TRANSLATE
+
+		// Workplaces page
+		"Set to 0",		//TODO:TRANSLATE
 
 		// Print page
 		"Extrudeuse" THIN_SPACE "%",
@@ -429,6 +456,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Screensaver ",							// note space at end
 		"Babystep ",							// note space at end
 		"Feedrate ",							// note space at end
+		"Def. Step ", //TODO:TRANSLATE		// note space at end
 
 		// Misc
 		"Confirmer le réinitialisation de l'imprimante",
@@ -508,6 +536,7 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Main page strings
 		"Control",
+		"Workplaces",		//TODO:TRANSLATE
 		"Job",	//TODO:TRANSLATE
 		"Consola",
 		"Configuración",
@@ -519,8 +548,13 @@ const StringTable LanguageTables[NumLanguages] =
 		"Macro",
 		"PARADA",							// It could also be STOP, both are OK
 		"Coordenadas",
+
+		// Control page
 		"Manual Control",	//TODO:TRANSLATE
 		"Send to Home",		//TODO:TRANSLATE
+
+		// Workplaces page
+		"Set to 0",		//TODO:TRANSLATE
 
 		// Print page
 		"Extrusor" THIN_SPACE "%",
@@ -554,6 +588,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Screensaver ",						// note space at end
 		"Babystep ",						// note space at end
 		"Feedrate ",						// note space at end
+		"Def. Step ", //TODO:TRANSLATE		// note space at end
 
 		// Misc
 		"Confirma restablecimiento de fábrica",
@@ -633,6 +668,7 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Main page strings
 		"Controlla",
+		"Workplaces",		//TODO:TRANSLATE
 		"Job",	//TODO:TRANSLATE
 		"Console",
 		"Configura",
@@ -644,8 +680,13 @@ const StringTable LanguageTables[NumLanguages] =
 		"Macro",
 		"FERMA",
 		"Coordinate",
+
+		// Control page
 		"Manual Control",	//TODO:TRANSLATE
 		"Send to Home",		//TODO:TRANSLATE
+
+		// Workplaces page
+		"Set to 0",		//TODO:TRANSLATE
 
 		// Print page
 		"Estrusore" THIN_SPACE "%",
@@ -679,6 +720,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Salvaschermo ",					// note space at end
 		"Babystep ",						// note space at end
 		"Feedrate ",						// note space at end
+		"Def. Step ", //TODO:TRANSLATE		// note space at end
 
 		// Misc
 		"Conferma reset impostazioni",

@@ -73,6 +73,8 @@ extern DisplayDimmerType GetDisplayDimmerType();
 extern void SetDisplayDimmerType(DisplayDimmerType newType);
 extern uint8_t GetBabystepAmountIndex();
 extern void SetBabystepAmountIndex(uint8_t babystepAmountIndex);
+extern uint8_t GetMoveStepsIndex();
+extern void SetMoveStepsIndex(uint8_t moveStepsIndex);
 extern uint16_t GetFeedrate();
 extern void SetFeedrate(uint16_t feedrate);
 extern HeaterCombineType GetHeaterCombineType();
