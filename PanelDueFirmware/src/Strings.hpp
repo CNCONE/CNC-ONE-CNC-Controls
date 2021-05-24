@@ -31,6 +31,7 @@ struct StringTable
 	// Main page strings
 	CSTRING control;
 	CSTRING workplaces;
+	CSTRING aux;
 	CSTRING print;
 	CSTRING console;
 	CSTRING setup;
@@ -49,6 +50,14 @@ struct StringTable
 
 	// Workplaces page
 	CSTRING setZero;
+
+	// Aux page
+	CSTRING coolant;
+	CSTRING led;
+	CSTRING spindle;
+	CSTRING on;
+	CSTRING off;
+	CSTRING rpm;
 
 	// Print page
 	CSTRING extruderPercent;
@@ -141,6 +150,7 @@ const StringTable LanguageTables[NumLanguages] =
 		// Main page strings
 		"Control",
 		"Workplaces",
+		"Aux",
 		"Job",
 		"Console",
 		"Setup",
@@ -159,6 +169,14 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Workplaces page
 		"Set to 0",
+
+		// Aux page
+		"Coolant",
+		"LED",
+		"Spindle",
+		"On",
+		"Off",
+		"rpm",
 
 		// Print page
 		"Extruder" THIN_SPACE "%",
@@ -275,6 +293,7 @@ const StringTable LanguageTables[NumLanguages] =
 		// Main page strings
 		"Steuerung",
 		"Workplaces",		//TODO:TRANSLATE
+		"Aux",		//TODO:TRANSLATE
 		"Auftrag",
 		"Konsole",
 		"Setup",
@@ -293,6 +312,14 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Workplaces page
 		"Set to 0",		//TODO:TRANSLATE
+
+		// Aux page
+		"Coolant",		//TODO:TRANSLATE
+		"LED",			//TODO:TRANSLATE
+		"Spindle",		//TODO:TRANSLATE
+		"On",			//TODO:TRANSLATE
+		"Off",			//TODO:TRANSLATE
+		"rpm",			//TODO:TRANSLATE
 
 		// Print page
 		"Extruder" THIN_SPACE "%",
@@ -408,6 +435,7 @@ const StringTable LanguageTables[NumLanguages] =
 		// Main page strings
 		"Contrôle",
 		"Workplaces",		//TODO:TRANSLATE
+		"Aux",		//TODO:TRANSLATE
 		"Job",	//TODO:TRANSLATE
 		"Console",
 		"Installation",
@@ -426,6 +454,14 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Workplaces page
 		"Set to 0",		//TODO:TRANSLATE
+
+		// Aux page
+		"Coolant",		//TODO:TRANSLATE
+		"LED",			//TODO:TRANSLATE
+		"Spindle",		//TODO:TRANSLATE
+		"On",			//TODO:TRANSLATE
+		"Off",			//TODO:TRANSLATE
+		"rpm",			//TODO:TRANSLATE
 
 		// Print page
 		"Extrudeuse" THIN_SPACE "%",
@@ -541,6 +577,7 @@ const StringTable LanguageTables[NumLanguages] =
 		// Main page strings
 		"Control",
 		"Workplaces",		//TODO:TRANSLATE
+		"Aux",		//TODO:TRANSLATE
 		"Job",	//TODO:TRANSLATE
 		"Consola",
 		"Configuración",
@@ -559,6 +596,14 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Workplaces page
 		"Set to 0",		//TODO:TRANSLATE
+
+		// Aux page
+		"Coolant",		//TODO:TRANSLATE
+		"LED",			//TODO:TRANSLATE
+		"Spindle",		//TODO:TRANSLATE
+		"On",			//TODO:TRANSLATE
+		"Off",			//TODO:TRANSLATE
+		"rpm",			//TODO:TRANSLATE
 
 		// Print page
 		"Extrusor" THIN_SPACE "%",
@@ -674,6 +719,7 @@ const StringTable LanguageTables[NumLanguages] =
 		// Main page strings
 		"Controlla",
 		"Workplaces",		//TODO:TRANSLATE
+		"Aux",		//TODO:TRANSLATE
 		"Job",	//TODO:TRANSLATE
 		"Console",
 		"Configura",
@@ -692,6 +738,14 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Workplaces page
 		"Set to 0",		//TODO:TRANSLATE
+
+		// Aux page
+		"Coolant",		//TODO:TRANSLATE
+		"LED",			//TODO:TRANSLATE
+		"Spindle",		//TODO:TRANSLATE
+		"On",			//TODO:TRANSLATE
+		"Off",			//TODO:TRANSLATE
+		"rpm",			//TODO:TRANSLATE
 
 		// Print page
 		"Estrusore" THIN_SPACE "%",

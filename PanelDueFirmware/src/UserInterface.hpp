@@ -48,7 +48,7 @@ namespace UI
 	extern void ShowDefaultPage();
 	extern void UpdatePrintingFields();
 	extern void SetPrintProgressPercent(unsigned int percent);
-	extern void UpdateGeometry(unsigned int p_numAxes, bool p_isDelta);
+//	extern void UpdateGeometry(unsigned int p_numAxes, bool p_isDelta);
 	extern void UpdateHomedStatus(size_t axis, bool isHomed);
 	extern void UpdateZProbe(const char data[]);
 	extern void UpdateMachineName(const char data[]);
@@ -64,10 +64,10 @@ namespace UI
 //	extern void UpdateFileSize(int size);
 //	extern void UpdateFileFilament(int len);
 	extern void UpdateFanPercent(size_t fanIndex, int rpm);
-	extern void UpdateActiveTemperature(size_t index, int ival);
-	extern void UpdateToolTemp(size_t toolIndex, size_t toolHeaterIndex, int32_t temp, bool active);
-	extern void UpdateStandbyTemperature(size_t index, int ival);
-	extern void UpdateExtrusionFactor(size_t index, int ival);
+//	extern void UpdateActiveTemperature(size_t index, int ival);
+//	extern void UpdateToolTemp(size_t toolIndex, size_t toolHeaterIndex, int32_t temp, bool active);
+//	extern void UpdateStandbyTemperature(size_t index, int ival);
+//	extern void UpdateExtrusionFactor(size_t index, int ival);
 	extern void UpdatePrintTimeText(uint32_t seconds, bool isSimulated);
 	extern void UpdateSpeedPercent(int ival);
 	extern void UpdateWorkplaceNumber(int ival);
@@ -84,7 +84,7 @@ namespace UI
 	extern void EnableFileNavButtons(bool filesNotMacros, bool scrollEarlier, bool scrollLater, bool parentDir);
 	extern void UpdateFileButton(bool filesNotMacros, unsigned int buttonIndex, const char * _ecv_array null text, const char * _ecv_array null param);
 	extern unsigned int GetNumScrolledFiles(bool filesNotMacros);
-	extern bool UpdateMacroShortList(unsigned int buttonIndex, const char * _ecv_array null fileName);
+//	extern bool UpdateMacroShortList(unsigned int buttonIndex, const char * _ecv_array null fileName);
 
 	extern void SetBabystepOffset(size_t index, float f);
 	extern void SetAxisLetter(size_t index, char l);

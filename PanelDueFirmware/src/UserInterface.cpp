@@ -53,15 +53,15 @@ static SingleButton *changeCardButton;
 
 static TextButton *filenameButtons[NumDisplayedFiles];
 static TextButton *macroButtons[NumDisplayedMacros];
-static TextButton *controlPageMacroButtons[NumControlPageMacroButtons];
-static String<controlPageMacroTextLength> controlPageMacroText[NumControlPageMacroButtons];
+//static TextButton *controlPageMacroButtons[NumControlPageMacroButtons];
+//static String<controlPageMacroTextLength> controlPageMacroText[NumControlPageMacroButtons];
 
-static PopupWindow *setTempPopup, *setRPMPopup, *movePopup, *extrudePopup, *fileListPopup, *macrosPopup,/* *fileDetailPopup,*/ *baudPopup,
+static PopupWindow *setTempPopup, *setRPMPopup, /**movePopup, *extrudePopup,*/ *fileListPopup, *macrosPopup,/* *fileDetailPopup,*/ *baudPopup,
 		*volumePopup, *infoTimeoutPopup, *screensaverTimeoutPopup, *babystepAmountPopup, *feedrateAmountPopup, *startJobPopup, *areYouSurePopup, *keyboardPopup, *languagePopup, *coloursPopup, *screensaverPopup;
 static StaticTextField *areYouSureTextField, *areYouSureQueryField;
 static StaticTextField *startJobTextField, *startJobQueryField;
-static DisplayField *emptyRoot, *baseRoot, *commonRoot, *controlRoot, *workplacesRoot, *jobRoot, *messageRoot, *setupRoot;
-static SingleButton *tabControl, *tabWorkplaces, *tabJob, *tabMsg, *tabSetup;
+static DisplayField *emptyRoot, *baseRoot, *commonRoot, *controlRoot, *workplacesRoot, *auxRoot, *jobRoot, *messageRoot, *setupRoot;
+static SingleButton *tabControl, *tabWorkplaces, *tabAux, *tabJob, *tabMsg, *tabSetup;
 
 /* General */
 static StaticTextField *nameField, *statusField;
@@ -74,10 +74,17 @@ static IconButtonWithText *homeButtons[3];
 static TextButton *ctrlManualStep[4];
 static ArrowButton *ctrlXYup,*ctrlXYdown,*ctrlXYleft,*ctrlXYright,*ctrlZup,*ctrlZdown;
 static StopButton *ctrlManualStop;
+static SingleButton *macroButton;
+static ButtonBase *filesButton;
 
 /* Workplaces Tab */
 static TextButton *wpSelect[4];
 static TextButton *wpSetZero[4];
+
+/* Aux Tab */
+static SingleButton *auxCoolantOn, *auxCoolantOff;
+static SingleButton *auxLedOn, *auxLedOff;
+static SingleButton *auxSpindleOn, *auxSpindleOff;
 
 /* Job Tab */
 static FloatField *printTabAxisPos[MaxDisplayableAxes];
@@ -87,18 +94,17 @@ static FloatField /* *fpHeightField, *fpLayerHeightField,*/ *babystepOffsetField
 static TextButtonWithLabel *babystepMinusButton, *babystepPlusButton;
 static IntegerField /* *fpSizeField, *fpFilamentField, */ *filePopupTitleField;
 static ProgressBar *printProgressBar;
-static ButtonBase *filesButton, *pauseButton, *resumeButton, *cancelButton, *babystepButton, *reprintButton;
+static ButtonBase *pauseButton, *resumeButton, *cancelButton, *babystepButton, *reprintButton;
 static TextField *timeLeftField, *zProbe;
 //static TextField *fpNameField, *fpGeneratedByField, *fpLastModifiedField, *fpPrintTimeField;
-static StaticTextField *moveAxisRows[MaxDisplayableAxes];
-static IntegerButton *activeTemps[MaxSlots], *standbyTemps[MaxSlots];
+//static StaticTextField *moveAxisRows[MaxDisplayableAxes];
+//static IntegerButton *activeTemps[MaxSlots], *standbyTemps[MaxSlots];
 
 /* Setup Tab */
 static IntegerButton *spd, *extrusionFactors[MaxSlots], *fanSpeed, *baudRateButton, *volumeButton, *infoTimeoutButton, *screensaverTimeoutButton, *feedrateAmountButton;
-static TextButton *languageButton, *coloursButton, *dimmingTypeButton, *heaterCombiningButton;
+static TextButton *languageButton, *coloursButton, *dimmingTypeButton; //, *heaterCombiningButton;
 static TextButtonWithLabel *babystepAmountButton;
 static TextButtonWithLabel *moveStepsButton;
-//static SingleButton *moveButton, *extrudeButton, *macroButton;
 static PopupWindow *babystepPopup;
 static PopupWindow *moveStepsPopup;
 static AlertPopup *alertPopup;
@@ -125,8 +131,8 @@ const size_t numUserCommandBuffers = 6;					// number of command history buffers
 static String<maxUserCommandLength> userCommandBuffers[numUserCommandBuffers];
 static size_t currentUserCommandBuffer = 0, currentHistoryBuffer = 0;
 
-static unsigned int numToolColsUsed = 0;
-static unsigned int numHeaterAndToolColumns = 0;
+//static unsigned int numToolColsUsed = 0;
+//static unsigned int numHeaterAndToolColumns = 0;
 static int oldIntValue;
 static Event eventToConfirm = evNull;
 static uint8_t numVisibleAxes = 0;						// initialise to 0 so we refresh the macros list when we receive the number of axes
@@ -456,7 +462,7 @@ void ChangeDisplayDimmerType()
 }
 
 // Cyce through available heater combine types and repaint
-void ChangeHeaterCombineType()
+/*void ChangeHeaterCombineType()
 {
 	HeaterCombineType newType = (HeaterCombineType) ((uint8_t)GetHeaterCombineType() + 1);
 	if (newType == HeaterCombineType::NumTypes)
@@ -465,7 +471,7 @@ void ChangeHeaterCombineType()
 	}
 	SetHeaterCombineType(newType);
 	UI::AllToolsSeen();
-}
+}*/
 
 // Update an integer field, provided it isn't the one being adjusted
 // Don't update it if the value hasn't changed, because that makes the display flicker unnecessarily
@@ -509,7 +515,7 @@ void CreateIntegerRPMAdjustPopup(const ColourScheme& colours)
 }
 
 // Create the movement popup window
-void CreateMovePopup(const ColourScheme& colours)
+/*void CreateMovePopup(const ColourScheme& colours)
 {
 	static const char * _ecv_array const xyJogValues[] = { "-100", "-10", "-1", "-0.1", "0.1",  "1", "10", "100" };
 	static const char * _ecv_array const zJogValues[] = { "-50", "-5", "-0.5", "-0.05", "0.05",  "0.5", "5", "50" };
@@ -544,10 +550,10 @@ void CreateMovePopup(const ColourScheme& colours)
 
 		ypos += buttonHeight + moveButtonRowSpacing;
 	}
-}
+}*/
 
 // Create the extrusion controls popup
-void CreateExtrudePopup(const ColourScheme& colours)
+/*void CreateExtrudePopup(const ColourScheme& colours)
 {
 	static const char * _ecv_array extrudeAmountValues[] = { "100", "50", "20", "10", "5",  "1" };
 	static const char * _ecv_array extrudeSpeedValues[] = { "50", "20", "10", "5", "2" };
@@ -566,7 +572,7 @@ void CreateExtrudePopup(const ColourScheme& colours)
 	ypos += buttonHeight + extrudeButtonRowSpacing;
 	extrudePopup->AddField(new TextButton(ypos, popupSideMargin, extrudePopupWidth/3 - 2 * popupSideMargin, strings->extrude, evExtrude));
 	extrudePopup->AddField(new TextButton(ypos, (2 * extrudePopupWidth)/3 + popupSideMargin, extrudePopupWidth/3 - 2 * popupSideMargin, strings->retract, evRetract));
-}
+}*/
 
 // Create a popup used to list files pr macros
 PopupWindow *CreateFileListPopup(FileListButtons& controlButtons, TextButton ** _ecv_array fileButtons, unsigned int numRows, unsigned int numCols, const ColourScheme& colours, bool filesNotMacros)
@@ -980,7 +986,8 @@ void CreateControlTabFields(const ColourScheme& colours)
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour, colours.buttonBorderColour, colours.buttonGradColour,
 									colours.buttonPressedBackColour, colours.buttonPressedGradColour, colours.pal);
 
-	filesButton = AddIconButton(row8p7, 4, 5, IconFiles, evListFiles, nullptr);
+	filesButton = AddIconButton(row8, 4, 5, IconFiles, evListFiles, nullptr);
+	macroButton = AddTextButton(row9, 4, 5, strings->macro, evListMacros, nullptr);
 
 	controlRoot = mgr.GetRoot();
 }
@@ -1009,6 +1016,40 @@ void CreateWorkplacesTabFields(const ColourScheme& colours)
 	mgr.AddField(wpSetZero[2]);
 
 	workplacesRoot = mgr.GetRoot();
+}
+
+// Create the extra fields for the Aux tab
+void CreateAuxTabFields(const ColourScheme& colours)
+{
+	PixelNumber px = margin+coordBoxWidth+fieldSpacing;
+
+	mgr.SetRoot(commonRoot);
+
+	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
+	mgr.AddField(new StaticTextField(row3 + labelRowAdjust, px, coordBoxWidth, TextAlignment::Right, strings->coolant));
+	mgr.AddField(new StaticTextField(row4 + labelRowAdjust, px, coordBoxWidth, TextAlignment::Right, strings->led));
+	mgr.AddField(new StaticTextField(row5 + labelRowAdjust, px, coordBoxWidth, TextAlignment::Right, strings->spindle));
+
+	px += coordBoxWidth+fieldSpacing;
+	PixelNumber pw = coordBoxWidth/2-fieldSpacing;
+
+	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
+	auxCoolantOn = new TextButton(row3, px, pw, strings->on, evAuxCoolant, 1);
+	mgr.AddField(auxCoolantOn);
+	auxLedOn = new TextButton(row4, px, pw, strings->on, evAuxLed, 1);
+	mgr.AddField(auxLedOn);
+	auxSpindleOn = new TextButton(row5, px, pw, strings->on, evAuxSpindle, 1);
+	mgr.AddField(auxSpindleOn);
+
+	px += pw + fieldSpacing;
+	auxCoolantOff = new TextButton(row3, px, pw, strings->off, evAuxCoolant, 0);
+	mgr.AddField(auxCoolantOff);
+	auxLedOff = new TextButton(row4, px, pw, strings->off, evAuxLed, 0);
+	mgr.AddField(auxLedOff);
+	auxSpindleOff = new TextButton(row5, px, pw, strings->off, evAuxSpindle, 0);
+	mgr.AddField(auxSpindleOff);
+
+	auxRoot = mgr.GetRoot();
 }
 
 // Create the fields for the Printing tab
@@ -1159,7 +1200,7 @@ void CreateSetupTabFields(uint32_t language, const ColourScheme& colours)
 	feedrateAmountButton = AddIntegerButton(row7, 2, 3, strings->feedrate, nullptr, evSetFeedrate);
 	feedrateAmountButton->SetValue(GetFeedrate());
 
-	heaterCombiningButton  = AddTextButton(row8, 0, 3, strings->heaterCombineTypeNames[(unsigned int)GetHeaterCombineType()], evSetHeaterCombineType, nullptr);
+//	heaterCombiningButton  = AddTextButton(row8, 0, 3, strings->heaterCombineTypeNames[(unsigned int)GetHeaterCombineType()], evSetHeaterCombineType, nullptr);
 	mgr.AddField(moveStepsButton = new TextButtonWithLabel(row8, CalcXPos(1, width), width, moveSteps[GetMoveStepsIndex()], evSetMoveStepsDefault, nullptr, strings->defMoveSteps));
 
 	setupRoot = mgr.GetRoot();
@@ -1170,11 +1211,12 @@ void CreateCommonFields(const ColourScheme& colours)
 {
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour, colours.buttonBorderColour, colours.buttonGradColour,
 									colours.buttonPressedBackColour, colours.buttonPressedGradColour, colours.pal);
-	tabControl = AddTextButton(rowTabs, 0, 5, strings->control, evTabControl, nullptr);
-	tabWorkplaces = AddTextButton(rowTabs, 1, 5, strings->workplaces, evTabWorkplaces, nullptr);
-	tabJob = AddTextButton(rowTabs, 2, 5, strings->print, evTabJob, nullptr);
-	tabMsg = AddTextButton(rowTabs, 3, 5, strings->console, evTabMsg, nullptr);
-	tabSetup = AddTextButton(rowTabs, 4, 5, strings->setup, evTabSetup, nullptr);
+	tabControl = AddTextButton(rowTabs, 0, 6, strings->control, evTabControl, nullptr);
+	tabWorkplaces = AddTextButton(rowTabs, 1, 6, strings->workplaces, evTabWorkplaces, nullptr);
+	tabAux = AddTextButton(rowTabs, 2, 6, strings->aux, evTabAux, nullptr);
+	tabJob = AddTextButton(rowTabs, 3, 6, strings->print, evTabJob, nullptr);
+	tabMsg = AddTextButton(rowTabs, 4, 6, strings->console, evTabMsg, nullptr);
+	tabSetup = AddTextButton(rowTabs, 5, 6, strings->setup, evTabSetup, nullptr);
 }
 
 void CreateMainPages(uint32_t language, const ColourScheme& colours)
@@ -1198,6 +1240,7 @@ void CreateMainPages(uint32_t language, const ColourScheme& colours)
 	// Create the pages
 	CreateControlTabFields(colours);
 	CreateWorkplacesTabFields(colours);
+	CreateAuxTabFields(colours);
 	CreateJobTabFields(colours);
 	CreateMessageTabFields(colours);
 	CreateSetupTabFields(language, colours);
@@ -1260,8 +1303,8 @@ namespace UI
 		// Create the popup fields
 		CreateIntegerAdjustPopup(colours);
 		CreateIntegerRPMAdjustPopup(colours);
-		CreateMovePopup(colours);
-		CreateExtrudePopup(colours);
+//		CreateMovePopup(colours);
+//		CreateExtrudePopup(colours);
 		fileListPopup = CreateFileListPopup(filesListButtons, filenameButtons, NumFileRows, NumFileColumns, colours, true);
 		macrosPopup = CreateFileListPopup(macrosListButtons, macroButtons, NumMacroRows, NumMacroColumns, colours, false);
 //		CreateFileActionPopup(colours);
@@ -1563,6 +1606,10 @@ namespace UI
 			mgr.SetRoot(workplacesRoot);
 			nameField->SetValue(machineName.c_str());
 			break;
+		case evTabAux:
+			mgr.SetRoot(auxRoot);
+			nameField->SetValue(machineName.c_str());
+			break;
 		case evTabJob:
 			mgr.SetRoot(jobRoot);
 			nameField->SetValue(
@@ -1767,7 +1814,7 @@ namespace UI
 	}
 
 	// Update the geometry or the number of axes
-	void UpdateGeometry(unsigned int p_numAxes, bool p_isDelta)
+/*	void UpdateGeometry(unsigned int p_numAxes, bool p_isDelta)
 	{
 		if (p_numAxes != numVisibleAxes || p_isDelta != isDelta)
 		{
@@ -1817,7 +1864,7 @@ namespace UI
 				ShowAxis(i, false);
 			}
 		}
-	}
+	}*/
 
 	void UpdateAllHomed()
 	{
@@ -1892,7 +1939,7 @@ namespace UI
 		}
 	}
 
-	void UpdateToolTemp(size_t toolIndex, size_t toolHeaterIndex, int32_t temp, bool active)
+/*	void UpdateToolTemp(size_t toolIndex, size_t toolHeaterIndex, int32_t temp, bool active)
 	{
 		OM::Tool *tool = OM::GetOrCreateTool(toolIndex);
 
@@ -1945,7 +1992,7 @@ namespace UI
 				UpdateField(extrusionFactors[tool->slot], ival);
 			}
 		});
-	}
+	}*/
 
 	// Update the print speed factor
 	void UpdateSpeedPercent(int ival)
@@ -2129,11 +2176,11 @@ namespace UI
 	// This is called when the host firmware changes
 	void FirmwareFeaturesChanged(FirmwareFeatures newFeatures)
 	{
-		// Some firmwares don't support tool standby temperatures
+/*		// Some firmwares don't support tool standby temperatures
 		for (size_t i = 0; i < MaxSlots; ++i)
 		{
 			mgr.Show(standbyTemps[i], (newFeatures & noStandbyTemps) == 0);
-		}
+		}*/
 	}
 
 	static void DoEmergencyStop()
@@ -2179,6 +2226,7 @@ namespace UI
 
 			case evTabControl:
 			case evTabWorkplaces:
+			case evTabAux:
 			case evTabJob:
 			case evTabMsg:
 			case evTabSetup:
@@ -2223,7 +2271,7 @@ namespace UI
 						fieldBeingAdjusted.GetEvent();
 				switch (eventOfFieldBeingAdjusted)
 					{
-					case evAdjustBedActiveTemp:
+/*					case evAdjustBedActiveTemp:
 					case evAdjustChamberActiveTemp:
 						{
 							int bedOrChamberIndex = bp.GetIParam();
@@ -2322,7 +2370,7 @@ namespace UI
 								}
 							}
 						}
-						break;
+						break;*/
 
 					case evAdjustActiveRPM:
 						{
@@ -2338,12 +2386,12 @@ namespace UI
 						}
 						break;
 
-					case evExtrusionFactor:
+/*					case evExtrusionFactor:
 						{
 							const int extruder = fieldBeingAdjusted.GetIParam();
 							SerialIo::Sendf("M221 D%d S%d\n", extruder, val);
 						}
-						break;
+						break;*/
 
 					case evAdjustFan:
 						SerialIo::Sendf("M106 S%d\n", (256 * val)/100);
@@ -2406,7 +2454,7 @@ namespace UI
 				}
 				break;
 
-			case evMovePopup:
+/*			case evMovePopup:
 				mgr.SetPopup(movePopup, AutoPlace, AutoPlace);
 				break;
 
@@ -2444,7 +2492,7 @@ namespace UI
 							currentExtrudeAmountPress.GetSParam(),
 							currentExtrudeRatePress.GetSParam());
 				}
-				break;
+				break;*/
 
 			case evBabyStepPopup:
 				mgr.SetPopup(babystepPopup, AutoPlace, AutoPlace);
@@ -2483,7 +2531,7 @@ namespace UI
 				PopupAreYouSure(ev, strings->confirmFactoryReset);
 				break;
 
-			case evSelectBed:
+/*			case evSelectBed:
 				{
 					int bedIndex = bp.GetIParam();
 					const OM::Bed* bed = OM::GetBed(bedIndex);
@@ -2534,7 +2582,7 @@ namespace UI
 						}
 					}
 				}
-				break;
+				break;*/
 
 			case evFile:
 				{
@@ -2930,10 +2978,10 @@ namespace UI
 				dimmingTypeButton->SetText(strings->displayDimmingNames[(unsigned int)GetDisplayDimmerType()]);
 				break;
 
-			case evSetHeaterCombineType:
+/*			case evSetHeaterCombineType:
 				ChangeHeaterCombineType();
 				heaterCombiningButton->SetText(strings->heaterCombineTypeNames[(unsigned int)GetHeaterCombineType()]);
-				break;
+				break;*/
 
 			case evYes:
 				CurrentButtonReleased();
@@ -3104,6 +3152,7 @@ namespace UI
 
 			case evTabControl:
 			case evTabWorkplaces:
+			case evTabAux:
 			case evTabJob:
 			case evTabMsg:
 			case evTabSetup:
@@ -3198,7 +3247,7 @@ namespace UI
 
 	// Update the specified button in the macro short list. If 'fileName' is nullptr then hide the button, else display it.
 	// Return true if this should be called again for the next button.
-	bool UpdateMacroShortList(unsigned int buttonIndex, const char * _ecv_array null fileName)
+/*	bool UpdateMacroShortList(unsigned int buttonIndex, const char * _ecv_array null fileName)
 	{
 		const bool tooFewSpace = numToolColsUsed >= (MaxSlots - (DISPLAY_X == 480 ? 1 : 2));
 		if (buttonIndex >= ARRAY_SIZE(controlPageMacroButtons) || numToolColsUsed == 0 || tooFewSpace)
@@ -3218,14 +3267,14 @@ namespace UI
 		f->SetEvent((isFile) ? evMacroControlPage : evNull, str.c_str());
 		mgr.Show(f, isFile);
 		return true;
-	}
+	}*/
 
 	unsigned int GetNumScrolledFiles(bool filesNotMacros)
 	{
 		return (filesNotMacros) ? NumFileRows : NumMacroRows;
 	}
 
-	void AdjustControlPageMacroButtons()
+/*	void AdjustControlPageMacroButtons()
 	{
 		const unsigned int n = numToolColsUsed;
 
@@ -3258,9 +3307,9 @@ namespace UI
 				mgr.Refresh(true);
 			}
 		}
-	}
+	}*/
 
-	void ResetToolAndHeaterStates() noexcept
+/*	void ResetToolAndHeaterStates() noexcept
 	{
 		for (size_t i = 0; i < numToolColsUsed; ++i)
 		{
@@ -3311,11 +3360,11 @@ namespace UI
 			++slot;
 		}
 		return count;
-	}
+	}*/
 
 	void AllToolsSeen()
 	{
-		size_t slot = 0;
+/*		size_t slot = 0;
 		size_t bedCount = 0;
 		size_t chamberCount = 0;
 		auto firstBed = OM::GetFirstBed();
@@ -3406,14 +3455,14 @@ namespace UI
 		numToolColsUsed = slot;
 		for (size_t i = slot; i < MaxSlots; ++i)
 		{
-			//mgr.Show(toolButtons[i], false);
+			mgr.Show(toolButtons[i], false);
 			mgr.Show(currentTemps[i], false);
 			mgr.Show(activeTemps[i], false);
 			mgr.Show(standbyTemps[i], false);
 			mgr.Show(extrusionFactors[i], false);
 		}
-		ResetToolAndHeaterStates();
-		AdjustControlPageMacroButtons();
+		ResetToolAndHeaterStates();*/
+		//AdjustControlPageMacroButtons();
 	}
 
 	void SetSpindleActive(size_t index, uint16_t active)
@@ -3429,7 +3478,7 @@ namespace UI
 			auto tool = OM::GetTool(spindle->tool);
 			if (tool != nullptr && tool->slot < MaxSlots)
 			{
-				activeTemps[tool->slot]->SetValue((int)active);
+//				activeTemps[tool->slot]->SetValue((int)active);
 			}
 		}
 	}

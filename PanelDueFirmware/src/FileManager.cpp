@@ -85,7 +85,7 @@ namespace FileManager
 	}
 
 	// The macros list has just been updated. If this is for the root, update the short macro list, leaving out any subfolders.
-	void FileSet::ReloadMacroShortList(int errorCode)
+/*	void FileSet::ReloadMacroShortList(int errorCode)
 	{
 		unsigned int buttonNum = 0;
 		const FileListIndex& index = fileIndices[GetIndex()];
@@ -109,7 +109,7 @@ namespace FileManager
 			}
 			++buttonNum;
 		} while (again);
-	}
+	}*/
 
 	// Refresh the list of files or macros in the Files popup window
 	void FileSet::FileListUpdated()
@@ -338,15 +338,15 @@ namespace FileManager
 			if (card0 && temp.EqualsIgnoreCase("macros"))
 			{
 				macroFilesList.Reload(newFileList, fileDirectoryName, errorCode);
-				if (i + 1 >= fileDirectoryName.strlen())				// if in root of /macros
+/*				if (i + 1 >= fileDirectoryName.strlen())				// if in root of /macros
 				{
 					macroFilesList.ReloadMacroShortList(errorCode);
-				}
+				}*/
 			}
-/*			else if (!UI::IsDisplayingFileInfo())
+			else /*if (!UI::IsDisplayingFileInfo())*/
 			{
 				gcodeFilesList.Reload(newFileList, fileDirectoryName, errorCode);
-			}*/
+			}
 			newFileList = -1;
 		}
 	}

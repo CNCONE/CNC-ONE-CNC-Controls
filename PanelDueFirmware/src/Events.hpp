@@ -17,7 +17,7 @@ enum Event : uint8_t
 	evDefaultRoot, evScreensaverRoot,
 
 	// Page selection
-	evTabControl, evTabWorkplaces, evTabJob, evTabMsg, evTabSetup,
+	evTabControl, evTabWorkplaces, evTabAux, evTabJob, evTabMsg, evTabSetup,
 
 	// Heater control
 	evSelectHead, evSelectBed, evSelectChamber,
@@ -40,6 +40,11 @@ enum Event : uint8_t
 	// Workplace functions
 	evWpSelect,
 	evWpSetZero,
+
+	// Aux functions,
+	evAuxCoolant,
+	evAuxLed,
+	evAuxSpindle,
 
 	// Print functions
 	evExtrusionFactor,

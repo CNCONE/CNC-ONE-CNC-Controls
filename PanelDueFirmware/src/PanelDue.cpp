@@ -1640,7 +1640,7 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 		}
 		break;
 
-	case rcvHeatHeatersActive:
+/*	case rcvHeatHeatersActive:
 		ShowLine;
 		{
 			int32_t ival;
@@ -1688,7 +1688,7 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 			const HeaterStatus status = (statusFromMap != nullptr) ? statusFromMap->val : HeaterStatus::off;
 			UI::UpdateHeaterStatus(indices[0], status);
 		}
-		break;
+		break;*/
 
 	// Job section
 	case rcvJobFileFilename:
@@ -1824,7 +1824,7 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 		}
 		break;
 
-	case rcvMoveExtrudersFactor:
+/*	case rcvMoveExtrudersFactor:
 		ShowLine;
 		{
 			float fval;
@@ -1833,16 +1833,16 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 				UI::UpdateExtrusionFactor(indices[0], (int)((fval * 100.0f) + 0.5));
 			}
 		}
-		break;
+		break;*/
 
-	case rcvMoveKinematicsName:
+/*	case rcvMoveKinematicsName:
 		ShowLine;
 		if (status != PrinterStatus::configuring && status != PrinterStatus::connecting)
 		{
 			isDelta = (strcasecmp(data, "delta") == 0);
 			UI::UpdateGeometry(numAxes, isDelta);
 		}
-		break;
+		break;*/
 
 	case rcvMoveSpeedFactor:
 		ShowLine;
@@ -2061,7 +2061,7 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 		break;
 
 	// Tools section
-	case rcvToolsActive:
+/*	case rcvToolsActive:
 	case rcvToolsStandby:
 		ShowLine;
 		{
@@ -2159,7 +2159,7 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 			UI::UpdateToolStatus(indices[0], status);
 		}
 		break;
-
+*/
 	// Volumes section
 	case rcvVolumesMounted:
 		ShowLine;
@@ -2355,7 +2355,7 @@ void ProcessArrayEnd(const char id[], const size_t indices[])
 		ShowLine;
 		FileManager::BeginReceivingFiles();				// received an empty file list - need to tell the file manager about it
 	}
-	else if (currentResponseType == rcvOMKeyHeat)
+/*	else if (currentResponseType == rcvOMKeyHeat)
 	{
 		if (strcasecmp(id, "heat:bedHeaters^") == 0)
 		{
@@ -2382,7 +2382,7 @@ void ProcessArrayEnd(const char id[], const size_t indices[])
 		OM::RemoveAxis(indices[0], true);
 		numAxes = constrain<unsigned int>(visibleAxesCounted, MIN_AXES, MaxDisplayableAxes);
 		UI::UpdateGeometry(numAxes, isDelta);
-	}
+	}*/
 	else if (currentResponseType == rcvOMKeySpindles)
 	{
 		if (strcasecmp(id, "spindles^") == 0)
@@ -2395,7 +2395,7 @@ void ProcessArrayEnd(const char id[], const size_t indices[])
 			}
 		}
 	}
-	else if (currentResponseType == rcvOMKeyTools)
+/*	else if (currentResponseType == rcvOMKeyTools)
 	{
 		if (strcasecmp(id, "tools^") == 0)
 		{
@@ -2425,7 +2425,7 @@ void ProcessArrayEnd(const char id[], const size_t indices[])
 	{
 		ShowLine;
 		FileManager::SetNumVolumes(mountedVolumesCounted);
-	}
+	}*/
 }
 
 void ParserErrorEncountered(const char*, const char*, const size_t[])	// For now we don't use the parameters
