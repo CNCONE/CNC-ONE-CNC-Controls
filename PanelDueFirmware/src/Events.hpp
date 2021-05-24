@@ -17,7 +17,7 @@ enum Event : uint8_t
 	evDefaultRoot, evScreensaverRoot,
 
 	// Page selection
-	evTabControl, evTabWorkplaces, evTabPrint, evTabMsg, evTabSetup,
+	evTabControl, evTabWorkplaces, evTabJob, evTabMsg, evTabSetup,
 
 	// Heater control
 	evSelectHead, evSelectBed, evSelectChamber,
@@ -35,7 +35,7 @@ enum Event : uint8_t
 	evHomeAxis,
 	evCtrlStepSize,
 	evCtrlMove,
-	evCtrlStop,
+	evEmergencyStop,
 
 	// Workplace functions
 	evWpSelect,
@@ -82,7 +82,6 @@ enum Event : uint8_t
 	evSetHeaterCombineType,
 	evSetMoveStepsDefault, evAdjustDefMoveSteps,
 
-	evEmergencyStop,
 
 	evJogZ, evCloseAlert
 

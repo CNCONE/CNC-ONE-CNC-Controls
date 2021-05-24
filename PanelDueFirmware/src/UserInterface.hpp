@@ -57,12 +57,12 @@ namespace UI
 	extern void ProcessSimpleAlert(const char* _ecv_array text);
 	extern void NewResponseReceived(const char* _ecv_array text);
 	extern bool CanDimDisplay();
-	extern void UpdateFileLastModifiedText(const char data[]);
-	extern void UpdateFileGeneratedByText(const char data[]);
-	extern void UpdateFileObjectHeight(float f);
-	extern void UpdateFileLayerHeight(float f);
-	extern void UpdateFileSize(int size);
-	extern void UpdateFileFilament(int len);
+//	extern void UpdateFileLastModifiedText(const char data[]);
+//	extern void UpdateFileGeneratedByText(const char data[]);
+//	extern void UpdateFileObjectHeight(float f);
+//	extern void UpdateFileLayerHeight(float f);
+//	extern void UpdateFileSize(int size);
+//	extern void UpdateFileFilament(int len);
 	extern void UpdateFanPercent(size_t fanIndex, int rpm);
 	extern void UpdateActiveTemperature(size_t index, int ival);
 	extern void UpdateToolTemp(size_t toolIndex, size_t toolHeaterIndex, int32_t temp, bool active);
@@ -76,7 +76,7 @@ namespace UI
 	extern void ProcessTouchOutsidePopup(ButtonPress bp)
 	pre(bp.IsValid());
 	extern void OnButtonPressTimeout();
-	extern bool IsDisplayingFileInfo();
+//	extern bool IsDisplayingFileInfo();
 	extern void AllToolsSeen();
 
 	extern void DisplayFilesOrMacrosList(bool filesNotMacros, int cardNumber, unsigned int numVolumes);

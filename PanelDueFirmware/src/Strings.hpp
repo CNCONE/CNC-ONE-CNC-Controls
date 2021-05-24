@@ -87,6 +87,7 @@ struct StringTable
 	// Misc
 	CSTRING confirmFactoryReset;
 	CSTRING confirmFileDelete;
+	CSTRING confirmFileStart;
 	CSTRING areYouSure;
 	CSTRING touchTheSpot;
 	CSTRING moveHead;
@@ -196,6 +197,7 @@ const StringTable LanguageTables[NumLanguages] =
 		// Misc
 		"Confirm factory reset",
 		"Confirm file delete",
+		"Start Job?",
 		"Are you sure?",
 		"Touch the spot",
 		"Move head",
@@ -329,6 +331,7 @@ const StringTable LanguageTables[NumLanguages] =
 		// Misc
 		"Alle Einstellungen zurücksetzen",
 		"Die Datei wird gelöscht",
+		"Start Job?",	///TODO:TRANSLATE
 		"Sind sie sicher?",
 		"Bitte auf den Punkt tippen",
 		"Kopf bewegen",
@@ -461,6 +464,7 @@ const StringTable LanguageTables[NumLanguages] =
 		// Misc
 		"Confirmer le réinitialisation de l'imprimante",
 		"Confirm suppression fichier",
+		"Start Job?",	///TODO:TRANSLATE
 		"Vous êtes sûre?",
 		"Appuyer sur le point",
 		"Mouvement de la  tête",
@@ -593,6 +597,7 @@ const StringTable LanguageTables[NumLanguages] =
 		// Misc
 		"Confirma restablecimiento de fábrica",
 		"Confirma borrar archivo",
+		"Start Job?",	///TODO:TRANSLATE
 		"Está seguro?",
 		"Tocar el punto",
 		"Mover cabezal",
@@ -725,6 +730,7 @@ const StringTable LanguageTables[NumLanguages] =
 		// Misc
 		"Conferma reset impostazioni",
 		"Confirma eliminazione file",
+		"Start Job?",	///TODO:TRANSLATE
 		"Sei sicuro?",
 		"Tocca il punto",
 		"Muovi testa",

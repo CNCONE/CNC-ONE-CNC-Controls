@@ -2240,7 +2240,7 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 		break;
 
 	// M36 section
-	case rcvM36Filament:
+/*	case rcvM36Filament:
 		ShowLine;
 		{
 			static float totalFilament = 0.0;
@@ -2312,7 +2312,7 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 				UI::UpdateFileSize(sz);
 			}
 		}
-		break;
+		break;*/
 
 	case rcvControlCommand:
 		ShowLine;

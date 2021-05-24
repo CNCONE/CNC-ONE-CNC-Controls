@@ -56,11 +56,12 @@ static TextButton *macroButtons[NumDisplayedMacros];
 static TextButton *controlPageMacroButtons[NumControlPageMacroButtons];
 static String<controlPageMacroTextLength> controlPageMacroText[NumControlPageMacroButtons];
 
-static PopupWindow *setTempPopup, *setRPMPopup, *movePopup, *extrudePopup, *fileListPopup, *macrosPopup, *fileDetailPopup, *baudPopup,
-		*volumePopup, *infoTimeoutPopup, *screensaverTimeoutPopup, *babystepAmountPopup, *feedrateAmountPopup, *areYouSurePopup, *keyboardPopup, *languagePopup, *coloursPopup, *screensaverPopup;
+static PopupWindow *setTempPopup, *setRPMPopup, *movePopup, *extrudePopup, *fileListPopup, *macrosPopup,/* *fileDetailPopup,*/ *baudPopup,
+		*volumePopup, *infoTimeoutPopup, *screensaverTimeoutPopup, *babystepAmountPopup, *feedrateAmountPopup, *startJobPopup, *areYouSurePopup, *keyboardPopup, *languagePopup, *coloursPopup, *screensaverPopup;
 static StaticTextField *areYouSureTextField, *areYouSureQueryField;
-static DisplayField *emptyRoot, *baseRoot, *commonRoot, *controlRoot, *workplacesRoot, *printRoot, *messageRoot, *setupRoot;
-static SingleButton *tabControl, *tabWorkplaces, *tabPrint, *tabMsg, *tabSetup;
+static StaticTextField *startJobTextField, *startJobQueryField;
+static DisplayField *emptyRoot, *baseRoot, *commonRoot, *controlRoot, *workplacesRoot, *jobRoot, *messageRoot, *setupRoot;
+static SingleButton *tabControl, *tabWorkplaces, *tabJob, *tabMsg, *tabSetup;
 
 /* General */
 static StaticTextField *nameField, *statusField;
@@ -82,13 +83,13 @@ static TextButton *wpSetZero[4];
 static FloatField *printTabAxisPos[MaxDisplayableAxes];
 static FloatField *movePopupAxisPos[MaxDisplayableAxes];
 static FloatField *currentTemps[MaxSlots];
-static FloatField *fpHeightField, *fpLayerHeightField, *babystepOffsetField;
+static FloatField /* *fpHeightField, *fpLayerHeightField,*/ *babystepOffsetField;
 static TextButtonWithLabel *babystepMinusButton, *babystepPlusButton;
-static IntegerField *fpSizeField, *fpFilamentField, *filePopupTitleField;
+static IntegerField /* *fpSizeField, *fpFilamentField, */ *filePopupTitleField;
 static ProgressBar *printProgressBar;
 static ButtonBase *filesButton, *pauseButton, *resumeButton, *cancelButton, *babystepButton, *reprintButton;
 static TextField *timeLeftField, *zProbe;
-static TextField *fpNameField, *fpGeneratedByField, *fpLastModifiedField, *fpPrintTimeField;
+//static TextField *fpNameField, *fpGeneratedByField, *fpLastModifiedField, *fpPrintTimeField;
 static StaticTextField *moveAxisRows[MaxDisplayableAxes];
 static IntegerButton *activeTemps[MaxSlots], *standbyTemps[MaxSlots];
 
@@ -97,7 +98,7 @@ static IntegerButton *spd, *extrusionFactors[MaxSlots], *fanSpeed, *baudRateButt
 static TextButton *languageButton, *coloursButton, *dimmingTypeButton, *heaterCombiningButton;
 static TextButtonWithLabel *babystepAmountButton;
 static TextButtonWithLabel *moveStepsButton;
-static SingleButton *moveButton, *extrudeButton, *macroButton;
+//static SingleButton *moveButton, *extrudeButton, *macroButton;
 static PopupWindow *babystepPopup;
 static PopupWindow *moveStepsPopup;
 static AlertPopup *alertPopup;
@@ -484,6 +485,13 @@ void PopupAreYouSure(Event ev, const char* text, const char* query = strings->ar
 	mgr.SetPopup(areYouSurePopup, AutoPlace, AutoPlace);
 }
 
+void PopupStartJob(const char* text, const char* query = strings->confirmFileStart)
+{
+	startJobTextField->SetValue(text);
+	startJobQueryField->SetValue(query);
+	mgr.SetPopup(startJobPopup, AutoPlace, AutoPlace);
+}
+
 void CreateIntegerAdjustPopup(const ColourScheme& colours)
 {
 	// Create the popup window used to adjust temperatures, fan speed, extrusion factor etc.
@@ -622,7 +630,7 @@ pre(fileButtons.lim == numRows * numCols)
 }
 
 // Create the popup window used to display the file dialog
-void CreateFileActionPopup(const ColourScheme& colours)
+/*void CreateFileActionPopup(const ColourScheme& colours)
 {
 	fileDetailPopup = new StandardPopupWindow(fileInfoPopupHeight, fileInfoPopupWidth, colours.popupBackColour, colours.popupBorderColour, colours.popupTextColour, colours.buttonImageBackColour, "File information");
 	DisplayField::SetDefaultColours(colours.popupTextColour, colours.popupBackColour);
@@ -657,7 +665,7 @@ void CreateFileActionPopup(const ColourScheme& colours)
 	fileDetailPopup->AddField(new TextButton(popupTopMargin + 10 * rowTextHeight, popupSideMargin, fileInfoPopupWidth/3 - 2 * popupSideMargin, strings->print, evPrintFile));
 	fileDetailPopup->AddField(new TextButton(popupTopMargin + 10 * rowTextHeight, fileInfoPopupWidth/3 + popupSideMargin, fileInfoPopupWidth/3 - 2 * popupSideMargin, strings->simulate, evSimulateFile));
 	fileDetailPopup->AddField(new IconButton(popupTopMargin + 10 * rowTextHeight, (2 * fileInfoPopupWidth)/3 + popupSideMargin, fileInfoPopupWidth/3 - 2 * popupSideMargin, IconTrash, evDeleteFile));
-}
+}*/
 
 // Create the "Are you sure?" popup
 void CreateAreYouSurePopup(const ColourScheme& colours)
@@ -670,6 +678,19 @@ void CreateAreYouSurePopup(const ColourScheme& colours)
 	DisplayField::SetDefaultColours(colours.popupButtonTextColour, colours.popupButtonBackColour);
 	areYouSurePopup->AddField(new IconButton(popupTopMargin + 2 * rowHeight, popupSideMargin, areYouSurePopupWidth/2 - 2 * popupSideMargin, IconOk, evYes));
 	areYouSurePopup->AddField(new IconButton(popupTopMargin + 2 * rowHeight, areYouSurePopupWidth/2 + 10, areYouSurePopupWidth/2 - 2 * popupSideMargin, IconCancel, evCancel));
+}
+
+// Create the "Are you sure?" popup
+void CreateStartJobPopup(const ColourScheme& colours)
+{
+	startJobPopup = new PopupWindow(areYouSurePopupHeight, areYouSurePopupWidth, colours.popupBackColour, colours.popupBorderColour);
+	DisplayField::SetDefaultColours(colours.popupTextColour, colours.popupBackColour);
+	startJobPopup->AddField(startJobTextField = new StaticTextField(popupSideMargin, margin, areYouSurePopupWidth - 2 * margin, TextAlignment::Centre, nullptr));
+	startJobPopup->AddField(startJobQueryField = new StaticTextField(popupTopMargin + rowHeight, margin, areYouSurePopupWidth - 2 * margin, TextAlignment::Centre, nullptr));
+
+	DisplayField::SetDefaultColours(colours.popupButtonTextColour, colours.popupButtonBackColour);
+	startJobPopup->AddField(new IconButton(popupTopMargin + 2 * rowHeight, popupSideMargin, areYouSurePopupWidth/2 - 2 * popupSideMargin, IconOk, evPrintFile));
+	startJobPopup->AddField(new IconButton(popupTopMargin + 2 * rowHeight, areYouSurePopupWidth/2 + 10, areYouSurePopupWidth/2 - 2 * popupSideMargin, IconCancel, evCancel));
 }
 
 void CreateScreensaverPopup()
@@ -953,11 +974,13 @@ void CreateControlTabFields(const ColourScheme& colours)
 	DisplayField::SetDefaultColours(colours.stopButtonTextColour, colours.defaultBackColour, colours.stopButtonBackColour, colours.buttonGradColour,
 									colours.ctrlMoveArrowPressedBorderColour, colours.buttonPressedGradColour, colours.pal);
 	px += ctrlArrowWidth + 2*fieldSpacing;
-	ctrlManualStop = new StopButton(row3, px, ctrlStopBtnWidth, strings->stop, evCtrlStop, 0);
+	ctrlManualStop = new StopButton(row3, px, ctrlStopBtnWidth, strings->stop, evEmergencyStop, 0);
 	mgr.AddField(ctrlManualStop);
 
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour, colours.buttonBorderColour, colours.buttonGradColour,
 									colours.buttonPressedBackColour, colours.buttonPressedGradColour, colours.pal);
+
+	filesButton = AddIconButton(row8p7, 4, 5, IconFiles, evListFiles, nullptr);
 
 	controlRoot = mgr.GetRoot();
 }
@@ -989,7 +1012,7 @@ void CreateWorkplacesTabFields(const ColourScheme& colours)
 }
 
 // Create the fields for the Printing tab
-void CreatePrintingTabFields(const ColourScheme& colours)
+void CreateJobTabFields(const ColourScheme& colours)
 {
 	mgr.SetRoot(commonRoot);
 
@@ -1076,7 +1099,7 @@ void CreatePrintingTabFields(const ColourScheme& colours)
 	mgr.AddField(timeLeftField = new TextField(row9 + offset, margin, DisplayX - 2 * margin, TextAlignment::Left, strings->timeRemaining));
 	mgr.Show(timeLeftField, false);
 
-	printRoot = mgr.GetRoot();
+	jobRoot = mgr.GetRoot();
 }
 
 // Create the fields for the Message tab
@@ -1149,7 +1172,7 @@ void CreateCommonFields(const ColourScheme& colours)
 									colours.buttonPressedBackColour, colours.buttonPressedGradColour, colours.pal);
 	tabControl = AddTextButton(rowTabs, 0, 5, strings->control, evTabControl, nullptr);
 	tabWorkplaces = AddTextButton(rowTabs, 1, 5, strings->workplaces, evTabWorkplaces, nullptr);
-	tabPrint = AddTextButton(rowTabs, 2, 5, strings->print, evTabPrint, nullptr);
+	tabJob = AddTextButton(rowTabs, 2, 5, strings->print, evTabJob, nullptr);
 	tabMsg = AddTextButton(rowTabs, 3, 5, strings->console, evTabMsg, nullptr);
 	tabSetup = AddTextButton(rowTabs, 4, 5, strings->setup, evTabSetup, nullptr);
 }
@@ -1175,7 +1198,7 @@ void CreateMainPages(uint32_t language, const ColourScheme& colours)
 	// Create the pages
 	CreateControlTabFields(colours);
 	CreateWorkplacesTabFields(colours);
-	CreatePrintingTabFields(colours);
+	CreateJobTabFields(colours);
 	CreateMessageTabFields(colours);
 	CreateSetupTabFields(language, colours);
 	CreateScreensaverPopup();
@@ -1241,7 +1264,7 @@ namespace UI
 		CreateExtrudePopup(colours);
 		fileListPopup = CreateFileListPopup(filesListButtons, filenameButtons, NumFileRows, NumFileColumns, colours, true);
 		macrosPopup = CreateFileListPopup(macrosListButtons, macroButtons, NumMacroRows, NumMacroColumns, colours, false);
-		CreateFileActionPopup(colours);
+//		CreateFileActionPopup(colours);
 		CreateVolumePopup(colours);
 		CreateInfoTimeoutPopup(colours);
 		CreateScreensaverTimeoutPopup(colours);
@@ -1251,6 +1274,7 @@ namespace UI
 		CreateBaudRatePopup(colours);
 		CreateColoursPopup(colours);
 		CreateAreYouSurePopup(colours);
+		CreateStartJobPopup(colours);
 		CreateKeyboardPopup(language, colours);
 		CreateLanguagePopup(colours);
 		alertPopup = new AlertPopup(colours);
@@ -1452,9 +1476,9 @@ namespace UI
 		case PrinterStatus::resuming:
 			if (oldStatus == PrinterStatus::connecting || oldStatus == PrinterStatus::idle)
 			{
-				ChangePage(tabPrint);
+				ChangePage(tabJob);
 			}
-			else if (currentTab == tabPrint)
+			else if (currentTab == tabJob)
 			{
 				nameField->SetValue(printingFile.c_str());
 			}
@@ -1539,8 +1563,8 @@ namespace UI
 			mgr.SetRoot(workplacesRoot);
 			nameField->SetValue(machineName.c_str());
 			break;
-		case evTabPrint:
-			mgr.SetRoot(printRoot);
+		case evTabJob:
+			mgr.SetRoot(jobRoot);
 			nameField->SetValue(
 					PrintInProgress() ? printingFile.c_str() : machineName.c_str());
 			break;
@@ -1670,7 +1694,7 @@ namespace UI
 	// This is called when we have just started a file print
 	void PrintStarted()
 	{
-		ChangePage(tabPrint);
+		ChangePage(tabJob);
 	}
 
 	// This is called when we have just received the name of the file being printed
@@ -1679,7 +1703,7 @@ namespace UI
 		if (!printingFile.Similar(data))
 		{
 			printingFile.copy(data);
-			if (currentTab == tabPrint && PrintInProgress())
+			if (currentTab == tabJob && PrintInProgress())
 			{
 				nameField->SetChanged();
 			}
@@ -2001,7 +2025,7 @@ namespace UI
 	{
 		const bool isErrorMessage = stringStartsWith(text, "Error");
 		if (   alertMode < 2											// if the current alert doesn't require acknowledgement
-			&& (currentTab == tabControl || currentTab == tabWorkplaces || currentTab == tabPrint)
+			&& (currentTab == tabControl || currentTab == tabWorkplaces || currentTab == tabJob)
 			&& (isErrorMessage || infoTimeout != 0)
 		   )
 		{
@@ -2016,7 +2040,7 @@ namespace UI
 	}
 
 	// This is called when the user selects a new file from a list of SD card files
-	void FileSelected(const char * _ecv_array null fileName)
+/*	void FileSelected(const char * _ecv_array null fileName)
 	{
 		fpNameField->SetValue(fileName);
 		// Clear out the old field values, they relate to the previous file we looked at until we process the response
@@ -2100,7 +2124,7 @@ namespace UI
 	bool IsDisplayingFileInfo()
 	{
 		return currentFile != nullptr;
-	}
+	}*/
 
 	// This is called when the host firmware changes
 	void FirmwareFeaturesChanged(FirmwareFeatures newFeatures)
@@ -2155,7 +2179,7 @@ namespace UI
 
 			case evTabControl:
 			case evTabWorkplaces:
-			case evTabPrint:
+			case evTabJob:
 			case evTabMsg:
 			case evTabSetup:
 				if (ChangePage(f))
@@ -2530,8 +2554,9 @@ namespace UI
 							SerialIo::Sendf(((GetFirmwareFeatures() & noM20M36) == 0) ? "M36 " : "M408 S36 P");			// ask for the file info
 							SerialIo::SendFilename(CondStripDrive(FileManager::GetFilesDir()), currentFile);
 							SerialIo::SendChar('\n');
-							FileSelected(currentFile);
-							mgr.SetPopup(fileDetailPopup, AutoPlace, AutoPlace);
+//							FileSelected(currentFile);
+//							mgr.SetPopup(fileDetailPopup, AutoPlace, AutoPlace);
+							PopupStartJob(currentFile);
 						}
 					}
 					else
@@ -3079,7 +3104,7 @@ namespace UI
 
 			case evTabControl:
 			case evTabWorkplaces:
-			case evTabPrint:
+			case evTabJob:
 			case evTabMsg:
 			case evTabSetup:
 				StopAdjusting();

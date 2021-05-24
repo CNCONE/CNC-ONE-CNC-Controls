@@ -343,10 +343,10 @@ namespace FileManager
 					macroFilesList.ReloadMacroShortList(errorCode);
 				}
 			}
-			else if (!UI::IsDisplayingFileInfo())
+/*			else if (!UI::IsDisplayingFileInfo())
 			{
 				gcodeFilesList.Reload(newFileList, fileDirectoryName, errorCode);
-			}
+			}*/
 			newFileList = -1;
 		}
 	}
