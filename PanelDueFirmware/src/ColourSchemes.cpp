@@ -19,7 +19,8 @@ const ColourScheme colourSchemes[NumColourSchemes] =
 		.pal = IconPaletteDefault,
 
 		.titleBarTextColour = white,
-		.titleBarBackColour = UTFT::fromRGB(29, 29, 29),
+		.titleBarBackColour = UTFT::fromRGB(47, 47, 47),
+		.titleBarButtonBorderColour = UTFT::fromRGB(99, 99, 99),
 		.labelTextColour = white,
 		.infoTextColour = white,
 		.infoBackColour = black,
@@ -29,8 +30,6 @@ const ColourScheme colourSchemes[NumColourSchemes] =
 		.tuningBackColour = black,
 		.errorTextColour = white,
 		.errorBackColour = veryDarkGrey,
-
-
 
 		.popupBorderColour = midGrey,
 		.popupBackColour = darkGrey,
@@ -45,13 +44,13 @@ const ColourScheme colourSchemes[NumColourSchemes] =
 
 		.buttonTextColour = white,
 		.buttonPressedTextColour = white,
-		.buttonTextBackColour = UTFT::fromRGB(28, 28, 31),
-		.buttonImageBackColour = UTFT::fromRGB(28, 28, 31),
+		.buttonTextBackColour = UTFT::fromRGB(47, 47, 47),
+		.buttonImageBackColour = UTFT::fromRGB(47, 47, 47),
 		.buttonGradColour = 0,	//UTFT::fromRGB(8, 4, 8),
-		.buttonPressedBackColour = UTFT::fromRGB(99, 99, 102),
+		.buttonPressedBackColour = UTFT::fromRGB(99, 99, 99),
 		.buttonPressedGradColour = 0,	//UTFT::fromRGB(8, 8, 8),
-		.buttonBorderColour = UTFT::fromRGB(28, 28, 31),
-		.homedButtonBackColour = UTFT::fromRGB(28, 28, 31),
+		.buttonBorderColour = UTFT::fromRGB(47, 47, 47),
+		.homedButtonBackColour = UTFT::fromRGB(47, 47, 47),
 		.notHomedButtonBackColour = darkOrange,
 		.pauseButtonBackColour = darkOrange,
 		.resumeButtonBackColour = darkYellow,
@@ -63,7 +62,7 @@ const ColourScheme colourSchemes[NumColourSchemes] =
 		.stopButtonBackColour = red,
 		.coordBoxTextColour = UTFT::fromRGB(108, 108, 108),
 		.coordBoxValueColour = white,
-		.coordBoxBackColour = UTFT::fromRGB(28, 28, 31),
+		.coordBoxBackColour = UTFT::fromRGB(47, 47, 47),
 		.ctrlMoveArrowBackColour = black,
 		.ctrlMoveArrowPressedBorderColour = UTFT::fromRGB(0, 138, 252),
 		.ctrlMoveArrowBorderColour = UTFT::fromRGB(80, 80, 80)
@@ -76,6 +75,7 @@ const ColourScheme colourSchemes[NumColourSchemes] =
 
 		.titleBarTextColour = white,
 		.titleBarBackColour = red,
+		.titleBarButtonBorderColour = UTFT::fromRGB(80, 80, 80),
 		.labelTextColour = black,
 		.infoTextColour = black,
 		.infoBackColour = lightBlue,
@@ -132,6 +132,7 @@ const ColourScheme colourSchemes[NumColourSchemes] =
 
 		.titleBarTextColour = white,
 		.titleBarBackColour = midGrey,
+		.titleBarButtonBorderColour = UTFT::fromRGB(80, 80, 80),
 		.labelTextColour = white,
 		.infoTextColour = white,
 		.infoBackColour = veryDarkGrey,

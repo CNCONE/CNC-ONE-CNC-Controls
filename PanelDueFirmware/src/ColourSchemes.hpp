@@ -45,6 +45,7 @@ struct ColourScheme
 
 	Colour titleBarTextColour;
 	Colour titleBarBackColour;
+	Colour titleBarButtonBorderColour;
 	Colour labelTextColour;
 	Colour infoTextColour;
 	Colour infoBackColour;

@@ -117,7 +117,6 @@ const PixelNumber keyboardTopMargin = 20;
 const PixelNumber popupFieldSpacing = 20;
 
 const PixelNumber axisLabelWidth = 40;
-const PixelNumber firstMessageRow = margin + rowHeight;		// adjust this to get a whole number of message rows below the keyboard
 
 const PixelNumber progressBarHeight = 16;
 const PixelNumber closeButtonWidth = 66;
@@ -139,22 +138,24 @@ const PixelNumber buttonHeight = rowTextHeight + 4;
 const PixelNumber tempButtonWidth = (DISPLAY_X + fieldSpacing - 160)/MaxSlots - fieldSpacing;
 
 const PixelNumber row1 = 0;										// we don't need a top margin
-const PixelNumber row2 = row1 + rowHeight - 2;					// the top row never has buttons so it can be shorter
+const PixelNumber row2 = row1 + rowHeight;
 const PixelNumber row3 = row2 + rowHeight;
 const PixelNumber row4 = row3 + rowHeight;
 const PixelNumber row5 = row4 + rowHeight;
 const PixelNumber row6 = row5 + rowHeight;
-const PixelNumber row6p3 = row6 + (rowHeight/3);
+//const PixelNumber row6p3 = row6 + (rowHeight/3);
 const PixelNumber row7 = row6 + rowHeight;
-const PixelNumber row7p7 = row7 + ((2 * rowHeight)/3);
+//const PixelNumber row7p7 = row7 + ((2 * rowHeight)/3);
 const PixelNumber row8 = row7 + rowHeight;
-const PixelNumber row8p7 = row8 + ((2 * rowHeight)/3);
+//const PixelNumber row8p7 = row8 + ((2 * rowHeight)/3);
 const PixelNumber row9 = row8 + rowHeight;
 const PixelNumber rowTabs = DisplayY - rowTextHeight;			// place at bottom of screen with no margin
 const PixelNumber labelRowAdjust = 2;							// how much to drop non-button fields to line up with buttons
 
+const PixelNumber firstMessageRow = row3;		// adjust this to get a whole number of message rows below the keyboard
+
 const PixelNumber ColourGradientLeftPos = DISPLAY_X - ColourGradientWidth - margin;
-const PixelNumber ColourGradientTopPos = row2;
+const PixelNumber ColourGradientTopPos = row3;
 const PixelNumber ColourGradientHeight = rowTextHeight;
 
 const PixelNumber speedColumn = margin;
@@ -204,13 +205,13 @@ const unsigned int NumDisplayedMacros = NumMacroColumns * NumMacroRows;
 const PixelNumber MacroListPopupWidth = fullPopupWidth;
 const PixelNumber MacroListPopupHeight = ((NumMacroRows + 1) * buttonHeight) + (NumMacroRows * fileButtonRowSpacing) + (2 * popupTopMargin);
 
-const unsigned int numMessageRows = (rowTabs - margin - rowHeight)/rowTextHeight;
+const unsigned int numMessageRows = (rowTabs - firstMessageRow)/rowTextHeight;
 const PixelNumber messageTextX = margin + messageTimeWidth + 2;
 const PixelNumber messageTextWidth = DisplayX - margin - messageTextX;
 
-const unsigned int NumControlPageMacroButtons = 4;
-const PixelNumber minControlPageMacroButtonsWidth = (tempButtonWidth * 3)/2;
-const PixelNumber maxControlPageMacroButtonsWidth = DisplayX/2 - 2 * margin;
+//const unsigned int NumControlPageMacroButtons = 4;
+//const PixelNumber minControlPageMacroButtonsWidth = (tempButtonWidth * 3)/2;
+//const PixelNumber maxControlPageMacroButtonsWidth = DisplayX/2 - 2 * margin;
 
 const PixelNumber alertPopupWidth = fullPopupWidth - 6 * margin;
 const PixelNumber alertPopupHeight = 2 * popupTopMargin + 6 * rowTextHeight + 2 * buttonHeight + moveButtonRowSpacing;

@@ -41,6 +41,7 @@ struct StringTable
 	CSTRING move;
 	CSTRING extrusion;
 	CSTRING macro;
+	CSTRING files;
 	CSTRING stop;
 	CSTRING coordinates;
 
@@ -159,7 +160,8 @@ const StringTable LanguageTables[NumLanguages] =
 		"Standby" THIN_SPACE DEGREE_SYMBOL "C",
 		"Move",
 		"Extrusion",
-		"Macro",
+		"Macros",
+		"Files",
 		"STOP",
 		"Coordinates",
 
@@ -302,7 +304,8 @@ const StringTable LanguageTables[NumLanguages] =
 		"Standby" THIN_SPACE DEGREE_SYMBOL "C",
 		"Bewegung",
 		"Extrusion",
-		"Makro",
+		"Makros",
+		"Files",		//TODO:TRANSLATE
 		"STOP",
 		"Koordinaten",
 
@@ -444,7 +447,8 @@ const StringTable LanguageTables[NumLanguages] =
 		"Standby" THIN_SPACE DEGREE_SYMBOL "C",
 		"Mouvement",
 		"Extrusion",
-		"Macro",
+		"Macros",
+		"Files",		//TODO:TRANSLATE
 		"ARRÊT",
 		"Coordonnées",
 
@@ -586,7 +590,8 @@ const StringTable LanguageTables[NumLanguages] =
 		"Esperando" THIN_SPACE DEGREE_SYMBOL "C",
 		"Mover",
 		"Extrusión",
-		"Macro",
+		"Macros",
+		"Files",		//TODO:TRANSLATE
 		"PARADA",							// It could also be STOP, both are OK
 		"Coordenadas",
 
@@ -728,7 +733,8 @@ const StringTable LanguageTables[NumLanguages] =
 		"Standby" THIN_SPACE DEGREE_SYMBOL "C",
 		"Muovi",
 		"Estrusione",
-		"Macro",
+		"Macros",
+		"Files",		//TODO:TRANSLATE
 		"FERMA",
 		"Coordinate",
 

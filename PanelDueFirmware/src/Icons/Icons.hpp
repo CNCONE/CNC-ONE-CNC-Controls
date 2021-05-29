@@ -20,4 +20,7 @@ extern const uint8_t IconHomeAll[], IconBedComp[];
 extern const uint8_t IconBed[], IconChamber[], IconOk[], IconCancel[], IconFiles[], IconKeyboard[], IconTrash[];
 extern const uint8_t IconBackspace[], IconUp[], IconDown[], IconEnter[];
 
+extern const uint16_t CNCOne_30h[];
+extern const uint8_t IconSettings[], IconConsole[];
+
 #endif /* ICONS_H_ */
