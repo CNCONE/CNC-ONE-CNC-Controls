@@ -53,6 +53,7 @@ GCodeResult Spindle::Configure(GCodeBuffer& gb, const StringRef& reply) THROWS(G
 		{
 			return GCodeResult::error;
 		}
+		TurnOff(); //initially off
 	}
 
 	if (gb.Seen('Q'))
@@ -100,7 +101,7 @@ void Spindle::SetRpm(int32_t rpm) noexcept
 		rpm = constrain<int>(rpm, minRpm, maxRpm);
 		reverseNotForwardPort.WriteDigital(false);
 		pwmPort.WriteAnalog((float)(rpm - minRpm) / (float)(maxRpm - minRpm));
-		onOffPort.WriteDigital(true);
+		onOffPort.WriteDigital(false);		//Active low
 		currentRpm = rpm;					// current rpm is flagged live, so no need to change seqs.spindles
 	}
 	else if (rpm < 0)
@@ -108,7 +109,7 @@ void Spindle::SetRpm(int32_t rpm) noexcept
 		rpm = constrain<int>(rpm, -maxRpm, -minRpm);
 		reverseNotForwardPort.WriteDigital(true);
 		pwmPort.WriteAnalog((float)(-rpm - minRpm) / (float)(maxRpm - minRpm));
-		onOffPort.WriteDigital(true);
+		onOffPort.WriteDigital(false);		//Active low
 		currentRpm = rpm;					// current rpm is flagged live, so no need to change seqs.spindles
 	}
 	else
@@ -125,7 +126,7 @@ void Spindle::SetRpm(int32_t rpm) noexcept
 
 void Spindle::TurnOff() noexcept
 {
-	onOffPort.WriteDigital(false);
+	onOffPort.WriteDigital(true);	// active low
 	pwmPort.WriteAnalog(0.0);
 	currentRpm = 0;
 }

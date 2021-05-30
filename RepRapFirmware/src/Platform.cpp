@@ -636,7 +636,6 @@ void Platform::Init() noexcept
 	pinMode(EmStopDisPin, OUTPUT_LOW);
 	pinMode(PortAPin(25), INPUT_PULLDOWN);
 
-
 	// Set up the local drivers
 	for (size_t driver = 0; driver < NumDirectDrivers; ++driver)
 	{

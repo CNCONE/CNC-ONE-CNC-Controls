@@ -203,7 +203,7 @@ constexpr Pin PowerMonitorVinDetectPin = PortCPin(4);						// AFE1_AD7/PC4 Vin m
 constexpr Pin PowerMonitor5vDetectPin = PortBPin(3);						// AFE1_AD1/PB3 5V regulator input monitor
 #endif
 
-constexpr float PowerMonitorVoltageRange = 51.8 * 3.3;						// We use an 51.8:1 voltage divider
+constexpr float PowerMonitorVoltageRange = 15.7 * 3.3;						// We use an 51.8:1 voltage divider
 
 //constexpr Pin VssaSensePin = PortBPin(7);
 
@@ -384,6 +384,9 @@ constexpr PinEntry PinTable[] =
 
 	{ PortAPin(0),	PinCapability::rw,	"xyz_probe_en" },
 	{ PortAPin(17),	PinCapability::read,	"xyz_probe_in" },
+	{ PortBPin(14),		PinCapability::rwpwm,	"spindle" },
+	{ PortCPin(24),		PinCapability::rw,	"spindleoff" },
+
 
 	{ NoPin,	PinCapability::rw,		"exp.pb6,exp.29,duex.pb6" },
 	{ NoPin,			PinCapability::rwpwm,	"duex.gp1" },
