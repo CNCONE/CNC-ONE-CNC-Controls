@@ -119,8 +119,11 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="cdt.managedbuild.config.gnu.cross.exe.release.516195201.976458850.241502451.170574622.384272410" name="DueXn.cpp" rcbsApplicability="disable" resourcePath="src/DuetNG/DueXn.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1697970502.1632646512">
+						<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1697970502.1632646512" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1697970502"/>
+					</fileInfo>
 					<sourceEntries>
-						<entry excluding="src/Duet3Mini|src/Linux|src/Hardware/SAME70|src/Hardware/SAME5x|src/Networking/LwipEthernet|src/Duet3_V06|src/Hardware/ksz8081rna|src/Pccb|src/DuetM" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src/DuetNG/DueXn.cpp|src/Networking/W5500Ethernet|src/Duet3Mini|src/Linux|src/Hardware/SAME70|src/Hardware/SAME5x|src/Networking/LwipEthernet|src/Duet3_V06|src/Hardware/ksz8081rna|src/Pccb|src/DuetM" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -2007,12 +2010,18 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Duet3ATE"/>
 		<configuration configurationName="Duet2"/>
+		<configuration configurationName="Duet3"/>
+		<configuration configurationName="Duet3_Debug"/>
 		<configuration configurationName="Duet3_Mini5plus_v02_Debug"/>
 		<configuration configurationName="Duet3_V06"/>
+		<configuration configurationName="Duet3Mini5plus"/>
 		<configuration configurationName="DuetMaestro"/>
 		<configuration configurationName="Duet2_SBC"/>
 		<configuration configurationName="Duet3Mini5plus_v04"/>
+		<configuration configurationName="Duet3MiniATE"/>
+		<configuration configurationName="Duet3Mini5plus_Debug"/>
 		<configuration configurationName="Duet3_V06_Debug"/>
 		<configuration configurationName="Duet3Mini5plus_v04_Debug"/>
 		<configuration configurationName="Duet3_Mini5plus_v02"/>
@@ -2021,6 +2030,7 @@
 		<configuration configurationName="PCCB_10"/>
 		<configuration configurationName="Duet3_Mini5plus"/>
 		<configuration configurationName="Duet3_Mini5plus_Debug"/>
+		<configuration configurationName="Duet3_CAN0"/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>

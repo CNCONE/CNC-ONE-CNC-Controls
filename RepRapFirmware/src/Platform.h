@@ -43,7 +43,7 @@ Licence: GPL
 #include <General/IPAddress.h>
 
 #if defined(DUET_NG)
-# include "DueXn.h"
+//# include "DueXn.h"
 #elif defined(DUET_06_085)
 # include "MCP4461/MCP4461.h"
 #elif defined(__ALLIGATOR__)
@@ -350,7 +350,7 @@ public:
 #endif
 
 #ifdef DUET_NG
-	bool IsDueXPresent() const noexcept { return expansionBoard != ExpansionBoardType::none; }
+//	bool IsDueXPresent() const noexcept { return expansionBoard != ExpansionBoardType::none; }
 	const char *GetBoardName() const noexcept;
 	const char *GetBoardShortName() const noexcept;
 #endif
@@ -680,7 +680,7 @@ private:
 	BoardType board;
 
 #ifdef DUET_NG
-	ExpansionBoardType expansionBoard;
+//	ExpansionBoardType expansionBoard;
 #endif
 
 	bool active;

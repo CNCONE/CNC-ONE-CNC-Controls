@@ -12,7 +12,7 @@
 #include "GCodes/GCodeBuffer/GCodeBuffer.h"
 
 #ifdef DUET_NG
-# include "DuetNG/DueXn.h"
+//# include "DuetNG/DueXn.h"
 #endif
 
 #if SAME5x
@@ -559,7 +559,7 @@ uint16_t IoPort::ReadAnalog() const noexcept
 	if (pin >= DueXnExpansionStart)
 	{
 		// Note: the SX1509B I/O expander chip doesn't seem to work if you set PWM mode and then set digital output mode.
-		DuetExpansion::SetPinMode(pin, mode);
+//		DuetExpansion::SetPinMode(pin, mode);
 	}
 	else
 	{
@@ -575,7 +575,7 @@ uint16_t IoPort::ReadAnalog() const noexcept
 #ifdef DUET_NG
 	if (pin >= DueXnExpansionStart)
 	{
-		return DuetExpansion::DigitalRead(pin);
+		return 0; //DuetExpansion::DigitalRead(pin);
 	}
 	else
 	{
@@ -591,7 +591,7 @@ uint16_t IoPort::ReadAnalog() const noexcept
 #ifdef DUET_NG
 	if (pin >= DueXnExpansionStart)
 	{
-		DuetExpansion::DigitalWrite(pin, high);
+		//DuetExpansion::DigitalWrite(pin, high);
 	}
 	else
 	{
@@ -609,7 +609,7 @@ uint16_t IoPort::ReadAnalog() const noexcept
 #elif defined(DUET_NG)
 	if (pin >= DueXnExpansionStart)
 	{
-		DuetExpansion::AnalogOut(pin, pwm);
+		//DuetExpansion::AnalogOut(pin, pwm);
 	}
 	else
 	{

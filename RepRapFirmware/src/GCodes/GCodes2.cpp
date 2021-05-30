@@ -1561,7 +1561,7 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 #endif
 				reply.printf("FIRMWARE_NAME: %s FIRMWARE_VERSION: %s ELECTRONICS: %s", FIRMWARE_NAME, VERSION, platform.GetElectronicsString());
 #ifdef DUET_NG
-				const char* const expansionName = DuetExpansion::GetExpansionBoardName();
+/*				const char* const expansionName = DuetExpansion::GetExpansionBoardName();
 				if (expansionName != nullptr)
 				{
 					reply.catf(" + %s", expansionName);
@@ -1570,7 +1570,7 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 				if (additionalExpansionName != nullptr)
 				{
 					reply.catf(" + %s", additionalExpansionName);
-				}
+				}*/
 #endif
 				reply.catf(" FIRMWARE_DATE: %s", DATE);
 			}

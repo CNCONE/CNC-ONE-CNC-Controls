@@ -24,7 +24,7 @@
 #include "Version.h"
 
 #ifdef DUET_NG
-# include "DueXn.h"
+//# include "DueXn.h"
 #endif
 
 #if SUPPORT_TMC2660
@@ -823,10 +823,10 @@ void RepRap::Diagnostics(MessageType mtype) noexcept
 	platform->MessageF(mtype, "%s version %s running on %s (%s mode)", FIRMWARE_NAME, VERSION, platform->GetElectronicsString(),
 						(UsingLinuxInterface()) ? "SBC" : "standalone");
 # else
-	platform->MessageF(mtype, "%s version %s running on %s", FIRMWARE_NAME, VERSION, platform->GetElectronicsString());
+	platform->MessageF(mtype, "%s version %s running on %s\n", FIRMWARE_NAME, VERSION, platform->GetElectronicsString());
 # endif
-	const char* const expansionName = DuetExpansion::GetExpansionBoardName();
-	platform->MessageF(mtype, (expansionName == nullptr) ? "\n" : " + %s\n", expansionName);
+//	const char* const expansionName = DuetExpansion::GetExpansionBoardName();
+//	platform->MessageF(mtype, (expansionName == nullptr) ? "\n" : " + %s\n", expansionName);
 #elif defined(__LPC17xx__)
 	platform->MessageF(mtype, "%s (%s) version %s running on %s at %dMhz\n", FIRMWARE_NAME, lpcBoardName, VERSION, platform->GetElectronicsString(), (int)SystemCoreClock/1000000);
 #elif HAS_LINUX_INTERFACE
@@ -860,7 +860,7 @@ void RepRap::Diagnostics(MessageType mtype) noexcept
 	}
 	FilamentMonitor::Diagnostics(mtype);
 #ifdef DUET_NG
-	DuetExpansion::Diagnostics(mtype);
+//	DuetExpansion::Diagnostics(mtype);
 #endif
 #if SUPPORT_CAN_EXPANSION
 	CanInterface::Diagnostics(mtype);
@@ -1796,7 +1796,7 @@ OutputBuffer *RepRap::GetConfigResponse() noexcept
 	// Firmware details
 	response->catf(",\"firmwareElectronics\":\"%.s", platform->GetElectronicsString());
 #ifdef DUET_NG
-	const char* expansionName = DuetExpansion::GetExpansionBoardName();
+/*	const char* expansionName = DuetExpansion::GetExpansionBoardName();
 	if (expansionName != nullptr)
 	{
 		response->catf(" + %.s", expansionName);
@@ -1805,7 +1805,7 @@ OutputBuffer *RepRap::GetConfigResponse() noexcept
 	if (additionalExpansionName != nullptr)
 	{
 		response->catf(" + %.s", additionalExpansionName);
-	}
+	}*/
 #endif
 	response->catf("\",\"firmwareName\":\"%.s\",\"firmwareVersion\":\"%.s\"", FIRMWARE_NAME, VERSION);
 #ifdef BOARD_SHORT_NAME
@@ -2751,7 +2751,7 @@ void RepRap::PrepareToLoadIap() noexcept
 	}
 
 #ifdef DUET_NG
-	DuetExpansion::Exit();					// stop the DueX polling task
+//	DuetExpansion::Exit();					// stop the DueX polling task
 #endif
 #if SAME5x	// CoreNG uses a separate analog input task, so stop that
 	StopAnalogTask();

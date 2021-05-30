@@ -421,7 +421,7 @@ Platform::Platform() noexcept :
 // Initialise the Platform. Note: this is the first module to be initialised, so don't call other modules from here!
 void Platform::Init() noexcept
 {
-#if defined(DUET3) || defined(DUET3MINI)
+/*#if defined(DUET3) || defined(DUET3MINI)
 	pinMode(EthernetPhyResetPin, OUTPUT_LOW);			// hold the Ethernet Phy chip in reset, hopefully this will prevent it being too noisy if Ethernet is not enabled
 #endif
 
@@ -434,7 +434,7 @@ void Platform::Init() noexcept
 #elif defined(DUET_M) || defined(PCCB_08) || defined(PCCB_08_X5) || defined(DUET3MINI)
 	pinMode(GlobalTmc22xxEnablePin, OUTPUT_HIGH);
 #endif
-
+*/
 	// Sort out which board we are running on (some firmware builds support more than one board variant)
 	SetBoardType(BoardType::Auto);
 
@@ -489,7 +489,7 @@ void Platform::Init() noexcept
 	MassStorage::Init();
 #endif
 
-#ifdef __LPC17xx__
+/*#ifdef __LPC17xx__
 	// Load HW pin assignments from sdcard
 	BoardConfig::Init();
 	pinMode(ATX_POWER_PIN,(ATX_POWER_INVERTED==false)?OUTPUT_LOW:OUTPUT_HIGH);
@@ -497,7 +497,7 @@ void Platform::Init() noexcept
 	// Deal with power first (we assume this doesn't depend on identifying the board type)
 	pinMode(ATX_POWER_PIN,OUTPUT_LOW);
 #endif
-
+*/
     // Ethernet networking defaults
 	ipAddress = DefaultIpAddress;
 	netMask = DefaultNetMask;
@@ -631,6 +631,11 @@ void Platform::Init() noexcept
 	{
 		driveDriverBits[driver + MaxAxesPlusExtruders] = StepPins::CalcDriverBitmap(driver);
 	}
+
+	// Initialize Emergency Stop
+	pinMode(EmStopDisPin, OUTPUT_LOW);
+	pinMode(PortAPin(25), INPUT_PULLDOWN);
+
 
 	// Set up the local drivers
 	for (size_t driver = 0; driver < NumDirectDrivers; ++driver)
@@ -844,7 +849,7 @@ void Platform::Init() noexcept
 	InitialiseInterrupts();
 
 #ifdef DUET_NG
-	DuetExpansion::DueXnTaskInit();								// must initialise interrupt priorities before calling this
+//	DuetExpansion::DueXnTaskInit();								// must initialise interrupt priorities before calling this
 #endif
 	active = true;
 }
@@ -1397,7 +1402,7 @@ void Platform::Spin() noexcept
 #endif
 
 			// Check for a VSSA fault
-#if HAS_VREF_MONITOR
+/*#if HAS_VREF_MONITOR
 			constexpr uint32_t MaxVssaFilterSum = (15 * (1u << AdcBits) * ThermistorAverageReadings * 4)/2200;		// VSSA fuse should have <= 15 ohms resistance
 			if (adcFilters[VssaFilterIndex].GetSum() > MaxVssaFilterSum)
 			{
@@ -1412,7 +1417,7 @@ void Platform::Spin() noexcept
 				Message(ErrorMessage, "VSSA fault, check thermistor wiring\n");
 				reported = true;
 			}
-#endif
+#endif*/
 
 #if HAS_SMART_DRIVERS && (HAS_VOLTAGE_MONITOR || HAS_12V_MONITOR)
 			// Check for attempts to move motors when not powered
@@ -2307,9 +2312,9 @@ GCodeResult Platform::DiagnosticTest(GCodeBuffer& gb, const StringRef& reply, Ou
 		break;
 
 #ifdef DUET_NG
-	case (unsigned int)DiagnosticTestType::PrintExpanderStatus:
+/*	case (unsigned int)DiagnosticTestType::PrintExpanderStatus:
 		reply.printf("Expander status %04X\n", DuetExpansion::DiagnosticRead());
-		break;
+		break;*/
 #endif
 
 #ifdef __LPC17xx__
@@ -3764,7 +3769,7 @@ void Platform::SetBoardType(BoardType bt) noexcept
 #elif defined(DUET_NG)
 		// Get ready to test whether the Ethernet module is present, so that we avoid additional delays
 		pinMode(EspResetPin, OUTPUT_LOW);						// reset the WiFi module or the W5500. We assume that this forces the ESP8266 UART output pin to high impedance.
-		pinMode(W5500ModuleSensePin, INPUT_PULLUP);				// set our UART receive pin to be an input pin and enable the pullup
+/*		pinMode(W5500ModuleSensePin, INPUT_PULLUP);				// set our UART receive pin to be an input pin and enable the pullup
 
 		// Set up the VSSA sense pin. Older Duet WiFis don't have it connected, so we enable the pulldown resistor to keep it inactive.
 		pinMode(VssaSensePin, INPUT_PULLUP);
@@ -3778,11 +3783,11 @@ void Platform::SetBoardType(BoardType bt) noexcept
 		{
 			pinMode(VssaSensePin, INPUT);
 		}
-
+*/
 # if defined(USE_SBC)
 		board = (vssaSenseWorking) ? BoardType::Duet2SBC_102 : BoardType::Duet2SBC_10;
 # else
-		// Test whether the Ethernet module is present
+/*		// Test whether the Ethernet module is present
 		if (digitalRead(W5500ModuleSensePin))					// the Ethernet module has this pin grounded
 		{
 			board = (vssaSenseWorking) ? BoardType::DuetWiFi_102 : BoardType::DuetWiFi_10;
@@ -3790,7 +3795,8 @@ void Platform::SetBoardType(BoardType bt) noexcept
 		else
 		{
 			board = (vssaSenseWorking) ? BoardType::DuetEthernet_102 : BoardType::DuetEthernet_10;
-		}
+		}*/
+		board = BoardType::DuetWiFi_102;
 # endif
 #elif defined(DUET_M)
 		board = BoardType::DuetM_10;
