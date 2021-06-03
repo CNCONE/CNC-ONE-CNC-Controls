@@ -88,7 +88,7 @@ static SingleButton *auxSpindleOn, *auxSpindleOff;
 
 /* Job Tab */
 static FloatField *printTabAxisPos[MaxDisplayableAxes];
-static FloatField *movePopupAxisPos[MaxDisplayableAxes];
+//static FloatField *movePopupAxisPos[MaxDisplayableAxes];
 static FloatField *currentTemps[MaxSlots];
 static FloatField /* *fpHeightField, *fpLayerHeightField,*/ *babystepOffsetField;
 static TextButtonWithLabel *babystepMinusButton, *babystepPlusButton;
@@ -156,6 +156,8 @@ static uint32_t lastScreensaverMoved = 0;
 static int8_t currentTool = -2;							// Initialized to a value never returned by RRF to have the logic for "no tool" applied at startup
 static uint8_t currentMoveSteps = 0;
 static bool allAxesHomed = false;
+static bool axesHomed[3] = {0};
+
 
 #ifdef SUPPORT_ENCODER
 
@@ -1408,21 +1410,21 @@ namespace UI
 
 	void UpdateAxisPosition(size_t axisIndex, float fval)
 	{
-		if (axisIndex < MaxTotalAxes)
+	/*	if (axisIndex < MaxTotalAxes)
 		{
 			auto axis = OM::GetAxis(axisIndex);
 			if (axis == nullptr)
 			{
 				return;
 			}
-			size_t slot = axis->slot;
-			if (slot < MaxDisplayableAxes)
+			size_t slot = axis->slot;*/
+			if (axisIndex < MaxDisplayableAxes)
 			{
-				coordBoxAxisPos[slot]->SetValue(fval);
-				printTabAxisPos[slot]->SetValue(fval);
-				movePopupAxisPos[slot]->SetValue(fval);
+				coordBoxAxisPos[axisIndex]->SetValue(fval);
+				printTabAxisPos[axisIndex]->SetValue(fval);
+				//movePopupAxisPos[slot]->SetValue(fval);
 			}
-		}
+		//}
 	}
 
 	void UpdateCurrentTemperature(size_t heaterIndex, float fval)
@@ -1864,34 +1866,40 @@ namespace UI
 	void UpdateAllHomed()
 	{
 		bool allHomed = true;
-		OM::IterateAxesWhile([&allHomed](OM::Axis* axis) {
+/*		OM::IterateAxesWhile([&allHomed](OM::Axis* axis) {
 			if (axis->visible && !axis->homed)
 			{
 				allHomed = false;
 				return false;
 			}
 			return true;
-		});
-		if (allHomed != allAxesHomed)
+		});*/
+		for(int i=0;i<3;i++)
+		{
+			if(!axesHomed[i])
+				allHomed=false;
+		}
+//		if (allHomed != allAxesHomed)
 		{
 			allAxesHomed = allHomed;
-			homeAllButton->SetColours(colours->buttonTextColour, (allAxesHomed) ? colours->homedButtonBackColour : colours->notHomedButtonBackColour);;
+			homeAllButton->SetColours(colours->buttonTextColour, (allAxesHomed) ? colours->homedButtonBackColour : colours->notHomedButtonBackColour);
 		}
 	}
 
 	// Update the homed status of the specified axis. If the axis is -1 then it represents the "all homed" status.
 	void UpdateHomedStatus(size_t axisIndex, bool isHomed)
 	{
-		OM::Axis *axis = OM::GetOrCreateAxis(axisIndex);
+		/*OM::Axis *axis = OM::GetOrCreateAxis(axisIndex);
 		if (axis == nullptr)
 		{
 			return;
 		}
 		axis->homed = isHomed;
-		const size_t slot = axis->slot;
-		if (slot < MaxDisplayableAxes)
+		const size_t slot = axis->slot;*/
+		if (axisIndex < MaxDisplayableAxes)
 		{
-			homeButtons[slot]->SetColours(colours->buttonTextColour, (isHomed) ? colours->homedButtonBackColour : colours->notHomedButtonBackColour);
+			axesHomed[axisIndex]= isHomed;
+			homeButtons[axisIndex]->SetColours(colours->buttonTextColour, (isHomed) ? colours->homedButtonBackColour : colours->notHomedButtonBackColour);
 		}
 
 		UpdateAllHomed();
@@ -2773,22 +2781,22 @@ namespace UI
 				switch(bp.GetIParam())
 				{
 				case 0:	// XY left
-					SerialIo::Sendf("G91 G1 X-%s G90\n", moveSteps[GetMoveStepsIndex()]);
+					SerialIo::Sendf("G91 G1 X-%s G90\n", moveSteps[currentMoveSteps]);
 					break;
 				case 1:	// XY up
-					SerialIo::Sendf("G91 G1 Y%s G90\n", moveSteps[GetMoveStepsIndex()]);
+					SerialIo::Sendf("G91 G1 Y%s G90\n", moveSteps[currentMoveSteps]);
 					break;
 				case 2:	// XY down
-					SerialIo::Sendf("G91 G1 Y-%s G90\n", moveSteps[GetMoveStepsIndex()]);
+					SerialIo::Sendf("G91 G1 Y-%s G90\n", moveSteps[currentMoveSteps]);
 					break;
 				case 3:	// XY right
-					SerialIo::Sendf("G91 G1 X%s G90\n", moveSteps[GetMoveStepsIndex()]);
+					SerialIo::Sendf("G91 G1 X%s G90\n", moveSteps[currentMoveSteps]);
 					break;
 				case 4:	// Z up
-					SerialIo::Sendf("G91 G1 Z%s G90\n", moveSteps[GetMoveStepsIndex()]);
+					SerialIo::Sendf("G91 G1 Z%s G90\n", moveSteps[currentMoveSteps]);
 					break;
 				case 5:	// Z down
-					SerialIo::Sendf("G91 G1 Z-%s G90\n", moveSteps[GetMoveStepsIndex()]);
+					SerialIo::Sendf("G91 G1 Z-%s G90\n", moveSteps[currentMoveSteps]);
 					break;
 				}
 				break;
