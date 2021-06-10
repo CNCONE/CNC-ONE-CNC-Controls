@@ -1595,7 +1595,7 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 		break;
 
 	// Fans section
-	case rcvFansRequestedValue:
+/*	case rcvFansRequestedValue:
 		ShowLine;
 		{
 			float f;
@@ -1640,7 +1640,7 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 		}
 		break;
 
-/*	case rcvHeatHeatersActive:
+	case rcvHeatHeatersActive:
 		ShowLine;
 		{
 			int32_t ival;
@@ -1742,9 +1742,9 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 		}
 		break;
 
-	case rcvJobTimesLeftFilament:
+//	case rcvJobTimesLeftFilament:
 	case rcvJobTimesLeftFile:
-	case rcvJobTimesLeftLayer:
+//	case rcvJobTimesLeftLayer:
 		ShowLine;
 		{
 			int32_t i;
@@ -1757,7 +1757,7 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 		break;
 
 	// Move section
-	case rcvMoveAxesBabystep:
+/*	case rcvMoveAxesBabystep:
 		ShowLine;
 		{
 			float f;
@@ -1766,7 +1766,7 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 				UI::SetBabystepOffset(indices[0], f);
 			}
 		}
-		break;
+		break;*/
 
 	case rcvMoveAxesHomed:
 		ShowLine;
@@ -1867,13 +1867,13 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 		break;
 
 	// Network section
-	case rcvNetworkName:
+/*	case rcvNetworkName:
 		ShowLine;
 		if (status != PrinterStatus::configuring && status != PrinterStatus::connecting)
 		{
 			UI::UpdateMachineName(data);
 		}
-		break;
+		break;*/
 
 	// Seqs section
 	case rcvSeqsBoards:
@@ -1903,13 +1903,13 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 		break;
 
 	// Sensors section
-	case rcvSensorsProbeValue:
+/*	case rcvSensorsProbeValue:
 		ShowLine;
 		{
 			if (indices[0] == 0 && indices[1] == 0)			// currently we only handle one probe with one value
 			UI::UpdateZProbe(data);
 		}
-		break;
+		break;*/
 
 	// Spindles section
 	case rcvSpindlesActive:
@@ -1957,7 +1957,7 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 		}
 		break;
 
-	case rcvSpindlesTool:
+/*	case rcvSpindlesTool:
 		ShowLine;
 		{
 			int32_t toolNumber;
@@ -1966,7 +1966,7 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 				UI::SetSpindleTool(indices[0], toolNumber);
 			}
 		}
-		break;
+		break;*/
 
 	// State section
 	case rcvStateCurrentTool:
@@ -2435,10 +2435,10 @@ void ParserErrorEncountered(const char*, const char*, const size_t[])	// For now
 }
 
 // Update those fields that display debug information
-void UpdateDebugInfo()
+/*void UpdateDebugInfo()
 {
 	freeMem->SetValue(GetFreeMemory());
-}
+}*/
 
 #if 0
 void SelfTest()
@@ -2647,7 +2647,7 @@ int main(void)
 		ShowLine;
 
 		// 4. Refresh the display
-		UpdateDebugInfo();
+//		UpdateDebugInfo();
 		mgr.Refresh(false);
 		ShowLine;
 

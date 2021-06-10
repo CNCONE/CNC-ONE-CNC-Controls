@@ -57,7 +57,7 @@ static TextButton *macroButtons[NumDisplayedMacros];
 //static String<controlPageMacroTextLength> controlPageMacroText[NumControlPageMacroButtons];
 
 static PopupWindow *setTempPopup, *setRPMPopup, /**movePopup, *extrudePopup,*/ *fileListPopup, *macrosPopup,/* *fileDetailPopup,*/ *baudPopup,
-		*volumePopup, *infoTimeoutPopup, *screensaverTimeoutPopup, *babystepAmountPopup, *feedrateAmountPopup, *startJobPopup, *areYouSurePopup, *keyboardPopup, *languagePopup, *coloursPopup, *screensaverPopup;
+		*volumePopup, *infoTimeoutPopup, *screensaverTimeoutPopup, /**babystepAmountPopup,*/ *feedrateAmountPopup, *startJobPopup, *areYouSurePopup, *keyboardPopup, *languagePopup, /**coloursPopup,*/ *screensaverPopup;
 static StaticTextField *areYouSureTextField, *areYouSureQueryField;
 static StaticTextField *startJobTextField, *startJobQueryField;
 static DisplayField *emptyRoot, *baseRoot, *commonRoot, *controlRoot, *workplacesRoot, *auxRoot, *jobRoot, *messageRoot, *setupRoot;
@@ -87,25 +87,26 @@ static SingleButton *auxLedOn, *auxLedOff;
 static SingleButton *auxSpindleOn, *auxSpindleOff;
 
 /* Job Tab */
-static FloatField *printTabAxisPos[MaxDisplayableAxes];
+static StopButton *jobManualStop;
+//static FloatField *printTabAxisPos[MaxDisplayableAxes];
 //static FloatField *movePopupAxisPos[MaxDisplayableAxes];
-static FloatField *currentTemps[MaxSlots];
-static FloatField /* *fpHeightField, *fpLayerHeightField,*/ *babystepOffsetField;
-static TextButtonWithLabel *babystepMinusButton, *babystepPlusButton;
+//static FloatField *currentTemps[MaxSlots];
+//static FloatField /* *fpHeightField, *fpLayerHeightField,*/ *babystepOffsetField;
+//static TextButtonWithLabel *babystepMinusButton, *babystepPlusButton;
 static IntegerField /* *fpSizeField, *fpFilamentField, */ *filePopupTitleField;
 static ProgressBar *printProgressBar;
-static ButtonBase *pauseButton, *resumeButton, *cancelButton, *babystepButton, *reprintButton;
-static TextField *timeLeftField, *zProbe;
+static ButtonBase *pauseButton, *resumeButton, *cancelButton, /**babystepButton,*/ *reprintButton;
+static TextField *timeLeftField; //, *zProbe;
 //static TextField *fpNameField, *fpGeneratedByField, *fpLastModifiedField, *fpPrintTimeField;
 //static StaticTextField *moveAxisRows[MaxDisplayableAxes];
 //static IntegerButton *activeTemps[MaxSlots], *standbyTemps[MaxSlots];
 
 /* Setup Tab */
-static IntegerButton *spd, *extrusionFactors[MaxSlots], *fanSpeed, *baudRateButton, *volumeButton, *infoTimeoutButton, *screensaverTimeoutButton, *feedrateAmountButton;
-static TextButton *languageButton, *coloursButton, *dimmingTypeButton; //, *heaterCombiningButton;
-static TextButtonWithLabel *babystepAmountButton;
+static IntegerButton *spd, *extrusionFactors[MaxSlots], /**fanSpeed,*/ *baudRateButton, *volumeButton, *infoTimeoutButton, *screensaverTimeoutButton, *feedrateAmountButton;
+static TextButton *languageButton, /**coloursButton,*/ *dimmingTypeButton; //, *heaterCombiningButton;
+//static TextButtonWithLabel *babystepAmountButton;
 static TextButtonWithLabel *moveStepsButton;
-static PopupWindow *babystepPopup;
+//static PopupWindow *babystepPopup;
 static PopupWindow *moveStepsPopup;
 static AlertPopup *alertPopup;
 static CharButtonRow *keyboardRows[4];
@@ -135,9 +136,9 @@ static size_t currentUserCommandBuffer = 0, currentHistoryBuffer = 0;
 //static unsigned int numHeaterAndToolColumns = 0;
 static int oldIntValue;
 static Event eventToConfirm = evNull;
-static uint8_t numVisibleAxes = 0;						// initialise to 0 so we refresh the macros list when we receive the number of axes
-static uint8_t numDisplayedAxes = 0;
-static bool isDelta = false;
+//static uint8_t numVisibleAxes = 0;						// initialise to 0 so we refresh the macros list when we receive the number of axes
+//static uint8_t numDisplayedAxes = 0;
+//static bool isDelta = false;
 
 const char* _ecv_array null currentFile = nullptr;			// file whose info is displayed in the file info popup
 const StringTable * strings = &LanguageTables[0];
@@ -743,11 +744,11 @@ void CreateScreensaverTimeoutPopup(const ColourScheme& colours)
 }
 
 // Create the babystep amount adjustment popup
-void CreateBabystepAmountPopup(const ColourScheme& colours)
+/*void CreateBabystepAmountPopup(const ColourScheme& colours)
 {
 	static const int values[] = { 0, 1, 2, 3 };
 	babystepAmountPopup = CreateIntPopupBar(colours, fullPopupWidth, ARRAY_SIZE(babystepAmounts), babystepAmounts, values, evAdjustBabystepAmount, evAdjustBabystepAmount);
-}
+}*/
 
 // Create the default Move Steps adjustment popup
 void CreateMoveStepsPopup(const ColourScheme& colours)
@@ -765,7 +766,7 @@ void CreateFeedrateAmountPopup(const ColourScheme& colours)
 }
 
 // Create the colour scheme change popup
-void CreateColoursPopup(const ColourScheme& colours)
+/*void CreateColoursPopup(const ColourScheme& colours)
 {
 	if (NumColourSchemes >= 2)
 	{
@@ -781,7 +782,7 @@ void CreateColoursPopup(const ColourScheme& colours)
 	{
 		coloursPopup = nullptr;
 	}
-}
+}*/
 
 // Create the language popup (currently only affects the keyboard layout)
 void CreateLanguagePopup(const ColourScheme& colours)
@@ -870,7 +871,7 @@ void CreateKeyboardPopup(uint32_t language, ColourScheme colours)
 }
 
 // Create the babystep popup
-void CreateBabystepPopup(const ColourScheme& colours)
+/*void CreateBabystepPopup(const ColourScheme& colours)
 {
 	babystepPopup = new StandardPopupWindow(babystepPopupHeight, babystepPopupWidth, colours.popupBackColour, colours.popupBorderColour, colours.popupTextColour, colours.buttonImageBackColour,
 			strings->babyStepping);
@@ -882,7 +883,7 @@ void CreateBabystepPopup(const ColourScheme& colours)
 	const PixelNumber width = CalcWidth(2, babystepPopupWidth - 2 * popupSideMargin);
 	babystepPopup->AddField(babystepMinusButton = new TextButtonWithLabel(ypos, CalcXPos(0, width, popupSideMargin), width, babystepAmounts[GetBabystepAmountIndex()], evBabyStepMinus, nullptr, LESS_ARROW " "));
 	babystepPopup->AddField(babystepPlusButton = new TextButtonWithLabel(ypos, CalcXPos(1, width, popupSideMargin), width, babystepAmounts[GetBabystepAmountIndex()], evBabyStepPlus, nullptr, MORE_ARROW " "));
-}
+}*/
 
 // Create the title bar
 void CreateTitleBar(const ColourScheme& colours)
@@ -1079,7 +1080,7 @@ void CreateJobTabFields(const ColourScheme& colours)
 	spd->SetValue(100);
 	spd->SetEvent(evAdjustSpeed, "M220 S");
 
-	// Fan button
+/*	// Fan button
 	mgr.AddField(fanSpeed = new IntegerButton(row7, fanColumn, pauseColumn - fanColumn - fieldSpacing, strings->fan, "%"));
 	fanSpeed->SetEvent(evAdjustFan, 0);
 	fanSpeed->SetValue(0);
@@ -1090,7 +1091,7 @@ void CreateJobTabFields(const ColourScheme& colours)
 
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
 	babystepButton = new TextButton(row7, babystepColumn, DisplayX - babystepColumn - margin, strings->babystep, evBabyStepPopup);
-	mgr.AddField(babystepButton);
+	mgr.AddField(babystepButton);*/
 
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.resumeButtonBackColour);
 	resumeButton = new TextButton(row7, resumeColumn, cancelColumn - resumeColumn - fieldSpacing, strings->resume, evResumePrint, "M24");
@@ -1099,7 +1100,7 @@ void CreateJobTabFields(const ColourScheme& colours)
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.resetButtonBackColour);
 	cancelButton = new TextButton(row7, cancelColumn, DisplayX - cancelColumn - margin, strings->cancel, evReset, "M0");
 	mgr.AddField(cancelButton);
-
+/*
 #if DISPLAY_X == 800
 	// On 5" and 7" screens there is room to show the current position on the Print page
 	const PixelNumber offset = rowHeight - 20;
@@ -1115,9 +1116,9 @@ void CreateJobTabFields(const ColourScheme& colours)
 		f->Show(i < MIN_AXES);
 		column += xyFieldWidth + fieldSpacing;
 	}
-#else
+#else */
 	const PixelNumber offset = 0;
-#endif
+//#endif
 
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
 	const PixelNumber reprintRow =
@@ -1138,6 +1139,18 @@ void CreateJobTabFields(const ColourScheme& colours)
 	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
 	mgr.AddField(timeLeftField = new TextField(row9 + offset, margin, DisplayX - 2 * margin, TextAlignment::Left, strings->timeRemaining));
 	mgr.Show(timeLeftField, false);
+
+
+	PixelNumber px = margin + coordBoxWidth + fieldSpacing;
+	px += 2 * ctrlArrowHeight + ctrlArrowWidth + fieldSpacing;
+
+	DisplayField::SetDefaultColours(colours.stopButtonTextColour, colours.defaultBackColour, colours.stopButtonBackColour, colours.buttonGradColour,
+									colours.ctrlMoveArrowPressedBorderColour, colours.buttonPressedGradColour, colours.pal);
+	px += ctrlArrowWidth + 2*fieldSpacing;
+	mgr.AddField(jobManualStop = new StopButton(row3, px, ctrlStopBtnWidth, strings->stop, evEmergencyStop, 0));
+
+	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour, colours.buttonBorderColour, colours.buttonGradColour,
+									colours.buttonPressedBackColour, colours.buttonPressedGradColour, colours.pal);
 
 	jobRoot = mgr.GetRoot();
 }
@@ -1171,8 +1184,8 @@ void CreateSetupTabFields(uint32_t language, const ColourScheme& colours)
 	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
 	// The firmware version field doubles up as an area for displaying debug messages, so make it the full width of the display
 	mgr.AddField(fwVersionField = new TextField(row2, margin, DisplayX, TextAlignment::Left, strings->firmwareVersion, VERSION_TEXT));
-	mgr.AddField(freeMem = new IntegerField(row3, margin, DisplayX/2 - margin, TextAlignment::Left, "Free RAM: "));
-	mgr.AddField(new ColourGradientField(ColourGradientTopPos, ColourGradientLeftPos, ColourGradientWidth, ColourGradientHeight));
+//	mgr.AddField(freeMem = new IntegerField(row3, margin, DisplayX/2 - margin, TextAlignment::Left, "Free RAM: "));
+//	mgr.AddField(new ColourGradientField(ColourGradientTopPos, ColourGradientLeftPos, ColourGradientWidth, ColourGradientHeight));
 
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
 	baudRateButton = AddIntegerButton(row4, 0, 3, nullptr, " baud", evSetBaudRate);
@@ -1183,7 +1196,7 @@ void CreateSetupTabFields(uint32_t language, const ColourScheme& colours)
 	AddTextButton(row5, 0, 3, strings->calibrateTouch, evCalTouch, nullptr);
 	AddTextButton(row5, 1, 3, strings->mirrorDisplay, evInvertX, nullptr);
 	AddTextButton(row5, 2, 3, strings->invertDisplay, evInvertY, nullptr);
-	coloursButton = AddTextButton(row6, 0, 3, strings->colourSchemeNames[colours.index], evSetColours, nullptr);
+//	coloursButton = AddTextButton(row6, 0, 3, strings->colourSchemeNames[colours.index], evSetColours, nullptr);
 	AddTextButton(row6, 1, 3, strings->brightnessDown, evDimmer, nullptr);
 	AddTextButton(row6, 2, 3, strings->brightnessUp, evBrighter, nullptr);
 	dimmingTypeButton = AddTextButton(row7, 0, 3, strings->displayDimmingNames[(unsigned int)GetDisplayDimmerType()], evSetDimmingType, nullptr);
@@ -1194,13 +1207,13 @@ void CreateSetupTabFields(uint32_t language, const ColourScheme& colours)
 	screensaverTimeoutButton->SetValue(GetScreensaverTimeout() / 1000);
 
 	const PixelNumber width = CalcWidth(3);
-	mgr.AddField(babystepAmountButton = new TextButtonWithLabel(row8, CalcXPos(1, width), width, babystepAmounts[GetBabystepAmountIndex()], evSetBabystepAmount, nullptr, strings->babystepAmount));
+//	mgr.AddField(babystepAmountButton = new TextButtonWithLabel(row8, CalcXPos(1, width), width, babystepAmounts[GetBabystepAmountIndex()], evSetBabystepAmount, nullptr, strings->babystepAmount));
 
 	feedrateAmountButton = AddIntegerButton(row8, 2, 3, strings->feedrate, nullptr, evSetFeedrate);
 	feedrateAmountButton->SetValue(GetFeedrate());
 
 //	heaterCombiningButton  = AddTextButton(row8, 0, 3, strings->heaterCombineTypeNames[(unsigned int)GetHeaterCombineType()], evSetHeaterCombineType, nullptr);
-	mgr.AddField(moveStepsButton = new TextButtonWithLabel(row9, CalcXPos(1, width), width, moveSteps[GetMoveStepsIndex()], evSetMoveStepsDefault, nullptr, strings->defMoveSteps));
+	mgr.AddField(moveStepsButton = new TextButtonWithLabel(row8, CalcXPos(1, width), width, moveSteps[GetMoveStepsIndex()], evSetMoveStepsDefault, nullptr, strings->defMoveSteps));
 
 	setupRoot = mgr.GetRoot();
 }
@@ -1308,17 +1321,17 @@ namespace UI
 		CreateVolumePopup(colours);
 		CreateInfoTimeoutPopup(colours);
 		CreateScreensaverTimeoutPopup(colours);
-		CreateBabystepAmountPopup(colours);
+//		CreateBabystepAmountPopup(colours);
 		CreateMoveStepsPopup(colours);
 		CreateFeedrateAmountPopup(colours);
 		CreateBaudRatePopup(colours);
-		CreateColoursPopup(colours);
+//		CreateColoursPopup(colours);
 		CreateAreYouSurePopup(colours);
 		CreateStartJobPopup(colours);
 		CreateKeyboardPopup(language, colours);
 		CreateLanguagePopup(colours);
 		alertPopup = new AlertPopup(colours);
-		CreateBabystepPopup(colours);
+//		CreateBabystepPopup(colours);
 
 		DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
 		touchCalibInstruction = new StaticTextField(DisplayY/2 - 10, 0, DisplayX, TextAlignment::Centre, strings->touchTheSpot);
@@ -1339,7 +1352,7 @@ namespace UI
 		mgr.Show(resumeButton, false);
 		mgr.Show(cancelButton, false);
 		mgr.Show(pauseButton, false);
-		mgr.Show(babystepButton, false);
+//		mgr.Show(babystepButton, false);
 		mgr.Show(printProgressBar, false);
 		mgr.Show(reprintButton, lastJobFileNameAvailable);
 		mgr.Show(filesButton, true);
@@ -1355,7 +1368,7 @@ namespace UI
 		mgr.Show(filesButton, false);
 		mgr.Show(reprintButton, false);
 		mgr.Show(pauseButton, true);
-		mgr.Show(babystepButton, true);
+//		mgr.Show(babystepButton, true);
 		mgr.Show(printProgressBar, true);
 	}
 
@@ -1365,7 +1378,7 @@ namespace UI
 		// First hide everything removed then show everything new
 		// otherwise remnants of the to-be-hidden might remain
 		mgr.Show(pauseButton, false);
-		mgr.Show(babystepButton, false);
+//		mgr.Show(babystepButton, false);
 		mgr.Show(filesButton, false);
 		mgr.Show(reprintButton, false);
 		mgr.Show(printProgressBar, true);
@@ -1374,9 +1387,9 @@ namespace UI
 	}
 
 	// Show or hide an axis on the move button grid and on the axis display
-	void ShowAxis(size_t slot, bool b, char axisLetter)
+/*	void ShowAxis(size_t slot, bool b, char axisLetter)
 	{
-		/*if (slot >= MaxDisplayableAxes)
+		if (slot >= MaxDisplayableAxes)
 		{
 			return;
 		}
@@ -1405,8 +1418,8 @@ namespace UI
 			{
 				mgr.Show(movePopupAxisPos[i], false);
 			}
-		}*/
-	}
+		}
+	}*/
 
 	void UpdateAxisPosition(size_t axisIndex, float fval)
 	{
@@ -1421,13 +1434,13 @@ namespace UI
 			if (axisIndex < MaxDisplayableAxes)
 			{
 				coordBoxAxisPos[axisIndex]->SetValue(fval);
-				printTabAxisPos[axisIndex]->SetValue(fval);
+//				printTabAxisPos[axisIndex]->SetValue(fval);
 				//movePopupAxisPos[slot]->SetValue(fval);
 			}
 		//}
 	}
 
-	void UpdateCurrentTemperature(size_t heaterIndex, float fval)
+/*	void UpdateCurrentTemperature(size_t heaterIndex, float fval)
 	{
 		OM::Slots heaterSlots;
 		OM::GetHeaterSlots(heaterIndex, heaterSlots);
@@ -1484,7 +1497,7 @@ namespace UI
 				}
 			});
 		}
-	}
+	}*/
 
 	void SetCurrentTool(int32_t ival)
 	{
@@ -1553,7 +1566,7 @@ namespace UI
 	}
 
 	// Append an amount of time to timesLeftText
-	static void AppendTimeLeft(int t)
+/*	static void AppendTimeLeft(int t)
 	{
 		if (t <= 0)
 		{
@@ -1572,7 +1585,7 @@ namespace UI
 			t /= 60;
 			timesLeftText.catf("%dh %02dm", t/60, t%60);
 		}
-	}
+	}*/
 
 	void UpdateTimesLeft(size_t index, unsigned int seconds)
 	{
@@ -1580,14 +1593,14 @@ namespace UI
 		{
 			timesLeft[index] = seconds;
 			timesLeftText.copy(strings->file);
-			AppendTimeLeft(timesLeft[0]);
+			/*AppendTimeLeft(timesLeft[0]);
 			timesLeftText.cat(strings->filament);
 			AppendTimeLeft(timesLeft[1]);
 			if (DisplayX >= 800)
 			{
 				timesLeftText.cat(strings->layer);
 				AppendTimeLeft(timesLeft[2]);
-			}
+			}*/
 			timeLeftField->SetValue(timesLeftText.c_str());
 			mgr.Show(timeLeftField, true);
 		}
@@ -1906,7 +1919,7 @@ namespace UI
 	}
 
 	// Update the Z probe text
-	void UpdateZProbe(const char data[])
+/*	void UpdateZProbe(const char data[])
 	{
 		zprobeBuf.copy(data);
 		zProbe->SetChanged();
@@ -1916,7 +1929,7 @@ namespace UI
 	void UpdateMachineName(const char data[])
 	{
 		machineName.copy(data);
-//		nameField->SetChanged();
+		nameField->SetChanged();
 	}
 
 	// Update the fan RPM
@@ -1942,7 +1955,7 @@ namespace UI
 		}
 	}
 
-/*	void UpdateToolTemp(size_t toolIndex, size_t toolHeaterIndex, int32_t temp, bool active)
+	void UpdateToolTemp(size_t toolIndex, size_t toolHeaterIndex, int32_t temp, bool active)
 	{
 		OM::Tool *tool = OM::GetOrCreateTool(toolIndex);
 
@@ -2495,7 +2508,7 @@ namespace UI
 							currentExtrudeAmountPress.GetSParam(),
 							currentExtrudeRatePress.GetSParam());
 				}
-				break;*/
+				break;
 
 			case evBabyStepPopup:
 				mgr.SetPopup(babystepPopup, AutoPlace, AutoPlace);
@@ -2516,7 +2529,7 @@ namespace UI
 					}
 					babystepOffsetField->SetValue(currentBabystepAmount);
 				}
-				break;
+				break;*/
 
 			case evListFiles:
 				FileManager::DisplayFilesList();
@@ -2860,10 +2873,10 @@ namespace UI
 				mgr.SetPopup(screensaverTimeoutPopup, AutoPlace, popupY);
 				break;
 
-			case evSetBabystepAmount:
+/*			case evSetBabystepAmount:
 				Adjusting(bp);
 				mgr.SetPopup(babystepAmountPopup, AutoPlace, popupY);
-				break;
+				break;*/
 
 			case evSetMoveStepsDefault:
 				Adjusting(bp);
@@ -2875,13 +2888,13 @@ namespace UI
 				mgr.SetPopup(feedrateAmountPopup, AutoPlace, popupY);
 				break;
 
-			case evSetColours:
+/*			case evSetColours:
 				if (coloursPopup != nullptr)
 				{
 					Adjusting(bp);
 					mgr.SetPopup(coloursPopup, AutoPlace, popupY);
 				}
-				break;
+				break;*/
 
 			case evBrighter:
 			case evDimmer:
@@ -2916,7 +2929,7 @@ namespace UI
 				TouchBeep();									// give audible feedback of the touch at the new volume level
 				break;
 
-			case evAdjustBabystepAmount:
+/*			case evAdjustBabystepAmount:
 				{
 					uint32_t babystepAmountIndex = bp.GetIParam();
 					SetBabystepAmountIndex(babystepAmountIndex);
@@ -2925,7 +2938,7 @@ namespace UI
 					babystepPlusButton->SetText(babystepAmounts[babystepAmountIndex]);
 				}
 				TouchBeep();									// give audible feedback of the touch at the new volume level
-				break;
+				break;*/
 
 			case evAdjustDefMoveSteps:
 				{
@@ -3310,9 +3323,9 @@ namespace UI
 				mgr.Refresh(true);
 			}
 		}
-	}*/
+	}
 
-/*	void ResetToolAndHeaterStates() noexcept
+	void ResetToolAndHeaterStates() noexcept
 	{
 		for (size_t i = 0; i < numToolColsUsed; ++i)
 		{
@@ -3498,7 +3511,7 @@ namespace UI
 			auto tool = OM::GetTool(spindle->tool);
 			if (tool != nullptr && tool->slot < MaxSlots)
 			{
-				currentTemps[tool->slot]->SetValue(current);
+				//currentTemps[tool->slot]->SetValue(current);
 			}
 		}
 	}
@@ -3518,7 +3531,7 @@ namespace UI
 		}
 	}
 
-	void UpdateToolStatus(size_t toolIndex, ToolStatus status)
+/*	void UpdateToolStatus(size_t toolIndex, ToolStatus status)
 	{
 		auto tool = OM::GetTool(toolIndex);
 		if (tool == nullptr)
@@ -3528,10 +3541,10 @@ namespace UI
 		tool->status = status;
 		if (tool->slot < MaxSlots)
 		{
-			Colour c = /*(status == ToolStatus::standby) ? colours->standbyBackColour : */
+			Colour c = (status == ToolStatus::standby) ? colours->standbyBackColour :
 						(status == ToolStatus::active) ? colours->activeBackColour
 						: colours->buttonImageBackColour;
-			//toolButtons[tool->slot]->SetColours(colours->buttonTextColour, c);
+			toolButtons[tool->slot]->SetColours(colours->buttonTextColour, c);
 		}
 	}
 
@@ -3633,7 +3646,7 @@ namespace UI
 				babystepOffsetField->SetValue(f);
 			}
 		}
-	}
+	}*/
 
 	void SetAxisLetter(size_t index, char l)
 	{
@@ -3670,7 +3683,7 @@ namespace UI
 		}
 	}
 
-	void SetBedOrChamberHeater(const uint8_t heaterIndex, const int8_t heaterNumber, bool bed)
+/*	void SetBedOrChamberHeater(const uint8_t heaterIndex, const int8_t heaterNumber, bool bed)
 	{
 		if (bed)
 		{
@@ -3688,7 +3701,7 @@ namespace UI
 				chamber->heater = heaterNumber;
 			}
 		}
-	}
+	}*/
 }
 
 #endif
