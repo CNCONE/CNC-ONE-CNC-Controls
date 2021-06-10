@@ -343,17 +343,18 @@ enum ReceivedDataEvent
 
 	// Keys for boards response
 	rcvBoardsFirmwareName,
+	rcvBoardsFirmwareVersion,
 
 	// Keys for fans response
-	rcvFansRequestedValue,
+//	rcvFansRequestedValue,
 
 	// Keys for heat response
-	rcvHeatBedHeaters,
+/*	rcvHeatBedHeaters,
 	rcvHeatChamberHeaters,
 	rcvHeatHeatersActive,
 	rcvHeatHeatersCurrent,
 	rcvHeatHeatersStandby,
-	rcvHeatHeatersState,
+	rcvHeatHeatersState,*/
 
 	// Keys for job response
 	rcvJobFileFilename,
@@ -449,9 +450,10 @@ static FieldTableEntry fieldTable[] =
 
 	// M409 K"boards" response
 	{ rcvBoardsFirmwareName, 			"boards^:firmwareName" },
+	{ rcvBoardsFirmwareVersion,			"boards^:firmwareVersion" },
 
 	// M409 K"fans" response
-	{ rcvFansRequestedValue,			"fans^:requestedValue" },
+/*	{ rcvFansRequestedValue,			"fans^:requestedValue" },
 
 	// M409 K"heat" response
 	{ rcvHeatBedHeaters,				"heat:bedHeaters^" },
@@ -460,7 +462,7 @@ static FieldTableEntry fieldTable[] =
 	{ rcvHeatHeatersCurrent,			"heat:heaters^:current" },
 	{ rcvHeatHeatersStandby,			"heat:heaters^:standby" },
 	{ rcvHeatHeatersState,				"heat:heaters^:state" },
-
+*/
 	// M409 K"job" response
 	{ rcvJobFileFilename, 				"job:file:fileName" },
 	{ rcvJobFileSize, 					"job:file:size" },
@@ -1591,6 +1593,15 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 					break;
 				}
 			}
+			UI::UpdateFirmwareName(data);
+		}
+		break;
+
+	case rcvBoardsFirmwareVersion:
+		ShowLine;
+		if (indices[0] == 0)			// currently we only handle the first board
+		{
+			UI::UpdateFirmwareVersion(data);
 		}
 		break;
 

@@ -22,7 +22,7 @@ constexpr size_t NumFirmwareUpdateModules = 5;		// 0 = mainboard, 4 = PanelDue, 
 
 #else
 
-#define FIRMWARE_NAME			"RepRapFirmware for CNC One WiFi"
+#define FIRMWARE_NAME			"RepRapFirmware for CNC ONE WiFi"
 #define DEFAULT_BOARD_TYPE	 	BoardType::DuetWiFi_10
 #define IAP_FIRMWARE_FILE		"CNCONECombinedFirmware.bin"
 #define IAP_UPDATE_FILE			"iap4e.bin"	// using the same IAP file for both Duet WiFi and Duet Ethernet

@@ -178,7 +178,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Spindle",
 		"On",
 		"Off",
-		"rpm",
+		" rpm",
 
 		// Print page
 		"Extruder" THIN_SPACE "%",
@@ -322,7 +322,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Spindle",		//TODO:TRANSLATE
 		"On",			//TODO:TRANSLATE
 		"Off",			//TODO:TRANSLATE
-		"rpm",			//TODO:TRANSLATE
+		" rpm",			//TODO:TRANSLATE
 
 		// Print page
 		"Extruder" THIN_SPACE "%",
@@ -465,7 +465,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Spindle",		//TODO:TRANSLATE
 		"On",			//TODO:TRANSLATE
 		"Off",			//TODO:TRANSLATE
-		"rpm",			//TODO:TRANSLATE
+		" rpm",			//TODO:TRANSLATE
 
 		// Print page
 		"Extrudeuse" THIN_SPACE "%",
@@ -608,7 +608,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Spindle",		//TODO:TRANSLATE
 		"On",			//TODO:TRANSLATE
 		"Off",			//TODO:TRANSLATE
-		"rpm",			//TODO:TRANSLATE
+		" rpm",			//TODO:TRANSLATE
 
 		// Print page
 		"Extrusor" THIN_SPACE "%",
@@ -751,7 +751,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Spindle",		//TODO:TRANSLATE
 		"On",			//TODO:TRANSLATE
 		"Off",			//TODO:TRANSLATE
-		"rpm",			//TODO:TRANSLATE
+		" rpm",			//TODO:TRANSLATE
 
 		// Print page
 		"Estrusore" THIN_SPACE "%",

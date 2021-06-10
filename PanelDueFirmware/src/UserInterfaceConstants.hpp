@@ -216,10 +216,6 @@ const PixelNumber messageTextWidth = DisplayX - margin - messageTextX;
 const PixelNumber alertPopupWidth = fullPopupWidth - 6 * margin;
 const PixelNumber alertPopupHeight = 2 * popupTopMargin + 6 * rowTextHeight + 2 * buttonHeight + moveButtonRowSpacing;
 
-const PixelNumber babystepPopupWidth = (2 * fullPopupWidth)/3;
-const PixelNumber babystepPopupHeight = 3 * rowHeight + 2 * popupTopMargin;
-const PixelNumber babystepRowSpacing = rowHeight;
-
 #endif
 
 #endif /* SRC_USERINTERFACECONSTANTS_HPP_ */

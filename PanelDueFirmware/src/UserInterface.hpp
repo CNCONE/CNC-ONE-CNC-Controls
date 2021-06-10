@@ -105,6 +105,9 @@ namespace UI
 	extern void SetSpindleCurrent(size_t index, uint16_t current);
 	extern void SetSpindleLimit(size_t index, uint16_t value, bool max);
 //	extern void SetSpindleTool(int8_t spindle, int8_t toolIndex);
+
+	extern void UpdateFirmwareName(const char data[]);
+	extern void UpdateFirmwareVersion(const char data[]);
 }
 
 #endif /* SRC_USERINTERFACE_HPP_ */

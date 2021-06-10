@@ -34,11 +34,13 @@ StaticTextField *messageTextFields[numMessageRows], *messageTimeFields[numMessag
 // Private fields
 class AlertPopup;
 
-const size_t machineNameLength = 30;
+//const size_t machineNameLength = 30;
+const size_t firmwareVersionLength = 30;
+const size_t firmwareNameLength = 50;
 const size_t printingFileLength = 40;
-const size_t zprobeBufLength = 12;
-const size_t generatedByTextLength = 50;
-const size_t lastModifiedTextLength = 20;
+//const size_t zprobeBufLength = 12;
+//const size_t generatedByTextLength = 50;
+//const size_t lastModifiedTextLength = 20;
 const size_t printTimeTextLength = 12;		// e.g. 11h 55m
 const size_t controlPageMacroTextLength = 50;
 
@@ -56,8 +58,8 @@ static TextButton *macroButtons[NumDisplayedMacros];
 //static TextButton *controlPageMacroButtons[NumControlPageMacroButtons];
 //static String<controlPageMacroTextLength> controlPageMacroText[NumControlPageMacroButtons];
 
-static PopupWindow *setTempPopup, *setRPMPopup, /**movePopup, *extrudePopup,*/ *fileListPopup, *macrosPopup,/* *fileDetailPopup,*/ *baudPopup,
-		*volumePopup, *infoTimeoutPopup, *screensaverTimeoutPopup, /**babystepAmountPopup,*/ *feedrateAmountPopup, *startJobPopup, *areYouSurePopup, *keyboardPopup, *languagePopup, /**coloursPopup,*/ *screensaverPopup;
+static PopupWindow /**setTempPopup, *setRPMPopup, *movePopup, *extrudePopup,*/ *fileListPopup, *macrosPopup,/* *fileDetailPopup,*/ *baudPopup,
+		*volumePopup, *infoTimeoutPopup, *screensaverTimeoutPopup, /**babystepAmountPopup,*/ *feedrateAmountPopup, *startJobPopup, *areYouSurePopup, *keyboardPopup, *languagePopup, /**coloursPopup,*/ *screensaverPopup, *spindlePopup;
 static StaticTextField *areYouSureTextField, *areYouSureQueryField;
 static StaticTextField *startJobTextField, *startJobQueryField;
 static DisplayField *emptyRoot, *baseRoot, *commonRoot, *controlRoot, *workplacesRoot, *auxRoot, *jobRoot, *messageRoot, *setupRoot;
@@ -74,7 +76,7 @@ static IconButtonWithText *homeButtons[3];
 static TextButton *ctrlManualStep[4];
 static ArrowButton *ctrlXYup,*ctrlXYdown,*ctrlXYleft,*ctrlXYright,*ctrlZup,*ctrlZdown;
 static StopButton *ctrlManualStop;
-static SingleButton *macroButton;
+static TextButton *macroButton;
 static ButtonBase *filesButton;
 
 /* Workplaces Tab */
@@ -82,9 +84,10 @@ static TextButton *wpSelect[4];
 static TextButton *wpSetZero[4];
 
 /* Aux Tab */
-static SingleButton *auxCoolantOn, *auxCoolantOff;
-static SingleButton *auxLedOn, *auxLedOff;
-static SingleButton *auxSpindleOn, *auxSpindleOff;
+static TextButton *auxCoolantOn, *auxCoolantOff;
+static IntegerButton *auxSpindleRPM;
+static IntegerButton *auxSpindleMin, *auxSpindleMax;
+static TextButton *auxSpindleMinus, *auxSpindlePlus, *auxSpindleOff;
 
 /* Job Tab */
 static StopButton *jobManualStop;
@@ -102,7 +105,8 @@ static TextField *timeLeftField; //, *zProbe;
 //static IntegerButton *activeTemps[MaxSlots], *standbyTemps[MaxSlots];
 
 /* Setup Tab */
-static IntegerButton *spd, *extrusionFactors[MaxSlots], /**fanSpeed,*/ *baudRateButton, *volumeButton, *infoTimeoutButton, *screensaverTimeoutButton, *feedrateAmountButton;
+static StaticTextField *machineFwField;
+static IntegerButton *spd, /**extrusionFactors[MaxSlots], *fanSpeed,*/ *baudRateButton, *volumeButton, *infoTimeoutButton, *screensaverTimeoutButton, *feedrateAmountButton;
 static TextButton *languageButton, /**coloursButton,*/ *dimmingTypeButton; //, *heaterCombiningButton;
 //static TextButtonWithLabel *babystepAmountButton;
 static TextButtonWithLabel *moveStepsButton;
@@ -118,12 +122,15 @@ static ButtonPress currentButton;
 static ButtonPress fieldBeingAdjusted;
 static ButtonPress currentExtrudeRatePress, currentExtrudeAmountPress;
 
-static String<machineNameLength> machineName;
+//static String<machineNameLength> machineName;
+static String<firmwareVersionLength> HwFirmwareVersion;
+static String<firmwareNameLength> HwFirmwareName;
+static String<firmwareVersionLength+firmwareNameLength> HwFirmware;
 static String<printingFileLength> printingFile;
 static bool lastJobFileNameAvailable = false;
-static String<zprobeBufLength> zprobeBuf;
-static String<generatedByTextLength> generatedByText;
-static String<lastModifiedTextLength> lastModifiedText;
+//static String<zprobeBufLength> zprobeBuf;
+//static String<generatedByTextLength> generatedByText;
+//static String<lastModifiedTextLength> lastModifiedText;
 static String<printTimeTextLength> printTimeText;
 
 const size_t maxUserCommandLength = 40;					// max length of a user gcode command
@@ -501,7 +508,7 @@ void PopupStartJob(const char* text, const char* query = strings->confirmFileSta
 	mgr.SetPopup(startJobPopup, AutoPlace, AutoPlace);
 }
 
-void CreateIntegerAdjustPopup(const ColourScheme& colours)
+/*void CreateIntegerAdjustPopup(const ColourScheme& colours)
 {
 	// Create the popup window used to adjust temperatures, fan speed, extrusion factor etc.
 	static const char* const tempPopupText[] = {"-5", "-1", strings->set, "+1", "+5"};
@@ -515,7 +522,7 @@ void CreateIntegerRPMAdjustPopup(const ColourScheme& colours)
 	static const char* const rpmPopupText[] = {"-1000", "-100", "-10", strings->set, "+10", "+100", "+1000"};
 	static const int rpmPopupParams[] = { -1000, -100, -10, 0, 10, 100, 1000 };
 	setRPMPopup = CreateIntPopupBar(colours, rpmPopupBarWidth, 7, rpmPopupText, rpmPopupParams, evAdjustInt, evSetInt);
-}
+}*/
 
 // Create the movement popup window
 /*void CreateMovePopup(const ColourScheme& colours)
@@ -885,6 +892,29 @@ void CreateKeyboardPopup(uint32_t language, ColourScheme colours)
 	babystepPopup->AddField(babystepPlusButton = new TextButtonWithLabel(ypos, CalcXPos(1, width, popupSideMargin), width, babystepAmounts[GetBabystepAmountIndex()], evBabyStepPlus, nullptr, MORE_ARROW " "));
 }*/
 
+// Create the screensaver timeout adjustment popup
+void CreateSpindlePopup(const ColourScheme& colours)
+{
+//	PixelNumber step = (width - 2 * popupSideMargin + popupFieldSpacing)/numEntries;
+
+	spindlePopup = new PopupWindow(popupBarHeight, fullPopupWidth, colours.popupBackColour, colours.popupBorderColour);
+	DisplayField::SetDefaultColours(colours.popupButtonTextColour, colours.popupButtonBackColour);
+	//DisplayField::SetDefaultColours(colours.popupTextColour, colours.popupBackColour);
+	//spindlePopup->AddField(babystepOffsetField = new FloatField(ypos, popupSideMargin, spindlePopupWidth - 2 * popupSideMargin, TextAlignment::Left, 3, strings->currentZoffset, "mm"));
+	//ypos += babystepRowSpacing;
+	DisplayField::SetDefaultColours(colours.popupTextColour, colours.buttonImageBackColour);
+	const PixelNumber width = CalcWidth(5, fullPopupWidth - 2 * popupSideMargin);
+	spindlePopup->AddField(auxSpindleOff = new TextButton(popupSideMargin, CalcXPos(0, width, popupSideMargin), width, strings->off, evAuxSpindle, 0));
+	spindlePopup->AddField(auxSpindleMin = new IntegerButton(popupSideMargin, CalcXPos(1, width, popupSideMargin), width , nullptr, strings->rpm));
+	auxSpindleMin->SetEvent(evAuxSpindle, 1);
+	auxSpindleMin->SetValue(0);
+	spindlePopup->AddField(auxSpindleMinus = new TextButton(popupSideMargin, CalcXPos(2, width, popupSideMargin), width, "-", evAuxSpindle, 3));
+	spindlePopup->AddField(auxSpindlePlus = new TextButton(popupSideMargin, CalcXPos(3, width, popupSideMargin), width, "+", evAuxSpindle, 4));
+	spindlePopup->AddField(auxSpindleMax = new IntegerButton(popupSideMargin, CalcXPos(4, width, popupSideMargin), width , nullptr, strings->rpm));
+	auxSpindleMax->SetEvent(evAuxSpindle, 2);
+	auxSpindleMax->SetValue(0);
+}
+
 // Create the title bar
 void CreateTitleBar(const ColourScheme& colours)
 {
@@ -1033,21 +1063,19 @@ void CreateAuxTabFields(const ColourScheme& colours)
 
 	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
 	mgr.AddField(new StaticTextField(row3 + labelRowAdjust, px, coordBoxWidth, TextAlignment::Right, strings->coolant));
-	mgr.AddField(new StaticTextField(row4 + labelRowAdjust, px, coordBoxWidth, TextAlignment::Right, strings->led));
-	mgr.AddField(new StaticTextField(row5 + labelRowAdjust, px, coordBoxWidth, TextAlignment::Right, strings->spindle));
+	mgr.AddField(new StaticTextField(row4 + labelRowAdjust, px, coordBoxWidth, TextAlignment::Right, strings->spindle));
 
 	px += coordBoxWidth+fieldSpacing;
 	PixelNumber pw = coordBoxWidth/2-fieldSpacing;
 
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
 	mgr.AddField(auxCoolantOn = new TextButton(row3, px, pw, strings->on, evAuxCoolant, 1));
-	mgr.AddField(auxLedOn = new TextButton(row4, px, pw, strings->on, evAuxLed, 1));
-	mgr.AddField(auxSpindleOn = new TextButton(row5, px, pw, strings->on, evAuxSpindle, 1));
+	mgr.AddField(auxSpindleRPM = new IntegerButton(row4, px, 2*pw + fieldSpacing , nullptr, strings->rpm));
+	auxSpindleRPM->SetEvent(evAuxSpindlePopup, 0);
+	auxSpindleRPM->SetValue(0);
 
 	px += pw + fieldSpacing;
 	mgr.AddField(auxCoolantOff = new TextButton(row3, px, pw, strings->off, evAuxCoolant, 0));
-	mgr.AddField(auxLedOff = new TextButton(row4, px, pw, strings->off, evAuxLed, 0));
-	mgr.AddField(auxSpindleOff = new TextButton(row5, px, pw, strings->off, evAuxSpindle, 0));
 
 	auxRoot = mgr.GetRoot();
 }
@@ -1063,7 +1091,7 @@ void CreateJobTabFields(const ColourScheme& colours)
 
 	// Extrusion factor buttons
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
-	for (unsigned int i = 0; i < MaxSlots; ++i)
+/*	for (unsigned int i = 0; i < MaxSlots; ++i)
 	{
 		const PixelNumber column = ((tempButtonWidth + fieldSpacing) * i) + 160;
 
@@ -1073,7 +1101,7 @@ void CreateJobTabFields(const ColourScheme& colours)
 		ib->Show(false);
 		extrusionFactors[i] = ib;
 		mgr.AddField(ib);
-	}
+	}*/
 
 	// Speed button
 	mgr.AddField(spd = new IntegerButton(row7, speedColumn, fanColumn - speedColumn - fieldSpacing, strings->speed, "%"));
@@ -1184,7 +1212,8 @@ void CreateSetupTabFields(uint32_t language, const ColourScheme& colours)
 	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
 	// The firmware version field doubles up as an area for displaying debug messages, so make it the full width of the display
 	mgr.AddField(fwVersionField = new TextField(row2, margin, DisplayX, TextAlignment::Left, strings->firmwareVersion, VERSION_TEXT));
-//	mgr.AddField(freeMem = new IntegerField(row3, margin, DisplayX/2 - margin, TextAlignment::Left, "Free RAM: "));
+	mgr.AddField(machineFwField = new StaticTextField(row3, margin, DisplayX, TextAlignment::Left, HwFirmware.c_str()));
+	//	mgr.AddField(freeMem = new IntegerField(row3, margin, DisplayX/2 - margin, TextAlignment::Left, "Free RAM: "));
 //	mgr.AddField(new ColourGradientField(ColourGradientTopPos, ColourGradientLeftPos, ColourGradientWidth, ColourGradientHeight));
 
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
@@ -1311,8 +1340,8 @@ namespace UI
 		CreateMainPages(language, colours);
 
 		// Create the popup fields
-		CreateIntegerAdjustPopup(colours);
-		CreateIntegerRPMAdjustPopup(colours);
+//		CreateIntegerAdjustPopup(colours);
+//		CreateIntegerRPMAdjustPopup(colours);
 //		CreateMovePopup(colours);
 //		CreateExtrudePopup(colours);
 		fileListPopup = CreateFileListPopup(filesListButtons, filenameButtons, NumFileRows, NumFileColumns, colours, true);
@@ -1332,6 +1361,7 @@ namespace UI
 		CreateLanguagePopup(colours);
 		alertPopup = new AlertPopup(colours);
 //		CreateBabystepPopup(colours);
+		CreateSpindlePopup(colours);
 
 		DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
 		touchCalibInstruction = new StaticTextField(DisplayY/2 - 10, 0, DisplayX, TextAlignment::Centre, strings->touchTheSpot);
@@ -2010,6 +2040,22 @@ namespace UI
 		});
 	}*/
 
+	// Update the firmware name
+	void UpdateFirmwareName(const char data[])
+	{
+		HwFirmwareName.copy(data);
+		HwFirmware.printf("%s %s",HwFirmwareName.c_str(),HwFirmwareVersion.c_str());
+		machineFwField->SetChanged();
+	}
+
+	// Update the firmware name
+	void UpdateFirmwareVersion(const char data[])
+	{
+		HwFirmwareVersion.copy(data);
+		HwFirmware.printf("%s %s",HwFirmwareName.c_str(),HwFirmwareVersion.c_str());
+		machineFwField->SetChanged();
+	}
+
 	// Update the print speed factor
 	void UpdateSpeedPercent(int ival)
 	{
@@ -2252,7 +2298,7 @@ namespace UI
 				}
 				break;
 
-			case evAdjustToolActiveTemp:
+/*			case evAdjustToolActiveTemp:
 			case evAdjustToolStandbyTemp:
 			case evAdjustBedActiveTemp:
 			case evAdjustBedStandbyTemp:
@@ -2287,7 +2333,7 @@ namespace UI
 						fieldBeingAdjusted.GetEvent();
 				switch (eventOfFieldBeingAdjusted)
 					{
-/*					case evAdjustBedActiveTemp:
+					case evAdjustBedActiveTemp:
 					case evAdjustChamberActiveTemp:
 						{
 							int bedOrChamberIndex = bp.GetIParam();
@@ -2386,7 +2432,7 @@ namespace UI
 								}
 							}
 						}
-						break;*/
+						break;
 
 					case evAdjustActiveRPM:
 						{
@@ -2402,12 +2448,12 @@ namespace UI
 						}
 						break;
 
-/*					case evExtrusionFactor:
+					case evExtrusionFactor:
 						{
 							const int extruder = fieldBeingAdjusted.GetIParam();
 							SerialIo::Sendf("M221 D%d S%d\n", extruder, val);
 						}
-						break;*/
+						break;
 
 					case evAdjustFan:
 						SerialIo::Sendf("M106 S%d\n", (256 * val)/100);
@@ -2470,7 +2516,7 @@ namespace UI
 				}
 				break;
 
-/*			case evMovePopup:
+			case evMovePopup:
 				mgr.SetPopup(movePopup, AutoPlace, AutoPlace);
 				break;
 
@@ -2530,6 +2576,62 @@ namespace UI
 					babystepOffsetField->SetValue(currentBabystepAmount);
 				}
 				break;*/
+
+			case evAuxSpindlePopup:
+				Adjusting(bp);
+				mgr.SetPopup(spindlePopup, AutoPlace, popupY);
+				break;
+
+			case evAuxSpindle:
+				switch(bp.GetIParam())
+				{
+				case 0: //off
+					CurrentButtonReleased();
+					mgr.ClearPopup();
+					StopAdjusting();
+					SerialIo::Sendf("M5 P0\n");
+					break;
+				case 1:	//min
+					{
+						CurrentButtonReleased();
+						mgr.ClearPopup();
+						StopAdjusting();
+						auto spindle = OM::GetSpindle(0);
+						uint16_t val = spindle->min;
+						val = constrain<int>(val, spindle->min, spindle->max);
+						SerialIo::Sendf("M3 P0 S%d\n", val);
+						break;
+					}
+				case 2: //max
+					{
+						CurrentButtonReleased();
+						mgr.ClearPopup();
+						StopAdjusting();
+						auto spindle = OM::GetSpindle(0);
+						uint16_t val = spindle->max;
+						val = constrain<int>(val, spindle->min, spindle->max);
+						SerialIo::Sendf("M3 P0 S%d\n", val);
+						break;
+					}
+				case 3:	//Minus
+					{
+						auto spindle = OM::GetSpindle(0);
+						uint16_t val = spindle->current - 1000;
+						val = constrain<int>(val, spindle->min, spindle->max);
+						SerialIo::Sendf("M3 P0 S%d\n", val);
+						break;
+					}
+
+				case 4: //Plus
+					{
+						auto spindle = OM::GetSpindle(0);
+						uint16_t val = spindle->current + 1000;
+						val = constrain<int>(val, spindle->min, spindle->max);
+						SerialIo::Sendf("M3 P0 S%d\n", val);
+						break;
+					}
+				}
+				break;
 
 			case evListFiles:
 				FileManager::DisplayFilesList();
@@ -3128,22 +3230,23 @@ namespace UI
 			switch(fieldBeingAdjusted.GetEvent())
 			{
 			case evAdjustSpeed:
-			case evExtrusionFactor:
-			case evAdjustFan:
+//			case evExtrusionFactor:
+//			case evAdjustFan:
 				static_cast<IntegerButton*>(fieldBeingAdjusted.GetButton())->SetValue(oldIntValue);
 				mgr.ClearPopup();
 				StopAdjusting();
 				break;
 
-			case evAdjustToolActiveTemp:
-			case evAdjustToolStandbyTemp:
-			case evAdjustActiveRPM:
+//			case evAdjustToolActiveTemp:
+//			case evAdjustToolStandbyTemp:
+//			case evAdjustActiveRPM:
+			case evAuxSpindlePopup:
 			case evSetBaudRate:
 			case evSetVolume:
 			case evSetInfoTimeout:
 			case evSetScreensaverTimeout:
 			case evSetFeedrate:
-			case evSetBabystepAmount:
+//			case evSetBabystepAmount:
 			case evSetMoveStepsDefault:
 			case evSetColours:
 				mgr.ClearPopup();
@@ -3184,12 +3287,14 @@ namespace UI
 				}
 				break;
 
+			case evAuxCoolant:
+			case evAuxSpindlePopup:
 			case evSetBaudRate:
 			case evSetVolume:
 			case evSetInfoTimeout:
 			case evSetScreensaverTimeout:
 			case evSetFeedrate:
-			case evSetBabystepAmount:
+//			case evSetBabystepAmount:
 			case evSetMoveStepsDefault:
 			case evSetColours:
 			case evSetLanguage:
@@ -3506,14 +3611,15 @@ namespace UI
 		{
 			return;
 		}
-		if (spindle->tool > -1)
+/*		if (spindle->tool > -1)
 		{
 			auto tool = OM::GetTool(spindle->tool);
-			if (tool != nullptr && tool->slot < MaxSlots)
+			if (tool != nullptr && tool->slot < MaxSlots)*/
 			{
-				//currentTemps[tool->slot]->SetValue(current);
+				spindle->current = current;
+				auxSpindleRPM->SetValue(current);
 			}
-		}
+//		}
 	}
 
 	void SetSpindleLimit(size_t index, uint16_t value, bool max)
@@ -3523,10 +3629,12 @@ namespace UI
 			if (max)
 			{
 				spindle->max = value;
+				auxSpindleMax->SetValue(value);
 			}
 			else
 			{
 				spindle->min = value;
+				auxSpindleMin->SetValue(value);
 			}
 		}
 	}

@@ -59,6 +59,7 @@ namespace OM {
 		uint16_t max;
 		uint16_t min;
 		int8_t tool;
+		uint16_t current;
 
 		void Reset();
 	};

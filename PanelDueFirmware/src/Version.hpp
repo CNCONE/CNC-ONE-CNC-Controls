@@ -8,7 +8,7 @@
 #ifndef SRC_VERSION_HPP_
 #define SRC_VERSION_HPP_
 
-#define VERSION_TEXT_MAIN		"3.2.11 (CNC-One)"
+#define VERSION_TEXT_MAIN		"3.2.11 (CNC ONE)"
 
 #ifdef SUPPORT_ENCODER
 #define VERSION_TEXT	VERSION_TEXT_MAIN "+enc"

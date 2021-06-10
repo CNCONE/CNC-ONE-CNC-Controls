@@ -20,18 +20,18 @@ enum Event : uint8_t
 	evTabControl, evTabWorkplaces, evTabAux, evTabJob, evTabMsg, evTabSetup,
 
 	// Heater control
-	evSelectHead, evSelectBed, evSelectChamber,
+/*	evSelectHead, evSelectBed, evSelectChamber,
 	evAdjustToolActiveTemp, evAdjustToolStandbyTemp,
 	evAdjustBedActiveTemp, evAdjustBedStandbyTemp,
-	evAdjustChamberActiveTemp, evAdjustChamberStandbyTemp,
+	evAdjustChamberActiveTemp, evAdjustChamberStandbyTemp,*/
 
 	// Spindle control
-	evAdjustActiveRPM,
+//	evAdjustActiveRPM,
 
 	// Control functions
-	evMovePopup, evExtrudePopup, evFan, evListMacros,
+	/*evMovePopup, evExtrudePopup, evFan,*/ evListMacros,
 	evMoveAxis,
-	evExtrudeAmount, evExtrudeRate, evExtrude, evRetract,
+//	evExtrudeAmount, evExtrudeRate, evExtrude, evRetract,
 	evHomeAxis,
 	evCtrlStepSize,
 	evCtrlMove,
@@ -43,14 +43,14 @@ enum Event : uint8_t
 
 	// Aux functions,
 	evAuxCoolant,
-	evAuxLed,
+	evAuxSpindlePopup,
 	evAuxSpindle,
 
 	// Print functions
-	evExtrusionFactor,
+/*	evExtrusionFactor,
 	evAdjustFan,
 	evAdjustInt,
-	evSetInt,
+	evSetInt,*/
 	evListFiles,
 
 	evFile, evMacro, evMacroControlPage,
@@ -73,7 +73,7 @@ enum Event : uint8_t
 	evPausePrint,
 	evResumePrint,
 	evReprint, evResimulate,
-	evBabyStepPopup, evBabyStepMinus, evBabyStepPlus,
+//	evBabyStepPopup, evBabyStepMinus, evBabyStepPlus,
 
 	evKey, evShift, evBackspace, evSendKeyboardCommand, evUp, evDown,
 
@@ -82,9 +82,9 @@ enum Event : uint8_t
 	evBrighter, evDimmer,
 	evSetDimmingType,
 	evSetScreensaverTimeout, evAdjustScreensaverTimeout,
-	evSetBabystepAmount, evAdjustBabystepAmount,
+//	evSetBabystepAmount, evAdjustBabystepAmount,
 	evSetFeedrate, evAdjustFeedrate,
-	evSetHeaterCombineType,
+//	evSetHeaterCombineType,
 	evSetMoveStepsDefault, evAdjustDefMoveSteps,
 
 
