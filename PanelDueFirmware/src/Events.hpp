@@ -40,9 +40,11 @@ enum Event : uint8_t
 	// Workplace functions
 	evWpSelect,
 	evWpSetZero,
+	evWpGotoZero,
 
 	// Aux functions,
 	evAuxCoolant,
+	evAuxVacuum,
 	evAuxSpindlePopup,
 	evAuxSpindle,
 

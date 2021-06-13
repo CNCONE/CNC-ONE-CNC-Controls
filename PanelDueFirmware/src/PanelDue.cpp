@@ -383,7 +383,7 @@ enum ReceivedDataEvent
 	rcvNetworkName,
 
 	// Keys for sensors response
-	rcvSensorsProbeValue,
+//	rcvSensorsProbeValue,
 
 	// Keys for seqs response
 	rcvSeqsBoards,
@@ -404,7 +404,7 @@ enum ReceivedDataEvent
 
 	// Keys for spindles respons
 	rcvSpindlesActive,
-	rcvSpindlesCurrent,
+//	rcvSpindlesCurrent,
 	rcvSpindlesMax,
 	rcvSpindlesMin,
 	rcvSpindlesTool,
@@ -420,6 +420,7 @@ enum ReceivedDataEvent
 	rcvStateMessageBoxTitle,
 	rcvStateStatus,
 	rcvStateUptime,
+	rcvStateGpOut,
 
 	// Keys from tools response
 	rcvToolsActive,
@@ -490,7 +491,7 @@ static FieldTableEntry fieldTable[] =
 	{ rcvNetworkName, 					"network:name" },
 
 	// M409 K"sensors" response
-	{ rcvSensorsProbeValue,				"sensors:probes^:value^" },
+//	{ rcvSensorsProbeValue,				"sensors:probes^:value^" },
 
 	// M409 K"seqs" response
 	{ rcvSeqsBoards,					"seqs:boards" },
@@ -511,10 +512,10 @@ static FieldTableEntry fieldTable[] =
 
 	// M409 K"spindles" response
 	{ rcvSpindlesActive, 				"spindles^:active" },
-	{ rcvSpindlesCurrent,				"spindles^:current" },
+//	{ rcvSpindlesCurrent,				"spindles^:current" },
 	{ rcvSpindlesMax, 					"spindles^:max" },
 	{ rcvSpindlesMin, 					"spindles^:min" },
-	{ rcvSpindlesTool, 					"spindles^:tool" },
+//	{ rcvSpindlesTool, 					"spindles^:tool" },
 
 	// M409 K"state" response
 	{ rcvStateCurrentTool,				"state:currentTool" },
@@ -527,6 +528,7 @@ static FieldTableEntry fieldTable[] =
 	{ rcvStateMessageBoxTitle,			"state:messageBox:title" },
 	{ rcvStateStatus,					"state:status" },
 	{ rcvStateUptime,					"state:upTime" },
+	{ rcvStateGpOut,					"state:gpOut^:pwm"},
 
 	// M409 K"tools" response
 	{ rcvToolsActive, 					"tools^:active^" },
@@ -1808,6 +1810,17 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 		}
 		break;
 
+	case rcvMoveAxesMachinePosition:
+		ShowLine;
+		{
+			float fval;
+			if (GetFloat(data, fval))
+			{
+				UI::UpdateAxisMachinePosition(indices[0], fval);
+			}
+		}
+		break;
+
 	case rcvMoveAxesVisible:
 		ShowLine;
 		{
@@ -1846,14 +1859,14 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 		}
 		break;*/
 
-/*	case rcvMoveKinematicsName:
+	case rcvMoveKinematicsName:
 		ShowLine;
 		if (status != PrinterStatus::configuring && status != PrinterStatus::connecting)
 		{
 			isDelta = (strcasecmp(data, "delta") == 0);
 			UI::UpdateGeometry(numAxes, isDelta);
 		}
-		break;*/
+		break;
 
 	case rcvMoveSpeedFactor:
 		ShowLine;
@@ -1940,7 +1953,7 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 		}
 		break;
 
-	case rcvSpindlesCurrent:
+/*	case rcvSpindlesCurrent:
 		ShowLine;
 		{
 			uint32_t current;
@@ -1949,7 +1962,7 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 				UI::SetSpindleCurrent(indices[0], current);
 			}
 		}
-		break;
+		break;*/
 
 	case rcvSpindlesMax:
 	case rcvSpindlesMin:
@@ -2067,6 +2080,16 @@ void ProcessReceivedValue(StringRef id, const char data[], const size_t indices[
 					Reconnect();
 				}
 				remoteUpTime = uival;
+			}
+		}
+		break;
+	case rcvStateGpOut:
+		ShowLine;
+		{
+			float pwm;
+			if (GetFloat(data, pwm))
+			{
+				UI::UpdateGpOut(indices[0], pwm);
 			}
 		}
 		break;

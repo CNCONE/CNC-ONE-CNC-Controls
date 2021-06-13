@@ -33,6 +33,7 @@ namespace UI
 	extern void AnimateScreensaver();
 //	extern void ShowAxis(size_t axis, bool b, char axisLetter =  '\0');
 	extern void UpdateAxisPosition(size_t axis, float fval);
+	extern void UpdateAxisMachinePosition(size_t axisIndex, float fval);
 //	extern void UpdateCurrentTemperature(size_t heater, float fval);
 //	extern void UpdateHeaterStatus(const size_t heater, const HeaterStatus status);
 	extern void ChangeStatus(PrinterStatus oldStatus, PrinterStatus newStatus);
@@ -48,7 +49,7 @@ namespace UI
 	extern void ShowDefaultPage();
 	extern void UpdatePrintingFields();
 	extern void SetPrintProgressPercent(unsigned int percent);
-//	extern void UpdateGeometry(unsigned int p_numAxes, bool p_isDelta);
+	extern void UpdateGeometry(unsigned int p_numAxes, bool p_isDelta);
 	extern void UpdateHomedStatus(size_t axis, bool isHomed);
 //	extern void UpdateZProbe(const char data[]);
 //	extern void UpdateMachineName(const char data[]);
@@ -68,6 +69,7 @@ namespace UI
 //	extern void UpdateToolTemp(size_t toolIndex, size_t toolHeaterIndex, int32_t temp, bool active);
 //	extern void UpdateStandbyTemperature(size_t index, int ival);
 //	extern void UpdateExtrusionFactor(size_t index, int ival);
+	extern void UpdateGpOut(size_t index, float f);
 	extern void UpdatePrintTimeText(uint32_t seconds, bool isSimulated);
 	extern void UpdateSpeedPercent(int ival);
 	extern void UpdateWorkplaceNumber(int ival);
@@ -102,7 +104,7 @@ namespace UI
 //	extern void SetBedOrChamberHeater(const uint8_t heaterIndex, const int8_t heaterNumber, bool bed = true);
 
 	extern void SetSpindleActive(size_t index, uint16_t active);
-	extern void SetSpindleCurrent(size_t index, uint16_t current);
+//	extern void SetSpindleCurrent(size_t index, uint16_t current);
 	extern void SetSpindleLimit(size_t index, uint16_t value, bool max);
 //	extern void SetSpindleTool(int8_t spindle, int8_t toolIndex);
 

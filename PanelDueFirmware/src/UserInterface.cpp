@@ -80,11 +80,14 @@ static TextButton *macroButton;
 static ButtonBase *filesButton;
 
 /* Workplaces Tab */
+static FloatField *wpMachineCoordAxisPos[3];
 static TextButton *wpSelect[4];
 static TextButton *wpSetZero[4];
+static TextButton *wpGotoZero;
 
 /* Aux Tab */
 static TextButton *auxCoolantOn, *auxCoolantOff;
+static TextButton *auxVacuumOn, *auxVacuumOff;
 static IntegerButton *auxSpindleRPM;
 static IntegerButton *auxSpindleMin, *auxSpindleMax;
 static TextButton *auxSpindleMinus, *auxSpindlePlus, *auxSpindleOff;
@@ -143,9 +146,9 @@ static size_t currentUserCommandBuffer = 0, currentHistoryBuffer = 0;
 //static unsigned int numHeaterAndToolColumns = 0;
 static int oldIntValue;
 static Event eventToConfirm = evNull;
-//static uint8_t numVisibleAxes = 0;						// initialise to 0 so we refresh the macros list when we receive the number of axes
-//static uint8_t numDisplayedAxes = 0;
-//static bool isDelta = false;
+static uint8_t numVisibleAxes = 0;						// initialise to 0 so we refresh the macros list when we receive the number of axes
+static uint8_t numDisplayedAxes = 0;
+static bool isDelta = false;
 
 const char* _ecv_array null currentFile = nullptr;			// file whose info is displayed in the file info popup
 const StringTable * strings = &LanguageTables[0];
@@ -1051,6 +1054,40 @@ void CreateWorkplacesTabFields(const ColourScheme& colours)
 	mgr.AddField(wpSetZero[1] = new TextButton(row4, px, coordBoxWidth, strings->setZero, evWpSetZero, 1));
 	mgr.AddField(wpSetZero[2] = new TextButton(row5, px, coordBoxWidth, strings->setZero, evWpSetZero, 2));
 
+	px += coordBoxWidth + fieldSpacing + coordBoxWidth + fieldSpacing;
+
+	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
+	mgr.AddField(new StaticTextField(row2 + labelRowAdjust, px, coordBoxWidth, TextAlignment::Left, strings->machine));
+
+	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
+	mgr.AddField(wpGotoZero = new TextButton(row6, px, coordBoxWidth, strings->gotoZero, evWpGotoZero, 0));
+
+	px+= margin;
+	DisplayField::SetDefaultColours(colours.coordBoxTextColour, colours.coordBoxBackColour);
+	mgr.AddField(new StaticTextField(row3 + labelRowAdjust, px, coordBoxLabelWidth, TextAlignment::Left, axisNames[0]));
+	mgr.AddField(new StaticTextField(row4 + labelRowAdjust, px, coordBoxLabelWidth, TextAlignment::Left, axisNames[1]));
+	mgr.AddField(new StaticTextField(row5 + labelRowAdjust, px, coordBoxLabelWidth, TextAlignment::Left, axisNames[2]));
+
+	px += coordBoxLabelWidth;
+	DisplayField::SetDefaultColours(colours.coordBoxValueColour, colours.coordBoxBackColour);
+	mgr.AddField(wpMachineCoordAxisPos[0] = new FloatField(row3 + labelRowAdjust, px, coordBoxValueWidth, TextAlignment::Right, 2));
+	mgr.AddField(wpMachineCoordAxisPos[1] = new FloatField(row4 + labelRowAdjust, px, coordBoxValueWidth, TextAlignment::Right, 2));
+	mgr.AddField(wpMachineCoordAxisPos[2] = new FloatField(row5 + labelRowAdjust, px, coordBoxValueWidth, TextAlignment::Right, 2));
+	wpMachineCoordAxisPos[0]->SetValue(0.0);
+	wpMachineCoordAxisPos[1]->SetValue(0.0);
+	wpMachineCoordAxisPos[2]->SetValue(0.0);
+
+	px += coordBoxValueWidth+margin;
+	DisplayField::SetDefaultColours(colours.coordBoxTextColour, colours.coordBoxBackColour);
+	mgr.AddField(new StaticTextField(row3 + labelRowAdjust, px, coordBoxUnitWidth, TextAlignment::Right, "mm"));
+	mgr.AddField(new StaticTextField(row4 + labelRowAdjust, px, coordBoxUnitWidth, TextAlignment::Right, "mm"));
+	mgr.AddField(new StaticTextField(row5 + labelRowAdjust, px, coordBoxUnitWidth, TextAlignment::Right, "mm"));
+
+	// Reversed Paint order, Background has to be added last
+	DisplayField::SetDefaultColours(colours.coordBoxBackColour, colours.coordBoxBackColour);
+	mgr.AddField(new StaticColourField(row3-2, margin + 3*(coordBoxWidth + fieldSpacing), coordBoxWidth, rowHeight*3-6));
+
+
 	workplacesRoot = mgr.GetRoot();
 }
 
@@ -1063,19 +1100,22 @@ void CreateAuxTabFields(const ColourScheme& colours)
 
 	DisplayField::SetDefaultColours(colours.labelTextColour, colours.defaultBackColour);
 	mgr.AddField(new StaticTextField(row3 + labelRowAdjust, px, coordBoxWidth, TextAlignment::Right, strings->coolant));
-	mgr.AddField(new StaticTextField(row4 + labelRowAdjust, px, coordBoxWidth, TextAlignment::Right, strings->spindle));
+	mgr.AddField(new StaticTextField(row4 + labelRowAdjust, px, coordBoxWidth, TextAlignment::Right, strings->vacuum));
+	mgr.AddField(new StaticTextField(row5 + labelRowAdjust, px, coordBoxWidth, TextAlignment::Right, strings->spindle));
 
 	px += coordBoxWidth+fieldSpacing;
 	PixelNumber pw = coordBoxWidth/2-fieldSpacing;
 
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
 	mgr.AddField(auxCoolantOn = new TextButton(row3, px, pw, strings->on, evAuxCoolant, 1));
-	mgr.AddField(auxSpindleRPM = new IntegerButton(row4, px, 2*pw + fieldSpacing , nullptr, strings->rpm));
+	mgr.AddField(auxVacuumOn = new TextButton(row4, px, pw, strings->on, evAuxVacuum, 1));
+	mgr.AddField(auxSpindleRPM = new IntegerButton(row5, px, 2*pw + fieldSpacing , nullptr, strings->rpm));
 	auxSpindleRPM->SetEvent(evAuxSpindlePopup, 0);
 	auxSpindleRPM->SetValue(0);
 
 	px += pw + fieldSpacing;
 	mgr.AddField(auxCoolantOff = new TextButton(row3, px, pw, strings->off, evAuxCoolant, 0));
+	mgr.AddField(auxVacuumOff = new TextButton(row4, px, pw, strings->off, evAuxVacuum, 0));
 
 	auxRoot = mgr.GetRoot();
 }
@@ -1453,21 +1493,40 @@ namespace UI
 
 	void UpdateAxisPosition(size_t axisIndex, float fval)
 	{
-	/*	if (axisIndex < MaxTotalAxes)
+		if (axisIndex < MaxTotalAxes)
 		{
 			auto axis = OM::GetAxis(axisIndex);
 			if (axis == nullptr)
 			{
 				return;
 			}
-			size_t slot = axis->slot;*/
-			if (axisIndex < MaxDisplayableAxes)
+			size_t slot = axis->slot;
+			if (slot < MaxDisplayableAxes)
 			{
-				coordBoxAxisPos[axisIndex]->SetValue(fval);
+				coordBoxAxisPos[slot]->SetValue(fval);
 //				printTabAxisPos[axisIndex]->SetValue(fval);
 				//movePopupAxisPos[slot]->SetValue(fval);
 			}
-		//}
+		}
+	}
+
+	void UpdateAxisMachinePosition(size_t axisIndex, float fval)
+	{
+		if (axisIndex < MaxTotalAxes)
+		{
+			auto axis = OM::GetAxis(axisIndex);
+			if (axis == nullptr)
+			{
+				return;
+			}
+			size_t slot = axis->slot;
+			if (slot < MaxDisplayableAxes)
+			{
+				wpMachineCoordAxisPos[slot]->SetValue(fval);
+//				printTabAxisPos[axisIndex]->SetValue(fval);
+				//movePopupAxisPos[slot]->SetValue(fval);
+			}
+		}
 	}
 
 /*	void UpdateCurrentTemperature(size_t heaterIndex, float fval)
@@ -1854,7 +1913,7 @@ namespace UI
 	}
 
 	// Update the geometry or the number of axes
-/*	void UpdateGeometry(unsigned int p_numAxes, bool p_isDelta)
+	void UpdateGeometry(unsigned int p_numAxes, bool p_isDelta)
 	{
 		if (p_numAxes != numVisibleAxes || p_isDelta != isDelta)
 		{
@@ -1877,52 +1936,52 @@ namespace UI
 
 					// Update axis letter everywhere we display it
 					const uint8_t slot = axis->slot;
-					//controlTabAxisPos	[slot]->SetLabel(letter);
+/*					controlTabAxisPos	[slot]->SetLabel(letter);
 					moveAxisRows		[slot]->SetValue(letter);
 					printTabAxisPos		[slot]->SetLabel(letter);
-					movePopupAxisPos	[slot]->SetLabel(letter);
+					movePopupAxisPos	[slot]->SetLabel(letter);*/
 					homeButtons			[slot]->SetText(letter);
 
 					// Update axis letter to be sent for homing commands
 					homeButtons[slot]->SetEvent(homeButtons[slot]->GetEvent(), letter);
 					homeButtons[slot]->SetColours(colours->buttonTextColour, (axis->homed) ? colours->homedButtonBackColour : colours->notHomedButtonBackColour);
 
-					mgr.Show(homeButtons[slot], !isDelta);
-					ShowAxis(slot, true, axis->letter[0]);
+/*					mgr.Show(homeButtons[slot], !isDelta);
+					ShowAxis(slot, true, axis->letter[0]);*/
 				}
 				// When we get here it's likely to be the initialisation phase
 				// and we won't have the babystep amount set
-				if (axis->letter[0] == 'Z')
+/*				if (axis->letter[0] == 'Z')
 				{
 					babystepOffsetField->SetValue(axis->babystep);
-				}
+				}*/
 			});
 			// Hide axes possibly shown before
-			for (size_t i = numDisplayedAxes; i < MaxDisplayableAxes; ++i)
+/*			for (size_t i = numDisplayedAxes; i < MaxDisplayableAxes; ++i)
 			{
 				mgr.Show(homeButtons[i], false);
 				ShowAxis(i, false);
-			}
+			}*/
 		}
-	}*/
+	}
 
 	void UpdateAllHomed()
 	{
 		bool allHomed = true;
-/*		OM::IterateAxesWhile([&allHomed](OM::Axis* axis) {
+		OM::IterateAxesWhile([&allHomed](OM::Axis* axis) {
 			if (axis->visible && !axis->homed)
 			{
 				allHomed = false;
 				return false;
 			}
 			return true;
-		});*/
-		for(int i=0;i<3;i++)
+		});
+/*		for(int i=0;i<3;i++)
 		{
 			if(!axesHomed[i])
 				allHomed=false;
-		}
-//		if (allHomed != allAxesHomed)
+		}*/
+		if (allHomed != allAxesHomed)
 		{
 			allAxesHomed = allHomed;
 			homeAllButton->SetColours(colours->buttonTextColour, (allAxesHomed) ? colours->homedButtonBackColour : colours->notHomedButtonBackColour);
@@ -1932,17 +1991,17 @@ namespace UI
 	// Update the homed status of the specified axis. If the axis is -1 then it represents the "all homed" status.
 	void UpdateHomedStatus(size_t axisIndex, bool isHomed)
 	{
-		/*OM::Axis *axis = OM::GetOrCreateAxis(axisIndex);
+		OM::Axis *axis = OM::GetOrCreateAxis(axisIndex);
 		if (axis == nullptr)
 		{
 			return;
 		}
 		axis->homed = isHomed;
-		const size_t slot = axis->slot;*/
-		if (axisIndex < MaxDisplayableAxes)
+		const size_t slot = axis->slot;
+		if (slot < MaxDisplayableAxes)
 		{
-			axesHomed[axisIndex]= isHomed;
-			homeButtons[axisIndex]->SetColours(colours->buttonTextColour, (isHomed) ? colours->homedButtonBackColour : colours->notHomedButtonBackColour);
+			axesHomed[slot]= isHomed;
+			homeButtons[slot]->SetColours(colours->buttonTextColour, (isHomed) ? colours->homedButtonBackColour : colours->notHomedButtonBackColour);
 		}
 
 		UpdateAllHomed();
@@ -2072,6 +2131,37 @@ namespace UI
 				continue;
 			}
 			wpSelect[i]->Press(false, 0);
+		}
+	}
+
+	void UpdateGpOut(size_t index, float f)
+	{
+		switch(index)
+		{
+		case 0:		// Coolant
+			if (f>0)
+			{
+				auxCoolantOn->Press(true, 0);
+				auxCoolantOff->Press(false, 0);
+			}
+			else
+			{
+				auxCoolantOn->Press(false, 0);
+				auxCoolantOff->Press(true, 0);
+			}
+			break;
+		case 1:		// Vacuum
+			if (f>0)
+			{
+				auxVacuumOn->Press(true, 0);
+				auxVacuumOff->Press(false, 0);
+			}
+			else
+			{
+				auxVacuumOn->Press(false, 0);
+				auxVacuumOff->Press(true, 0);
+			}
+			break;
 		}
 	}
 
@@ -2583,51 +2673,48 @@ namespace UI
 				break;
 
 			case evAuxSpindle:
-				switch(bp.GetIParam())
 				{
-				case 0: //off
-					CurrentButtonReleased();
-					mgr.ClearPopup();
-					StopAdjusting();
-					SerialIo::Sendf("M5 P0\n");
-					break;
-				case 1:	//min
-					{
-						CurrentButtonReleased();
-						mgr.ClearPopup();
-						StopAdjusting();
-						auto spindle = OM::GetSpindle(0);
-						uint16_t val = spindle->min;
-						val = constrain<int>(val, spindle->min, spindle->max);
-						SerialIo::Sendf("M3 P0 S%d\n", val);
-						break;
-					}
-				case 2: //max
-					{
-						CurrentButtonReleased();
-						mgr.ClearPopup();
-						StopAdjusting();
-						auto spindle = OM::GetSpindle(0);
-						uint16_t val = spindle->max;
-						val = constrain<int>(val, spindle->min, spindle->max);
-						SerialIo::Sendf("M3 P0 S%d\n", val);
-						break;
-					}
-				case 3:	//Minus
-					{
-						auto spindle = OM::GetSpindle(0);
-						uint16_t val = spindle->current - 1000;
-						val = constrain<int>(val, spindle->min, spindle->max);
-						SerialIo::Sendf("M3 P0 S%d\n", val);
-						break;
-					}
+					auto spindle = OM::GetSpindle(0);
+					uint16_t val;
 
-				case 4: //Plus
+					switch(bp.GetIParam())
 					{
-						auto spindle = OM::GetSpindle(0);
-						uint16_t val = spindle->current + 1000;
+					case 0: //off
+						CurrentButtonReleased();
+						mgr.ClearPopup();
+						StopAdjusting();
+						SerialIo::Sendf("M5 P0\n");
+						SetSpindleActive(0, 0);	// to speed up UI update
+						break;
+					case 1:	//min
+						CurrentButtonReleased();
+						mgr.ClearPopup();
+						StopAdjusting();
+						val = spindle->min;
 						val = constrain<int>(val, spindle->min, spindle->max);
 						SerialIo::Sendf("M3 P0 S%d\n", val);
+						SetSpindleActive(0, val);	// to speed up UI update
+						break;
+					case 2: //max
+						CurrentButtonReleased();
+						mgr.ClearPopup();
+						StopAdjusting();
+						val = spindle->max;
+						val = constrain<int>(val, spindle->min, spindle->max);
+						SerialIo::Sendf("M3 P0 S%d\n", val);
+						SetSpindleActive(0, val);	// to speed up UI update
+						break;
+					case 3:	//Minus
+						val = spindle->active - 1000;
+						val = constrain<int>(val, spindle->min, spindle->max);
+						SerialIo::Sendf("M3 P0 S%d\n", val);
+						SetSpindleActive(0, val);	// to speed up UI update
+						break;
+					case 4: //Plus
+						val = spindle->active + 1000;
+						val = constrain<int>(val, spindle->min, spindle->max);
+						SerialIo::Sendf("M3 P0 S%d\n", val);
+						SetSpindleActive(0, val);	// to speed up UI update
 						break;
 					}
 				}
@@ -2892,6 +2979,10 @@ namespace UI
 				}
 				break;
 
+			case evWpGotoZero:
+				SerialIo::Sendf("G90 G53 G1 X0 Y0 Z0\n");
+				break;
+
 			case evCtrlMove:
 				switch(bp.GetIParam())
 				{
@@ -2913,6 +3004,32 @@ namespace UI
 				case 5:	// Z down
 					SerialIo::Sendf("G91 G1 Z-%s G90\n", moveSteps[currentMoveSteps]);
 					break;
+				}
+				break;
+
+			case evAuxCoolant:
+				{
+					if(bp.GetIParam() == 1)
+					{
+						SerialIo::Sendf("M8\n");
+					}
+					else
+					{
+						SerialIo::Sendf("M9\n");
+					}
+				}
+				break;
+
+			case evAuxVacuum:
+				{
+					if(bp.GetIParam() == 1)
+					{
+						SerialIo::Sendf("M10\n");
+					}
+					else
+					{
+						SerialIo::Sendf("M11\n");
+					}
 				}
 				break;
 
@@ -3288,6 +3405,7 @@ namespace UI
 				break;
 
 			case evAuxCoolant:
+			case evAuxVacuum:
 			case evAuxSpindlePopup:
 			case evSetBaudRate:
 			case evSetVolume:
@@ -3594,33 +3712,34 @@ namespace UI
 			return;
 		}
 		spindle->active = active;
-		if (spindle->tool > -1)
+		if( index == 0 ) auxSpindleRPM->SetValue(active);
+/*		if (spindle->tool > -1)
 		{
 			auto tool = OM::GetTool(spindle->tool);
 			if (tool != nullptr && tool->slot < MaxSlots)
 			{
-//				activeTemps[tool->slot]->SetValue((int)active);
+				activeTemps[tool->slot]->SetValue((int)active);
 			}
-		}
+		}*/
 	}
 
-	void SetSpindleCurrent(size_t index, uint16_t current)
+/*	void SetSpindleCurrent(size_t index, uint16_t current)
 	{
 		auto spindle = OM::GetOrCreateSpindle(index);
 		if (spindle == nullptr)
 		{
 			return;
 		}
-/*		if (spindle->tool > -1)
+		if (spindle->tool > -1)
 		{
 			auto tool = OM::GetTool(spindle->tool);
-			if (tool != nullptr && tool->slot < MaxSlots)*/
+			if (tool != nullptr && tool->slot < MaxSlots)
 			{
 				spindle->current = current;
-				auxSpindleRPM->SetValue(current);
+				if( index == 0 ) auxSpindleRPM->SetValue(current);
 			}
-//		}
-	}
+		}
+	}*/
 
 	void SetSpindleLimit(size_t index, uint16_t value, bool max)
 	{
@@ -3629,12 +3748,12 @@ namespace UI
 			if (max)
 			{
 				spindle->max = value;
-				auxSpindleMax->SetValue(value);
+				if( index == 0  ) auxSpindleMax->SetValue(value);
 			}
 			else
 			{
 				spindle->min = value;
-				auxSpindleMin->SetValue(value);
+				if( index == 0 ) auxSpindleMin->SetValue(value);
 			}
 		}
 	}

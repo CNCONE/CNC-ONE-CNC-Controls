@@ -599,14 +599,14 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 				{
 					// Turn off specific spindle
 					const uint32_t slot = gb.GetLimitedUIValue('P', MaxSpindles);
-					platform.AccessSpindle(slot).TurnOff();
+					platform.AccessSpindle(slot).SetRpm(0);		//TurnOff();
 				}
 				else
 				{
 					// Turn off every spindle if no 'P' parameter is present
 					for (size_t i = 0; i < MaxSpindles; i++)
 					{
-						platform.AccessSpindle(i).TurnOff();
+						platform.AccessSpindle(i).SetRpm(0);		//TurnOff();
 					}
 				}
 				break;
@@ -634,6 +634,19 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 				}
 				break;
 			}
+			break;
+
+		case 8:	//Flood Coolant On
+			result = platform.GetGpOutPort(0).WriteAnalog(0, false, 1.0, gb, reply);	// Use GPIO1
+			break;
+		case 9:	//Coolant Off
+			result = platform.GetGpOutPort(0).WriteAnalog(0, false, 0.0, gb, reply);	// Use GPIO1
+			break;
+		case 10:	//Vacuum On
+			result = platform.GetGpOutPort(1).WriteAnalog(1, false, 1.0, gb, reply);	// Use GPIO2
+			break;
+		case 11:	//Vacuum Off
+			result = platform.GetGpOutPort(1).WriteAnalog(1, false, 0.0, gb, reply);	// Use GPIO2
 			break;
 
 		case 18: // Motors off

@@ -119,11 +119,20 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.cross.exe.release.516195201.976458850.241502451.170574622.384272410" name="DueXn.cpp" rcbsApplicability="disable" resourcePath="src/DuetNG/DueXn.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1697970502.1632646512">
-						<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1697970502.1632646512" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1697970502"/>
-					</fileInfo>
+					<folderInfo id="cdt.managedbuild.config.gnu.cross.exe.release.516195201.976458850.241502451.170574622.586318276" name="/" resourcePath="src/Networking/W5500Ethernet">
+						<toolChain id="cdt.managedbuild.toolchain.gnu.cross.exe.release.2060807701" name="Cross GCC" superClass="cdt.managedbuild.toolchain.gnu.cross.exe.release" unusedChildren="">
+							<option id="cdt.managedbuild.option.gnu.cross.path.1881231799.1672352575" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path.1881231799"/>
+							<option id="cdt.managedbuild.option.gnu.cross.prefix.172065168.1416583908" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix.172065168"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.119187062" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler.463703707"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.839625629" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1697970502"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.1034876610" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker.1102044150"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.linker.1325122385" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker.1768134875"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.archiver.1936011567" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver.1402882499"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.assembler.936674625" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler.1539163958"/>
+						</toolChain>
+					</folderInfo>
 					<sourceEntries>
-						<entry excluding="src/DuetNG/DueXn.cpp|src/Networking/W5500Ethernet|src/Duet3Mini|src/Linux|src/Hardware/SAME70|src/Hardware/SAME5x|src/Networking/LwipEthernet|src/Duet3_V06|src/Hardware/ksz8081rna|src/Pccb|src/DuetM" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src/Networking/W5500Ethernet|src/Duet3Mini|src/Linux|src/Hardware/SAME70|src/Hardware/SAME5x|src/Networking/LwipEthernet|src/Duet3_V06|src/Hardware/ksz8081rna|src/Pccb|src/DuetM" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

@@ -44,6 +44,7 @@ struct StringTable
 	CSTRING files;
 	CSTRING stop;
 	CSTRING coordinates;
+	CSTRING machine;
 
 	// Control page
 	CSTRING manualctrl;
@@ -51,10 +52,11 @@ struct StringTable
 
 	// Workplaces page
 	CSTRING setZero;
+	CSTRING gotoZero;
 
 	// Aux page
 	CSTRING coolant;
-	CSTRING led;
+	CSTRING vacuum;
 	CSTRING spindle;
 	CSTRING on;
 	CSTRING off;
@@ -164,6 +166,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Files",
 		"STOP",
 		"Coordinates",
+		"Machine",
 
 		// Control page
 		"Manual Control",
@@ -171,10 +174,11 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Workplaces page
 		"Set to 0",
+		"Go to 0",
 
 		// Aux page
 		"Coolant",
-		"LED",
+		"Vacuum",
 		"Spindle",
 		"On",
 		"Off",
@@ -252,7 +256,7 @@ const StringTable LanguageTables[NumLanguages] =
 		{
 			"Connecting",
 			"Idle",
-			"Printing",
+			"Working",
 			"Halted",
 			"Starting up",
 			"Paused",
@@ -268,7 +272,7 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Theme names
 		{
-			"CNC One Default",
+			"CNC ONE Default",
 			"Light theme",
 			"Dark theme"
 		},
@@ -308,6 +312,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Files",		//TODO:TRANSLATE
 		"STOP",
 		"Koordinaten",
+		"Maschine",
 
 		// Control page
 		"Manual Control",	//TODO:TRANSLATE
@@ -315,10 +320,11 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Workplaces page
 		"Set to 0",		//TODO:TRANSLATE
+		"Go to 0",		//TODO:TRANSLATE
 
 		// Aux page
 		"Coolant",		//TODO:TRANSLATE
-		"LED",			//TODO:TRANSLATE
+		"Vacuum",		//TODO:TRANSLATE
 		"Spindle",		//TODO:TRANSLATE
 		"On",			//TODO:TRANSLATE
 		"Off",			//TODO:TRANSLATE
@@ -396,7 +402,7 @@ const StringTable LanguageTables[NumLanguages] =
 		{
 			"Verbinde",
 			"Leerlauf",
-			"Druckt",
+			"Arbeitet",
 			"Angehalten",
 			"Starte",
 			"Pausiert",
@@ -411,7 +417,7 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Theme names
 		{
-			"CNC One Standard",
+			"CNC ONE Standard",
 			"Anzeige hell",
 			"Anzeige dunkel"
 		},
@@ -451,6 +457,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Files",		//TODO:TRANSLATE
 		"ARRÊT",
 		"Coordonnées",
+		"Machine",		//TODO:TRANSLATE
 
 		// Control page
 		"Manual Control",	//TODO:TRANSLATE
@@ -458,10 +465,11 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Workplaces page
 		"Set to 0",		//TODO:TRANSLATE
+		"Go to 0",		//TODO:TRANSLATE
 
 		// Aux page
 		"Coolant",		//TODO:TRANSLATE
-		"LED",			//TODO:TRANSLATE
+		"Vacuum",		//TODO:TRANSLATE
 		"Spindle",		//TODO:TRANSLATE
 		"On",			//TODO:TRANSLATE
 		"Off",			//TODO:TRANSLATE
@@ -539,7 +547,7 @@ const StringTable LanguageTables[NumLanguages] =
 		{
 			"Liaison en cours",					// "Connexion en cours" was too long
 			"Au repos",
-			"Impression",
+			"Working",		//TODO:TRANSLATE
 			"Arrêt",
 			"Démarrage",
 			"Pause",
@@ -554,7 +562,7 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Theme names
 		{
-			"CNC One défaut",
+			"CNC ONE défaut",
 			"Fond Blanc",
 			"Fond Noir 2"
 		},
@@ -594,6 +602,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Files",		//TODO:TRANSLATE
 		"PARADA",							// It could also be STOP, both are OK
 		"Coordenadas",
+		"Machine",		//TODO:TRANSLATE
 
 		// Control page
 		"Manual Control",	//TODO:TRANSLATE
@@ -601,10 +610,11 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Workplaces page
 		"Set to 0",		//TODO:TRANSLATE
+		"Go to 0",		//TODO:TRANSLATE
 
 		// Aux page
 		"Coolant",		//TODO:TRANSLATE
-		"LED",			//TODO:TRANSLATE
+		"Vacuum",		//TODO:TRANSLATE
 		"Spindle",		//TODO:TRANSLATE
 		"On",			//TODO:TRANSLATE
 		"Off",			//TODO:TRANSLATE
@@ -682,7 +692,7 @@ const StringTable LanguageTables[NumLanguages] =
 		{
 			"conexión",
 			"en espera",					// it's more frequently use "en espera" than "ocioso", it makes more sense for a machine
-			"imprimiendo",
+			"Working",		//TODO:TRANSLATE
 			"detuvo",
 			"empezando",
 			"pausado",
@@ -697,7 +707,7 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Theme names
 		{
-			"CNC One defecto",
+			"CNC ONE defecto",
 			"Claro",
 			"Oscuro"
 		},
@@ -737,6 +747,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Files",		//TODO:TRANSLATE
 		"FERMA",
 		"Coordinate",
+		"Machine",		//TODO:TRANSLATE
 
 		// Control page
 		"Manual Control",	//TODO:TRANSLATE
@@ -744,10 +755,11 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Workplaces page
 		"Set to 0",		//TODO:TRANSLATE
+		"Go to 0",		//TODO:TRANSLATE
 
 		// Aux page
 		"Coolant",		//TODO:TRANSLATE
-		"LED",			//TODO:TRANSLATE
+		"Vacuum",		//TODO:TRANSLATE
 		"Spindle",		//TODO:TRANSLATE
 		"On",			//TODO:TRANSLATE
 		"Off",			//TODO:TRANSLATE
@@ -825,7 +837,7 @@ const StringTable LanguageTables[NumLanguages] =
 		{
 			"Connettendo",
 			"Idle",
-			"Stampando",
+			"Working",		//TODO:TRANSLATE
 			"Fermato",
 			"Avviando",
 			"Pausa",
@@ -841,7 +853,7 @@ const StringTable LanguageTables[NumLanguages] =
 
 		// Theme names
 		{
-			"CNC One predefinito",
+			"CNC ONE predefinito",
 			"Tema chiaro",
 			"Tema scuro"
 		},

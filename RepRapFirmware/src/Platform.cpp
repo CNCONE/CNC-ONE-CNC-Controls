@@ -121,12 +121,12 @@ inline constexpr uint16_t PowerVoltageToAdcReading(float voltage)
 	return (uint16_t)(voltage * ((1u << AdcBits)/PowerMonitorVoltageRange));
 }
 
-constexpr uint16_t driverPowerOnAdcReading = PowerVoltageToAdcReading(10.0);			// minimum voltage at which we initialise the drivers
-constexpr uint16_t driverPowerOffAdcReading = PowerVoltageToAdcReading(9.5);			// voltages below this flag the drivers as unusable
+constexpr uint16_t driverPowerOnAdcReading = PowerVoltageToAdcReading(30.0);			// minimum voltage at which we initialise the drivers
+constexpr uint16_t driverPowerOffAdcReading = PowerVoltageToAdcReading(29.5);			// voltages below this flag the drivers as unusable
 
 # if ENFORCE_MAX_VIN
-constexpr uint16_t driverOverVoltageAdcReading = PowerVoltageToAdcReading(29.0);		// voltages above this cause driver shutdown
-constexpr uint16_t driverNormalVoltageAdcReading = PowerVoltageToAdcReading(27.5);		// voltages at or below this are normal
+constexpr uint16_t driverOverVoltageAdcReading = PowerVoltageToAdcReading(40.0);		// voltages above this cause driver shutdown
+constexpr uint16_t driverNormalVoltageAdcReading = PowerVoltageToAdcReading(36.0);		// voltages at or below this are normal
 # endif
 
 #endif
