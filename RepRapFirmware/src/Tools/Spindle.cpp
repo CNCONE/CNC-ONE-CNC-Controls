@@ -100,7 +100,8 @@ void Spindle::SetRpm(int32_t rpm) noexcept
 	{
 		rpm = constrain<int>(rpm, minRpm, maxRpm);
 		reverseNotForwardPort.WriteDigital(false);
-		pwmPort.WriteAnalog((float)(rpm - minRpm) / (float)(maxRpm - minRpm));
+//		pwmPort.WriteAnalog((float)(rpm - minRpm) / (float)(maxRpm - minRpm));
+		pwmPort.WriteAnalog((float)(rpm) / (float)(maxRpm));
 		onOffPort.WriteDigital(false);		//Active low
 		currentRpm = rpm;					// current rpm is flagged live, so no need to change seqs.spindles
 	}
@@ -108,7 +109,8 @@ void Spindle::SetRpm(int32_t rpm) noexcept
 	{
 		rpm = constrain<int>(rpm, -maxRpm, -minRpm);
 		reverseNotForwardPort.WriteDigital(true);
-		pwmPort.WriteAnalog((float)(-rpm - minRpm) / (float)(maxRpm - minRpm));
+//		pwmPort.WriteAnalog((float)(-rpm - minRpm) / (float)(maxRpm - minRpm));
+		pwmPort.WriteAnalog((float)(-rpm) / (float)(maxRpm ));
 		onOffPort.WriteDigital(false);		//Active low
 		currentRpm = rpm;					// current rpm is flagged live, so no need to change seqs.spindles
 	}

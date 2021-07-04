@@ -883,6 +883,9 @@ private:
 
 	// Misc
 	static bool deliberateError;						// true if we deliberately caused an exception for testing purposes. Must be static in case of exception during startup.
+
+	bool motorAlm[6];
+	bool stopped = false;
 };
 
 #if HAS_MASS_STORAGE

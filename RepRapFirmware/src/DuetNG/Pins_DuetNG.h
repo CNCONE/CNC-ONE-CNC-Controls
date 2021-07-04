@@ -208,6 +208,22 @@ constexpr float PowerMonitorVoltageRange = 15.7 * 3.3;						// We use an 51.8:1 
 //constexpr Pin VssaSensePin = PortBPin(7);
 
 constexpr Pin EmStopDisPin = PortCPin(11);
+constexpr Pin EmStopInPin = PortAPin(25);
+constexpr Pin axis1almPin = PortDPin(17);
+constexpr Pin axis2almPin = PortDPin(19);
+constexpr Pin axis3almPin = PortDPin(21);
+constexpr Pin axis4almPin = PortDPin(25);
+constexpr Pin axis5almPin = PortDPin(27);
+constexpr Pin axis6almPin = PortAPin(8);
+
+/*{ PortDPin(16),	PinCapability::read,	"axis1ped" },
+{ PortDPin(18),	PinCapability::read,	"axis2ped" },
+{ PortDPin(20),	PinCapability::read,	"axis3ped" },
+{ PortDPin(24),	PinCapability::read,	"axis4ped" },
+{ PortDPin(26),	PinCapability::read,	"axis5ped" },
+{ PortAPin(7),	PinCapability::read,	"axis6ped" },*/
+
+
 
 // Z probes
 constexpr Pin Z_PROBE_PIN = PortCPin(1);									// AFE1_AD4/PC1 Z probe analog input
@@ -365,22 +381,6 @@ constexpr PinEntry PinTable[] =
 	{ PortDPin(22),	PinCapability::rw,		"gpio5" },
 	{ PortAPin(9),	PinCapability::rw,		"urxd0" },
 	{ PortAPin(10),	PinCapability::rw,		"utxd0" },
-
-
-	{ PortDPin(17),	PinCapability::read,	"axis1alm" },
-	{ PortDPin(16),	PinCapability::read,	"axis1ped" },
-	{ PortDPin(19),	PinCapability::read,	"axis2alm" },
-	{ PortDPin(18),	PinCapability::read,	"axis2ped" },
-	{ PortDPin(21),	PinCapability::read,	"axis3alm" },
-	{ PortDPin(20),	PinCapability::read,	"axis3ped" },
-	{ PortDPin(25),	PinCapability::read,	"axis4alm" },
-	{ PortDPin(24),	PinCapability::read,	"axis4ped" },
-	{ PortDPin(27),	PinCapability::read,	"axis5alm" },
-	{ PortDPin(26),	PinCapability::read,	"axis5ped" },
-	{ PortAPin(8),	PinCapability::read,	"axis6alm" },
-	{ PortAPin(7),	PinCapability::read,	"axis6ped" },
-
-	{ PortAPin(25),	PinCapability::read,	"emstop_in" },
 
 	{ PortAPin(0),	PinCapability::rw,	"xyz_probe_en" },
 	{ PortAPin(17),	PinCapability::read,	"xyz_probe_in" },

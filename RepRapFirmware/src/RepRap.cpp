@@ -910,6 +910,7 @@ void RepRap::EmergencyStop() noexcept
 
 	gCodes->EmergencyStop();
 	platform->StopLogging();
+	platform->EmergencyStop();
 }
 
 void RepRap::SetDebug(Module m, bool enable) noexcept

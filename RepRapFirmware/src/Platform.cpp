@@ -633,8 +633,16 @@ void Platform::Init() noexcept
 	}
 
 	// Initialize Emergency Stop
-	pinMode(EmStopDisPin, OUTPUT_LOW);
-	pinMode(PortAPin(25), INPUT_PULLDOWN);
+	pinMode(EmStopDisPin, OUTPUT_HIGH);
+	digitalWrite(EmStopDisPin, false);
+	pinMode(EmStopInPin, INPUT_PULLDOWN);
+
+	pinMode(axis1almPin, INPUT_PULLDOWN);
+	pinMode(axis2almPin, INPUT_PULLDOWN);
+	pinMode(axis3almPin, INPUT_PULLDOWN);
+	pinMode(axis4almPin, INPUT_PULLDOWN);
+	pinMode(axis5almPin, INPUT_PULLDOWN);
+	pinMode(axis6almPin, INPUT_PULLDOWN);
 
 	// Set up the local drivers
 	for (size_t driver = 0; driver < NumDirectDrivers; ++driver)
@@ -843,6 +851,8 @@ void Platform::Init() noexcept
 	lowestV12 = 9999;
 	numV12UnderVoltageEvents = previousV12UnderVoltageEvents = 0;
 #endif
+
+	motorAlm[0] = motorAlm[1] = motorAlm[2] = motorAlm[3] = false;
 
 	// Kick everything off
 	InitialiseInterrupts();
@@ -1299,6 +1309,39 @@ void Platform::Spin() noexcept
 #if HAS_SMART_DRIVERS
 	SmartDrivers::Spin(driversPowered);
 #endif
+
+	motorAlm[0] = digitalRead(axis1almPin);
+	motorAlm[1] = digitalRead(axis2almPin);
+	motorAlm[2] = digitalRead(axis3almPin);
+	motorAlm[3] = digitalRead(axis4almPin);
+	motorAlm[4] = digitalRead(axis5almPin);
+	motorAlm[5] = digitalRead(axis6almPin);
+
+	for (uint8_t i=0;i<6;i++)
+	{
+		if(!stopped)
+		{
+			if(motorAlm[i])
+			{
+				stopped = true;
+				MessageF(ErrorMessage, "Motor Alarm Axis %i! Reset the controller to continue.\n", i+1);
+				reprap.EmergencyStop();
+				reprap.GetGCodes().Reset();
+			}
+		}
+	}
+
+	if(!digitalRead(EmStopInPin))
+	{
+		if(!stopped)
+		{
+			stopped = true;
+			MessageF(ErrorMessage, "Emergency Stop! Reset the controller to continue.\n");
+			reprap.EmergencyStop();
+			reprap.GetGCodes().Reset();
+		}
+	}
+
 
 	const uint32_t now = millis();
 
@@ -4738,6 +4781,11 @@ void Platform::Tick() noexcept
 #elif !SAME5x
 	AnalogInStartConversion();
 #endif
+}
+
+void Platform::EmergencyStop() noexcept
+{
+	digitalWrite(EmStopDisPin, true);
 }
 
 // Pragma pop_options is not supported on this platform
