@@ -25,7 +25,7 @@ constexpr size_t NumFirmwareUpdateModules = 5;		// 0 = mainboard, 4 = PanelDue, 
 #define FIRMWARE_NAME			"RepRapFirmware for CNC ONE WiFi"
 #define DEFAULT_BOARD_TYPE	 	BoardType::DuetWiFi_10
 #define IAP_FIRMWARE_FILE		"CNCONECombinedFirmware.bin"
-#define IAP_UPDATE_FILE			"iap4e.bin"	// using the same IAP file for both Duet WiFi and Duet Ethernet
+#define IAP_UPDATE_FILE			"Duet2_SDiap32_WiFiEth.bin"	// using the same IAP file for both Duet WiFi and Duet Ethernet
 #define WIFI_FIRMWARE_FILE		"CNCONE_WiFiServer.bin"
 
 constexpr size_t NumFirmwareUpdateModules = 5;		// 4 modules, plus one for manual upload to WiFi module (module 2 is now unused)
@@ -328,9 +328,9 @@ constexpr PinEntry PinTable[] =
 	// Duet 2 and DueX fan outputs
 	{ PortCPin(23),	PinCapability::wpwm,	"fan0" },
 	{ PortCPin(26),	PinCapability::wpwm,	"fan1" },
-	{ PortAPin(19),	PinCapability::wpwm,	"fan2" },
-	{ PortAPin(20),	PinCapability::wpwm,	"duex.fan3" },
-	{ PortAPin(16),	PinCapability::wpwm,	"duex.fan4" },
+	{ PortAPin(19),	PinCapability::wpwm,	"ledr" },
+	{ PortAPin(20),	PinCapability::wpwm,	"ledg" },
+	{ PortAPin(16),	PinCapability::wpwm,	"ledb" },
 	{ NoPin,		PinCapability::wpwm,	"duex.fan5" },
 	{ NoPin,		PinCapability::wpwm,	"duex.fan6" },
 	{ NoPin,		PinCapability::wpwm,	"duex.fan7" },
