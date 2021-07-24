@@ -58,7 +58,7 @@ static TextButton *macroButtons[NumDisplayedMacros];
 //static TextButton *controlPageMacroButtons[NumControlPageMacroButtons];
 //static String<controlPageMacroTextLength> controlPageMacroText[NumControlPageMacroButtons];
 
-static PopupWindow /**setTempPopup, *setRPMPopup, *movePopup, *extrudePopup,*/ *fileListPopup, *macrosPopup,/* *fileDetailPopup,*/ *baudPopup,
+static PopupWindow *setTempPopup,/* *setRPMPopup, *movePopup, *extrudePopup,*/ *fileListPopup, *macrosPopup,/* *fileDetailPopup,*/ *baudPopup,
 		*volumePopup, *infoTimeoutPopup, *screensaverTimeoutPopup, /**babystepAmountPopup,*/ *feedrateAmountPopup, *startJobPopup, *areYouSurePopup, *keyboardPopup, *languagePopup, /**coloursPopup,*/ *screensaverPopup, *spindlePopup;
 static StaticTextField *areYouSureTextField, *areYouSureQueryField;
 static StaticTextField *startJobTextField, *startJobQueryField;
@@ -511,7 +511,7 @@ void PopupStartJob(const char* text, const char* query = strings->confirmFileSta
 	mgr.SetPopup(startJobPopup, AutoPlace, AutoPlace);
 }
 
-/*void CreateIntegerAdjustPopup(const ColourScheme& colours)
+void CreateIntegerAdjustPopup(const ColourScheme& colours)
 {
 	// Create the popup window used to adjust temperatures, fan speed, extrusion factor etc.
 	static const char* const tempPopupText[] = {"-5", "-1", strings->set, "+1", "+5"};
@@ -519,7 +519,7 @@ void PopupStartJob(const char* text, const char* query = strings->confirmFileSta
 	setTempPopup = CreateIntPopupBar(colours, tempPopupBarWidth, 5, tempPopupText, tempPopupParams, evAdjustInt, evSetInt);
 }
 
-void CreateIntegerRPMAdjustPopup(const ColourScheme& colours)
+/*void CreateIntegerRPMAdjustPopup(const ColourScheme& colours)
 {
 	// Create the popup window used to adjust temperatures, fan speed, extrusion factor etc.
 	static const char* const rpmPopupText[] = {"-1000", "-100", "-10", strings->set, "+10", "+100", "+1000"};
@@ -1380,7 +1380,7 @@ namespace UI
 		CreateMainPages(language, colours);
 
 		// Create the popup fields
-//		CreateIntegerAdjustPopup(colours);
+		CreateIntegerAdjustPopup(colours);
 //		CreateIntegerRPMAdjustPopup(colours);
 //		CreateMovePopup(colours);
 //		CreateExtrudePopup(colours);
@@ -2405,11 +2405,11 @@ namespace UI
 			case evAdjustActiveRPM:
 				Adjusting(bp);
 				mgr.SetPopup(setRPMPopup, AutoPlace, popupY);
-				break;
+				break;*/
 
 			case evAdjustSpeed:
-			case evExtrusionFactor:
-			case evAdjustFan:
+//			case evExtrusionFactor:
+//			case evAdjustFan:
 				oldIntValue = static_cast<IntegerButton*>(bp.GetButton())->GetValue();
 				Adjusting(bp);
 				mgr.SetPopup(setTempPopup, AutoPlace, popupY);
@@ -2423,7 +2423,7 @@ namespace UI
 						fieldBeingAdjusted.GetEvent();
 				switch (eventOfFieldBeingAdjusted)
 					{
-					case evAdjustBedActiveTemp:
+/*					case evAdjustBedActiveTemp:
 					case evAdjustChamberActiveTemp:
 						{
 							int bedOrChamberIndex = bp.GetIParam();
@@ -2547,7 +2547,7 @@ namespace UI
 
 					case evAdjustFan:
 						SerialIo::Sendf("M106 S%d\n", (256 * val)/100);
-						break;
+						break;*/
 
 					default:
 						{
@@ -2572,7 +2572,7 @@ namespace UI
 					int newValue = ib->GetValue() + change;
 					switch(fieldBeingAdjusted.GetEvent())
 					{
-					case evAdjustToolActiveTemp:
+/*					case evAdjustToolActiveTemp:
 					case evAdjustToolStandbyTemp:
 					case evAdjustBedActiveTemp:
 					case evAdjustBedStandbyTemp:
@@ -2596,7 +2596,7 @@ namespace UI
 								newValue = (change < 0) ? -spindle->min : spindle->min;
 							}
 						}
-						break;
+						break;*/
 
 					default:
 						break;
@@ -2606,7 +2606,7 @@ namespace UI
 				}
 				break;
 
-			case evMovePopup:
+/*			case evMovePopup:
 				mgr.SetPopup(movePopup, AutoPlace, AutoPlace);
 				break;
 

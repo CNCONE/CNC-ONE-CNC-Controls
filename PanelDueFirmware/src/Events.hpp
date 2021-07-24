@@ -50,9 +50,9 @@ enum Event : uint8_t
 
 	// Print functions
 /*	evExtrusionFactor,
-	evAdjustFan,
+	evAdjustFan,*/
 	evAdjustInt,
-	evSetInt,*/
+	evSetInt,
 	evListFiles,
 
 	evFile, evMacro, evMacroControlPage,
