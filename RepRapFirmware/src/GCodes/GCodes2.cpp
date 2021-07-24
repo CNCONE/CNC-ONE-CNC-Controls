@@ -4525,12 +4525,30 @@ bool GCodes::HandleTcode(GCodeBuffer& gb, const StringRef& reply)
 	{
 		seen = true;
 		toolNum = gb.GetCommandNumber();
+
+		if(reprap.GetTool(toolNum).IsNull() && (toolNum <= MaxTools))	// If tool does not exist -> Create
+		{
+			int32_t drives[MaxExtrudersPerTool];
+			int32_t heaters[MaxHeatersPerTool];
+
+			Tool* const tool = Tool::Create(toolNum, "Tool", drives, 0, heaters, 0, DefaultXAxisMapping, DefaultYAxisMapping, FansBitmap::MakeFromBits(0), -1, reply);
+			reprap.AddTool(tool);
+		}
 	}
 	else if (gb.Seen('T'))
 	{
 		// We handle "T{expression}" as if it's "T "{expression}, also DSF may pass a T{expression} command in this way
 		seen = true;
 		toolNum = gb.GetIValue();
+
+		if(reprap.GetTool(toolNum).IsNull() && (toolNum <= MaxTools))	// If tool does not exist -> Create
+		{
+			int32_t drives[MaxExtrudersPerTool];
+			int32_t heaters[MaxHeatersPerTool];
+
+			Tool* const tool = Tool::Create(toolNum, "Tool", drives, 0, heaters, 0, DefaultXAxisMapping, DefaultYAxisMapping, FansBitmap::MakeFromBits(0), -1, reply);
+			reprap.AddTool(tool);
+		}
 	}
 	else if (gb.Seen('R'))
 	{

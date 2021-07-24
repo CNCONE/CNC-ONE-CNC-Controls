@@ -911,6 +911,9 @@ void RepRap::EmergencyStop() noexcept
 	gCodes->EmergencyStop();
 	platform->StopLogging();
 	platform->EmergencyStop();
+	GetFansManager().SetFanValue(2, 255);
+	GetFansManager().SetFanValue(3, 0);
+	GetFansManager().SetFanValue(4, 0);
 }
 
 void RepRap::SetDebug(Module m, bool enable) noexcept
