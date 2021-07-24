@@ -1655,7 +1655,7 @@ namespace UI
 	}
 
 	// Append an amount of time to timesLeftText
-/*	static void AppendTimeLeft(int t)
+	static void AppendTimeLeft(int t)
 	{
 		if (t <= 0)
 		{
@@ -1674,7 +1674,7 @@ namespace UI
 			t /= 60;
 			timesLeftText.catf("%dh %02dm", t/60, t%60);
 		}
-	}*/
+	}
 
 	void UpdateTimesLeft(size_t index, unsigned int seconds)
 	{
@@ -1682,8 +1682,8 @@ namespace UI
 		{
 			timesLeft[index] = seconds;
 			timesLeftText.copy(strings->file);
-			/*AppendTimeLeft(timesLeft[0]);
-			timesLeftText.cat(strings->filament);
+			AppendTimeLeft(timesLeft[0]);
+			/*timesLeftText.cat(strings->filament);
 			AppendTimeLeft(timesLeft[1]);
 			if (DisplayX >= 800)
 			{
