@@ -2338,11 +2338,12 @@ namespace UI
 	static void DoEmergencyStop()
 	{
 		// We send M112 for the benefit of old firmware, and F0 0F (an invalid UTF8 sequence) for new firmware
-		SerialIo::Sendf("M112 ;" "\xF0" "\x0F" "\n");
+//		SerialIo::Sendf("M112 ;" "\xF0" "\x0F" "\n");
+		SerialIo::Sendf("M112\n");
 		TouchBeep();											// needed when we are called from ProcessTouchOutsidePopup
-		Delay(1000);
+		Delay(500);
 		SerialIo::Sendf("M999\n");
-		Delay(1000);
+		Delay(2000);
 		Reconnect();
 	}
 
