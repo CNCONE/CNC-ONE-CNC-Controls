@@ -3123,6 +3123,11 @@ void GCodes::StartPrinting(bool fromStart) noexcept
 	platform.MessageF(LogWarn,
 						(simulationMode == 0) ? "Started printing file %s\n" : "Started simulating printing file %s\n",
 							reprap.GetPrintMonitor().GetPrintingFilename());
+
+	reprap.GetFansManager().SetFanValue(2, 0);		// LED R
+	reprap.GetFansManager().SetFanValue(3, 255);	// LED G
+	reprap.GetFansManager().SetFanValue(4, 0);		// LED B
+
 	if (fromStart)
 	{
 		// Get the fileGCode to execute the start macro so that any M82/M83 codes will be executed in the correct context

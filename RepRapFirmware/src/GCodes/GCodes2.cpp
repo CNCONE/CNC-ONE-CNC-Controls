@@ -523,6 +523,10 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 					const bool leaveHeatersOn = (gb.Seen('H') && gb.GetIValue() > 0);
 					gb.SetState((leaveHeatersOn) ? GCodeState::stoppingWithHeatersOn : GCodeState::stoppingWithHeatersOff);
 					(void)DoFileMacro(gb, (code == 0) ? STOP_G : SLEEP_G, false, code);
+
+					reprap.GetFansManager().SetFanValue(2, 0);		// LED R
+					reprap.GetFansManager().SetFanValue(3, 0);		// LED G
+					reprap.GetFansManager().SetFanValue(4, 255);	// LED B
 				}
 			}
 			break;
@@ -2894,6 +2898,9 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 				reprap.GetMove().GetKinematics().SetCalibrationDefaults();		// in case M665/M666/M667/M669 in config.g don't define all the parameters
 				platform.GetEndstops().SetZProbeDefaults();
 				DoFileMacro(gb, CONFIG_FILE, true, code);
+				reprap.GetFansManager().SetFanValue(2, 0);		// LED R
+				reprap.GetFansManager().SetFanValue(3, 255);	// LED G
+				reprap.GetFansManager().SetFanValue(4, 0);		// LED B
 			}
 			break;
 

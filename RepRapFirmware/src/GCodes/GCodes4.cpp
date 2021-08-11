@@ -359,6 +359,9 @@ void GCodes::RunStateMachine(GCodeBuffer& gb, const StringRef& reply) noexcept
 			if (AllAxesAreHomed())
 			{
 				DoFileMacro(gb, PAUSE_G, true, 25);
+				reprap.GetFansManager().SetFanValue(2, 255);	// LED R
+				reprap.GetFansManager().SetFanValue(3, 96);		// LED G
+				reprap.GetFansManager().SetFanValue(4, 0);		// LED B
 			}
 		}
 		break;
@@ -372,6 +375,9 @@ void GCodes::RunStateMachine(GCodeBuffer& gb, const StringRef& reply) noexcept
 				if (!DoFileMacro(gb, FILAMENT_CHANGE_G, false, -1))
 				{
 					DoFileMacro(gb, PAUSE_G, true, -1);
+					reprap.GetFansManager().SetFanValue(2, 255);	// LED R
+					reprap.GetFansManager().SetFanValue(3, 96);		// LED G
+					reprap.GetFansManager().SetFanValue(4, 0);		// LED B
 				}
 			}
 		}
@@ -390,6 +396,9 @@ void GCodes::RunStateMachine(GCodeBuffer& gb, const StringRef& reply) noexcept
 					if (!DoFileMacro(gb, FILAMENT_ERROR ".g", false, -1))
 					{
 						DoFileMacro(gb, PAUSE_G, true, -1);
+						reprap.GetFansManager().SetFanValue(2, 255);	// LED R
+						reprap.GetFansManager().SetFanValue(3, 96);		// LED G
+						reprap.GetFansManager().SetFanValue(4, 0);		// LED B
 					}
 				}
 			}
