@@ -838,7 +838,7 @@ void GCodes::CheckTriggers() noexcept
 				else if (LockMovement(*triggerGCode))					// need to lock movement before executing the pause macro
 				{
 					triggersPending.ClearBit(lowestTriggerPending);	// clear the trigger
-					DoPause(*triggerGCode, PauseReason::trigger, "Print paused by external trigger");
+					DoPause(*triggerGCode, PauseReason::trigger, "Job paused by external trigger");
 				}
 			}
 			else
@@ -975,7 +975,7 @@ void GCodes::DoPause(GCodeBuffer& gb, PauseReason reason, const char *msg, uint1
 
 		if (reprap.Debug(moduleGcodes))
 		{
-			platform.MessageF(GenericMessage, "Paused print, file offset=%" PRIu32 "\n", pauseRestorePoint.filePos);
+			platform.MessageF(GenericMessage, "Paused job, file offset=%" PRIu32 "\n", pauseRestorePoint.filePos);
 		}
 	}
 
@@ -1047,7 +1047,7 @@ void GCodes::DoPause(GCodeBuffer& gb, PauseReason reason, const char *msg, uint1
 
 	if (msg != nullptr)
 	{
-		platform.SendAlert(GenericMessage, msg, "Printing paused", 1, 0.0, AxesBitmap());
+		platform.SendAlert(GenericMessage, msg, "Job paused", 1, 0.0, AxesBitmap());
 	}
 }
 
@@ -1299,7 +1299,7 @@ void GCodes::SaveResumeInfo(bool wasPowerFailure) noexcept
 			String<FormatStringLength> buf;
 
 			// Write the header comment
-			buf.printf("; File \"%s\" resume print after %s", printingFilename, (wasPowerFailure) ? "power failure" : "print paused");
+			buf.printf("; File \"%s\" resume job after %s", printingFilename, (wasPowerFailure) ? "power failure" : "job paused");
 			tm timeInfo;
 			if (platform.GetDateTime(timeInfo))
 			{
@@ -2886,7 +2886,7 @@ GCodeResult GCodes::ProbeGrid(GCodeBuffer& gb, const StringRef& reply)
 	if (!AllAxesAreHomed())
 	{
 		reprap.GetMove().heightMapLock.ReleaseWriter();
-		reply.copy("Must home printer before bed probing");
+		reply.copy("Must home machine before bed probing");
 		return GCodeResult::error;
 	}
 
@@ -3121,7 +3121,7 @@ void GCodes::StartPrinting(bool fromStart) noexcept
 	lastPrintingMoveHeight = -1.0;
 	reprap.GetPrintMonitor().StartedPrint();
 	platform.MessageF(LogWarn,
-						(simulationMode == 0) ? "Started printing file %s\n" : "Started simulating printing file %s\n",
+						(simulationMode == 0) ? "Started job file %s\n" : "Started simulating job file %s\n",
 							reprap.GetPrintMonitor().GetPrintingFilename());
 
 	reprap.GetFansManager().SetFanValue(2, 0);		// LED R
@@ -3928,7 +3928,7 @@ void GCodes::StopPrint(StopPrintReason reason) noexcept
 		if (reason == StopPrintReason::normalCompletion)
 		{
 			lastDuration = simSeconds;
-			platform.MessageF(LoggedGenericMessage, "File %s will print in %" PRIu32 "h %" PRIu32 "m plus heating time\n",
+			platform.MessageF(LoggedGenericMessage, "File %s will job in %" PRIu32 "h %" PRIu32 "m plus heating time\n",
 									printingFilename, simMinutes/60u, simMinutes % 60u);
 		}
 		else
@@ -3967,18 +3967,18 @@ void GCodes::StopPrint(StopPrintReason reason) noexcept
 		// Pronterface expects a "Done printing" message
 		if (usbGCode->MachineState().compatibility == Compatibility::Marlin)
 		{
-			platform.Message(UsbMessage, "Done printing file\n");
+			platform.Message(UsbMessage, "Done processing file\n");
 		}
 #if SUPPORT_TELNET
 		if (telnetGCode->MachineState().compatibility == Compatibility::Marlin)
 		{
-			platform.Message(TelnetMessage, "Done printing file\n");
+			platform.Message(TelnetMessage, "Done processing file\n");
 		}
 #endif
 		const uint32_t printSeconds = lrintf(reprap.GetPrintMonitor().GetPrintDuration());
 		const uint32_t printMinutes = printSeconds/60;
 		lastDuration = (reason == StopPrintReason::normalCompletion) ? printSeconds : 0;
-		platform.MessageF(LoggedGenericMessage, "%s printing file %s, print time was %" PRIu32 "h %" PRIu32 "m\n",
+		platform.MessageF(LoggedGenericMessage, "%s processing file %s, job time was %" PRIu32 "h %" PRIu32 "m\n",
 			(reason == StopPrintReason::normalCompletion) ? "Finished" : "Cancelled",
 			printingFilename, printMinutes/60u, printMinutes % 60u);
 #if HAS_MASS_STORAGE

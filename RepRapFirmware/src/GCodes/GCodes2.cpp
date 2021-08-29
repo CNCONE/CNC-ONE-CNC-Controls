@@ -496,7 +496,7 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 			// Don't allow M0 or M1 to stop a print, unless the print is paused or the command comes from the file being printed itself.
 			if (reprap.GetPrintMonitor().IsPrinting() && &gb != fileGCode && pauseState != PauseState::paused)
 			{
-				reply.copy("Pause the print before attempting to cancel it");
+				reply.copy("Pause the job before attempting to cancel it");
 				result = GCodeResult::error;
 			}
 			else if (   !LockMovementAndWaitForStandstill(gb)	// wait until everything has stopped
@@ -817,7 +817,7 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 			// We now allow a file that is being printed to chain to another file. This is required for the resume-after-power-fail functionality.
 			if (fileGCode->IsDoingFile() && (&gb) != fileGCode)
 			{
-				reply.copy("Cannot set file to print, because a file is already being printed");
+				reply.copy("Cannot set file to process, because a file is already being processed");
 				result = GCodeResult::error;
 				break;
 			}
@@ -839,12 +839,20 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 					else
 					{
 						// Command came from web interface or PanelDue, or not emulating Marlin, so send a nicer response
-						reply.printf("File %s selected for printing", filename.c_str());
+						reply.printf("File %s selected for job", filename.c_str());
 					}
 
 					if (code == 32)
 					{
-						StartPrinting(true);
+						if (!AllAxesAreHomed())
+						{
+							reply.copy("Cannot start: Axes not homed.");
+							result = GCodeResult::error;
+						}
+						else
+						{
+							StartPrinting(true);
+						}
 					}
 				}
 				else
@@ -869,14 +877,19 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 
 				if (pauseState == PauseState::paused)
 				{
+					if (!AllAxesAreHomed())
+					{
+						reply.copy("Cannot resume: Axes not homed.");
+						result = GCodeResult::error;
+					}
 #if HAS_VOLTAGE_MONITOR
-					if (!platform.IsPowerOk())
+					else if (!platform.IsPowerOk())
 					{
 						reply.copy("Cannot resume while power voltage is low");
 						result = GCodeResult::error;
 					}
-					else
 #endif
+					else
 					{
 						pauseState = PauseState::resuming;
 						gb.SetState(GCodeState::resuming1);
@@ -889,19 +902,24 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 #if HAS_MASS_STORAGE
 				else if (!fileToPrint.IsLive())
 				{
-					reply.copy("Cannot print, because no file is selected!");
+					reply.copy("Cannot start, because no file is selected!");
 					result = GCodeResult::error;
 				}
 				else
 				{
-# if HAS_VOLTAGE_MONITOR
-					if (!platform.IsPowerOk())
+					if (!AllAxesAreHomed())
 					{
-						reply.copy("Cannot start a print while power voltage is low");
+						reply.copy("Cannot start: Axes not homed.");
 						result = GCodeResult::error;
 					}
-					else
+# if HAS_VOLTAGE_MONITOR
+					else if (!platform.IsPowerOk())
+					{
+						reply.copy("Cannot start while power voltage is low");
+						result = GCodeResult::error;
+					}
 # endif
+					else
 					{
 						bool fromStart = (fileOffsetToPrint == 0);
 						if (!fromStart)
@@ -963,12 +981,12 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 		case 25: // Pause the print
 			if (pauseState != PauseState::notPaused)
 			{
-				reply.copy("Printing is already paused!");
+				reply.copy("Job is already paused!");
 				result = GCodeResult::error;
 			}
 			else if (!reprap.GetPrintMonitor().IsPrinting())
 			{
-				reply.copy("Cannot pause print, because no file is being printed!");
+				reply.copy("Cannot pause, because no file is being processed!");
 				result = GCodeResult::error;
 			}
 			else if (fileGCode->IsDoingFileMacro())
@@ -1007,11 +1025,11 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 				// In case there are short periods of time when PrintMonitor says a file is printing but the file is not open, or DSF passes M27 to us, check that we have a file
 				if (fileBeingPrinted.IsLive())
 				{
-					reply.printf("SD printing byte %lu/%lu", GetFilePosition(), fileBeingPrinted.Length());
+					reply.printf("SD processing byte %lu/%lu", GetFilePosition(), fileBeingPrinted.Length());
 					break;
 				}
 			}
-			reply.copy("Not SD printing.");
+			reply.copy("Not SD processing.");
 			break;
 
 		case 28: // Write to file
@@ -2769,7 +2787,7 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 #endif
 
 		case 450: // Report printer mode
-			reply.printf("PrinterMode:%s", GetMachineModeString());
+			reply.printf("MachineMode:%s", GetMachineModeString());
 			break;
 
 		case 451: // Select FFF printer mode
@@ -3359,7 +3377,7 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 				}
 				if (!seen)
 				{
-					reply.printf("Print will be terminated if a heater fault is not reset within %" PRIu32 " minutes", heaterFaultTimeout/(60 * 1000));
+					reply.printf("Job will be terminated if a heater fault is not reset within %" PRIu32 " minutes", heaterFaultTimeout/(60 * 1000));
 				}
 			}
 			break;

@@ -581,9 +581,6 @@ void RepRap::Init() noexcept
 			{
 				platform->Message(AddWarning(UsbMessage), "no configuration file found\n");
 			}
-			reprap.GetFansManager().SetFanValue(2, 0);		// LED R
-			reprap.GetFansManager().SetFanValue(3, 0);		// LED G
-			reprap.GetFansManager().SetFanValue(4, 255);	// LED B
 		}
 # if HAS_LINUX_INTERFACE
 		else if (!MassStorage::IsCardDetected(0))		// if we failed to mount the SD card because there was no card in the slot

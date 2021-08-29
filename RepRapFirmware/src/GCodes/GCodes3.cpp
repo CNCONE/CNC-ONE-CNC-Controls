@@ -385,7 +385,7 @@ GCodeResult GCodes::SimulateFile(GCodeBuffer& gb, const StringRef &reply, const 
 {
 	if (reprap.GetPrintMonitor().IsPrinting())
 	{
-		reply.copy("cannot simulate while a file is being printed");
+		reply.copy("cannot simulate while a file is being processed");
 		return GCodeResult::error;
 	}
 
@@ -420,7 +420,7 @@ GCodeResult GCodes::SimulateFile(GCodeBuffer& gb, const StringRef &reply, const 
 			// If using a SBC, this is already called when the print file info is set
 			StartPrinting(true);
 		}
-		reply.printf("Simulating print of file %s", file.c_str());
+		reply.printf("Simulating file %s", file.c_str());
 		return GCodeResult::ok;
 	}
 

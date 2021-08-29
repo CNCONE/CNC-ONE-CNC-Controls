@@ -197,7 +197,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Baby step",
 		"Resume",
 		"Cancel",
-		"Print again",
+		"Run again",
 		"Simulate again",
 		"Set",
 
@@ -248,8 +248,8 @@ const StringTable LanguageTables[NumLanguages] =
 		"Filament needed: ",
 		"Sliced by: ",
 		"Last modified: ",
-		"Estimated print time: ",
-		"Simulated print time: ",
+		"Estimated job time: ",
+		"Simulated job time: ",
 		"Simulate",
 
 		// Printer status strings
@@ -343,7 +343,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Einzelschritt",
 		"Fortsetzen",
 		"Abbrechen",
-		"Erneut drucken",
+		"Erneut starten",
 		"Erneut simulieren",
 		"Set",
 
@@ -394,8 +394,8 @@ const StringTable LanguageTables[NumLanguages] =
 		"Benötigtes Filament: ",
 		"Erzeugt mit: ",
 		"Letzte Änderung: ",
-		"Geschätzte Druckdauer: ",
-		"Errechnete Druckdauer: ",
+		"Geschätzte Dauer: ",
+		"Errechnete Dauer: ",
 		"Simulieren",
 
 		// Printer status strings
@@ -488,7 +488,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Baby step",
 		"Reprise",
 		"Annuler",
-		"Print again",
+		"Run again",
 		"Simulate again",
 		"Set",
 
@@ -633,7 +633,7 @@ const StringTable LanguageTables[NumLanguages] =
 		"Micro paso",						// Literal translation of baby step it's very odd in spanish...
 		"Resumir",
 		"Cancelar",
-		"Print again",
+		"Run again",
 		"Simulate again",
 		"Fijar",							// "Establecer" would be more correct, but it's longer.
 

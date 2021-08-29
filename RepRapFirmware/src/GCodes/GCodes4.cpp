@@ -219,6 +219,12 @@ void GCodes::RunStateMachine(GCodeBuffer& gb, const StringRef& reply) noexcept
 			{
 				toBeHomed &= ~axesHomed;
 				gb.SetState((toBeHomed.IsEmpty()) ? GCodeState::normal : GCodeState::homing1);
+				if(AllAxesAreHomed())
+				{
+					reprap.GetFansManager().SetFanValue(2, 0);		// LED R
+					reprap.GetFansManager().SetFanValue(3, 0);		// LED G
+					reprap.GetFansManager().SetFanValue(4, 255);	// LED B
+				}
 			}
 		}
 		break;
@@ -410,7 +416,7 @@ void GCodes::RunStateMachine(GCodeBuffer& gb, const StringRef& reply) noexcept
 	case GCodeState::filamentErrorPause2:
 		if (LockMovementAndWaitForStandstill(gb))
 		{
-			reply.printf((gb.GetState() == GCodeState::filamentChangePause2) ? "Printing paused for filament change at" : "Printing paused at");
+			reply.printf((gb.GetState() == GCodeState::filamentChangePause2) ? "Processing paused for filament change at" : "Processing paused at");
 			for (size_t axis = 0; axis < numVisibleAxes; ++axis)
 			{
 				reply.catf(" %c%.1f", axisLetters[axis], (double)pauseRestorePoint.moveCoords[axis]);
@@ -464,8 +470,8 @@ void GCodes::RunStateMachine(GCodeBuffer& gb, const StringRef& reply) noexcept
 			moveFractionToSkip = pauseRestorePoint.proportionDone;
 			restartInitialUserX = pauseRestorePoint.initialUserX;
 			restartInitialUserY = pauseRestorePoint.initialUserY;
-			reply.copy("Printing resumed");
-			platform.Message(LogWarn, "Printing resumed\n");
+			reply.copy("Job resumed");
+			platform.Message(LogWarn, "Job resumed\n");
 			pauseState = PauseState::notPaused;
 			gb.SetState(GCodeState::normal);
 		}
@@ -1329,7 +1335,7 @@ void GCodes::RunStateMachine(GCodeBuffer& gb, const StringRef& reply) noexcept
 # if HAS_MASS_STORAGE
 			SaveResumeInfo(true);											// create the resume file so that we can resume after power down
 # endif
-			platform.Message(LoggedGenericMessage, "Print auto-paused due to low voltage\n");
+			platform.Message(LoggedGenericMessage, "Job auto-paused due to low voltage\n");
 			gb.SetState(GCodeState::normal);
 		}
 		break;
