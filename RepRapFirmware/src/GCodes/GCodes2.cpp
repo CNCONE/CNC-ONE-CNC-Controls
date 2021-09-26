@@ -2917,7 +2917,7 @@ bool GCodes::HandleMcode(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeEx
 				platform.GetEndstops().SetZProbeDefaults();
 				DoFileMacro(gb, CONFIG_FILE, true, code);
 				reprap.GetFansManager().SetFanValue(2, 0);		// LED R
-				reprap.GetFansManager().SetFanValue(3, 255);	// LED G
+				reprap.GetFansManager().SetFanValue(3, 0);		// LED G
 				reprap.GetFansManager().SetFanValue(4, 0);		// LED B
 			}
 			break;

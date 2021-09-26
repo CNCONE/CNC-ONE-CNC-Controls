@@ -3975,6 +3975,11 @@ void GCodes::StopPrint(StopPrintReason reason) noexcept
 			platform.Message(TelnetMessage, "Done processing file\n");
 		}
 #endif
+
+		reprap.GetFansManager().SetFanValue(2, 0);		// LED R
+		reprap.GetFansManager().SetFanValue(3, 0);		// LED G
+		reprap.GetFansManager().SetFanValue(4, 255);	// LED B
+
 		const uint32_t printSeconds = lrintf(reprap.GetPrintMonitor().GetPrintDuration());
 		const uint32_t printMinutes = printSeconds/60;
 		lastDuration = (reason == StopPrintReason::normalCompletion) ? printSeconds : 0;
