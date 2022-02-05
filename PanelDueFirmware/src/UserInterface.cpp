@@ -1151,13 +1151,13 @@ void CreateJobTabFields(const ColourScheme& colours)
 /*	// Fan button
 	mgr.AddField(fanSpeed = new IntegerButton(row7, fanColumn, pauseColumn - fanColumn - fieldSpacing, strings->fan, "%"));
 	fanSpeed->SetEvent(evAdjustFan, 0);
-	fanSpeed->SetValue(0);
+	fanSpeed->SetValue(0);*/
 
 	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.pauseButtonBackColour);
 	pauseButton = new TextButton(row7, pauseColumn, babystepColumn - pauseColumn - fieldSpacing, strings->pause, evPausePrint, "M25");
 	mgr.AddField(pauseButton);
 
-	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
+	/*	DisplayField::SetDefaultColours(colours.buttonTextColour, colours.buttonTextBackColour);
 	babystepButton = new TextButton(row7, babystepColumn, DisplayX - babystepColumn - margin, strings->babystep, evBabyStepPopup);
 	mgr.AddField(babystepButton);*/
 
